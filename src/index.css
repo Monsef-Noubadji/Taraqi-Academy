@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600&family=Open+Sans:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+  font-family: 'Cairo' , 'open-sans'
+}
+
+@layer base {
+  h1 {
+    @apply font-normal text-xl;
+   }
+}
+
+@layer components {
+
+  
+}
+
+@layer utilities {
+
+}
+
+
+/* TODO:
+
+1- Add Design System to index.css ✅
+2- Add Routing and API middleware
+  Routes: 
+
+  - Home
+  - About Us
+  - Login / Signup
+    - Programs -> Goals
+    - Programs -> Programs list
+    - How to Register
+
+  - Dashboard (Private):
+    - Home
+    - Profile
+    - My Programs
+    - Exams
+    - Settings
+    - Logout
+    
+3- Add Custom Classes.
+4- Add reusable components.
+5- Build Pages one By one.
+
+*/
