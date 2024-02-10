@@ -13,11 +13,25 @@
   h1 {
     @apply font-normal text-xl;
    }
+   a {
+    @apply font-semibold;
+   }
+   .paragraph{
+    @apply text-paragraph leading-7 px-1
+   }
 }
 
 @layer components {
 
-  
+  .btn-primary{
+    @apply bg-primaryGreen text-white p-3 font-bold rounded-lg shadow-primaryGreen shadow-md hover:opacity-85 transition-all duration-100 ease-in-out
+  }
+  .btn-outline {
+    @apply bg-none text-primaryGreen p-3 font-bold rounded-lg border-2 border-primaryGreen
+  }
+  .btn-auth{
+    @apply bg-lightLace text-black p-3 font-bold rounded-lg hover:opacity-85 transition-all duration-100 ease-in-out
+  }
 }
 
 @layer utilities {
