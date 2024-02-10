@@ -17,7 +17,8 @@ export default {
       'paragraph': '#9A9A9A',
       'lighGray': '#F3F3F3',
       'lace':'#FFF4E4',
-      'lightLace':'#C28F0F1A'
+      'lightLace':'#C28F0F1A',
+      'lightSmoke':'#FFFCF4'
     },
   },
   plugins: [],
