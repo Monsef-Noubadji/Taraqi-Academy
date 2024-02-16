@@ -54,7 +54,7 @@ const Register = () => {
             /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+{};:,<.>ยง~\\|[\]\/?]).{8,}$/,
             'كلمة المرور يجب أن تتكون من حرف كبير, حرف صغير و رقم و يكون على الأقل 8 حروف'
           ).required('كلمة السر مطلوبة'),
-        phone_number: Yup.string().matches(/^\d{9}$/, 'الرقم يجب أن يكون 10 أرقام').required('الرقم مطلوب'),
+        phone_number: Yup.string().matches(/^\d{10}$/, 'الرقم يجب أن يكون 10 أرقام').required('الرقم مطلوب'),
         whatsapp_number: Yup.string().matches(/^\d{10}$/, 'الرقم يجب أن يكون 10 أرقام').required('الرقم مطلوب'),
         age: Yup.number().min(10,'العمر يجب أن يكون أكبر من 10 سنوات').required('العمر مطلوب'),
         gender: Yup.string().required('الجنس مطلوب'),
@@ -214,7 +214,7 @@ const Register = () => {
                           id="whatsapp_number"
                           name="whatsapp_number"
                           label=""
-                          type="text"
+                          type="number"
                           value={formik.values.whatsapp_number}
                           onChange={formik.handleChange}
                           error={formik.touched.whatsapp_number && Boolean(formik.errors.whatsapp_number)}
