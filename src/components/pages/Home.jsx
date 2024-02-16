@@ -7,8 +7,8 @@ import valueIcon1 from '../../assets/valueIcon_1.svg'
 import rightFrame from '../../assets/FrameRight.svg'
 import leftFrame from '../../assets/FrameLeft.svg'
 import star from '../../assets/Star.svg'
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
+
 const Home = () => {
 
     const programs = [
@@ -27,16 +27,14 @@ const Home = () => {
             name:'برنامج الأساس',
             description:'برنامج لحفظ القرآن الكريم كاملا مع التجويد  في مدة خمس سنوات.'
         },
-    ]
-    const [number,setNumber] = useState(1)
-    
+    ]    
 
     return ( 
         <main className="bg-BackgroundWhite flex flex-col gap-32">
 
             {/* Hero Section */}
             <section
-            className="flex flex-col pt-20 lg:pt-12 px-12 lg:flex-row items-center gap-6"
+                className="flex flex-col pt-20 lg:pt-12 px-12 lg:flex-row items-center gap-6"
             >
                 <img className="hidden lg:block" src={landingPic} alt="boy-reading-Quran" width={500} height={100} />
                 <Box sx={{'display':'flex','flexDirection':'column','gap':'1rem','direction':'rtl'}}>
