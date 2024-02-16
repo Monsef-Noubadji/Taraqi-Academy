@@ -3,7 +3,7 @@ import phone from '../../assets/phone.svg'
 import pin from '../../assets/pin.svg'
 import mail from '../../assets/mail.svg'
 import { NavLink } from 'react-router-dom'
-import '../../styles/footerLink.css'
+import '../../theme/footerLink.css'
 import logo from '../../assets/logo.svg'
 const Footer = () => {
     return ( 
