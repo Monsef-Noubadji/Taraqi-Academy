@@ -314,7 +314,7 @@ const Register = () => {
                     {step === 4 && <section>step 4</section>} */}
 
                     <section className="self-center flex justify-between items-center w-full gap-3">
-                        <Button sx={{'paddingX':'2rem'}} disabled={checked === false} onClick={()=> formik.errors} variant="primary" type="submit">{step === 4 ? 'إنشاء الحساب' : 'التالي'}</Button>
+                        <Button sx={{'paddingX':'2rem'}} disabled={checked === false} onClick={()=> nextStep()} variant="primary" type="submit">{step === 4 ? 'إنشاء الحساب' : 'التالي'}</Button>
                         { step !== 1 && <Button sx={{'paddingX':'2rem'}} disabled={step === 1} onClick={()=> prevStep()} variant="secondary">السابق</Button>}            
                     </section>
 
