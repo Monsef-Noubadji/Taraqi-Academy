@@ -19,6 +19,7 @@ const Register = () => {
 
     const nextStep = ()=>{
         if(step === 4){
+            formik.handleSubmit(formik.values)
             return;
         }
         setStep(prevStep => prevStep + 1 )
@@ -87,15 +88,24 @@ const Register = () => {
     },
       validationSchema,
       onSubmit: values => {
-        toast('تم إنشاء الحساب بنجاح',{
-          position:'top-right',
-          type:'success',
-          progress:undefined,
-          autoClose:2000,
-          theme:'colored'
-        })
-        console.log(values);
-      },
+        if (!formik.isValid) {
+            toast.error('يرجى ملئ جميع الخانات', {
+              position: 'top-right',
+              progress: undefined,
+              autoClose: 2000,
+              theme: 'colored'
+            });
+          } else {
+            // No errors, submit the form
+            toast.success('تم إنشاء الحساب بنجاح', {
+              position: 'top-right',
+              progress: undefined,
+              autoClose: 2000,
+              theme: 'colored'
+            });
+            alert(JSON.stringify(values, null, 2));
+          }
+        }
     });
 
     useEffect(()=>{
@@ -137,7 +147,7 @@ const Register = () => {
                     {/* Form */}
                    { step !== 1 && <form onSubmit={formik.handleSubmit} className="flex flex-col  justify-center gap-3">
                         {step === 2 && 
-                        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                             <label htmlFor="email" className="self-end flex flex-col gap-2 font-bold">
                                 <p className="self-end">البريد الإلكتروني</p>
@@ -151,7 +161,7 @@ const Register = () => {
                           onChange={formik.handleChange}
                           error={formik.touched.email && Boolean(formik.errors.email)}
                           helperText={formik.touched.email && formik.errors.email}
-                          placeholder="  البريد الإلكتروني "
+                          placeholder="  البريد الإلكتروني *"
                           sx={{'direction':'rtl','fontFamily':'Cairo'}}
                         />
                             </label>
@@ -168,7 +178,7 @@ const Register = () => {
                           onChange={formik.handleChange}
                           error={formik.touched.full_name && Boolean(formik.errors.full_name)}
                           helperText={formik.touched.full_name && formik.errors.full_name}
-                          placeholder="الإسم الثلاثي"
+                          placeholder="الإسم الثلاثي *"
                           sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
                         />
                             </label>
@@ -180,12 +190,12 @@ const Register = () => {
                           id="phone_number"
                           name="phone_number"
                           label=""
-                          type="number"
+                          type="text"
                           value={formik.values.phone_number}
                           onChange={formik.handleChange}
                           error={formik.touched.phone_number && Boolean(formik.errors.phone_number)}
                           helperText={formik.touched.phone_number && formik.errors.phone_number}
-                          placeholder="رقم الهاتف الشخصي  "
+                          placeholder="رقم الهاتف الشخصي * "
                           sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
                         />
                             </label>
@@ -202,7 +212,7 @@ const Register = () => {
                           onChange={formik.handleChange}
                           error={formik.touched.password && Boolean(formik.errors.password)}
                           helperText={formik.touched.password && formik.errors.password}
-                          placeholder=" كلمة المرور  "
+                          placeholder=" كلمة المرور  *"
                           sx={{'direction':'rtl','fontFamily':'Cairo'}}
                         />
                             </label>
@@ -214,12 +224,12 @@ const Register = () => {
                           id="whatsapp_number"
                           name="whatsapp_number"
                           label=""
-                          type="number"
+                          type="text"
                           value={formik.values.whatsapp_number}
                           onChange={formik.handleChange}
                           error={formik.touched.whatsapp_number && Boolean(formik.errors.whatsapp_number)}
                           helperText={formik.touched.whatsapp_number && formik.errors.whatsapp_number}
-                          placeholder="رقم هاتف الواتساب  "
+                          placeholder="رقم هاتف الواتساب * "
                           sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
                         />
                             </label>
@@ -231,12 +241,12 @@ const Register = () => {
                           id="age"
                           name="age"
                           label=""
-                          type="text"
+                          type="number"
                           value={formik.values.age}
                           onChange={formik.handleChange}
                           error={formik.touched.age && Boolean(formik.errors.age)}
                           helperText={formik.touched.age && formik.errors.age}
-                          placeholder="السن  "
+                          placeholder="السن * "
                           sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
                         />
                             </label>
@@ -250,7 +260,7 @@ const Register = () => {
                                 name="country"
                                 label=""
                                 value={formik.values.country}
-                                onChange={()=>{formik.handleChange}}
+                                onChange={formik.handleChange}
                                 error={formik.touched.country && Boolean(formik.errors.country)}
                                 sx={{'direction':'rtl','fontFamily':'Cairo'}}
                             >
@@ -270,14 +280,13 @@ const Register = () => {
                                 name="state"
                                 label=""
                                 value={formik.values.state}
-                                onChange={formik.handleChange && fetchStates}
+                                onChange={formik.handleChange}
                                 error={formik.touched.state && Boolean(formik.errors.state)}
                                 helperText={formik.touched.state && formik.errors.state}
                                 sx={{'direction':'rtl','fontFamily':'Cairo'}}
                             >
-                               {states.map((state,index) => (
-                                <MenuItem key={index} value={state}>{state}</MenuItem>
-                               ))}
+                               <MenuItem value={'DZ'}>الجزائر</MenuItem>
+                               <MenuItem value={'Other'}>خارج الجزائر</MenuItem>
                             </Select>
 
                             </label>
@@ -302,19 +311,128 @@ const Register = () => {
 
                             </label>
 
-                        </section>
+                            </section>
                         }
-                        <Button variant="primary" type="submit">تأكيد</Button>
-                    </form>}
-                    {/* {step === 2 && 
-                        <section>
+                        {step === 3 && 
+                            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                        </section>}
-                    {step === 3 && <section>step 3</section>}
-                    {step === 4 && <section>step 4</section>} */}
+                            <label htmlFor="role" className="self-end flex flex-col gap-2 font-bold">
+                                <p className="self-end">إختر المهنة</p>
+                            
+                            <Select
+                                fullWidth
+                                id="role"
+                                name="role"
+                                label=""
+                                value={formik.values.role}
+                                onChange={formik.handleChange}
+                                error={formik.touched.role && Boolean(formik.errors.role)}
+                                helperText={formik.touched.role && formik.errors.role}
+                                sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                            >
+                               <MenuItem value={'worker'}>عامل</MenuItem>
+                               <MenuItem value={'student'}>طالب</MenuItem>
+
+                            </Select>
+
+                            </label>    
+
+                            <label htmlFor="education_level" className="self-end flex flex-col gap-2 font-bold">
+                                <p className="self-end"> المستوى الدراسي</p>
+                            
+                            <Select
+                                fullWidth
+                                id="education_level"
+                                name="education_level"
+                                label=""
+                                value={formik.values.education_level}
+                                onChange={formik.handleChange}
+                                error={formik.touched.education_level && Boolean(formik.errors.education_level)}
+                                helperText={formik.touched.education_level && formik.errors.education_level}
+                                sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                            >
+                               <MenuItem value={'middle_school'}>متوسط</MenuItem>
+                               <MenuItem value={'high_school'}>ثانوي</MenuItem>
+                               <MenuItem value={'university'}>جامعي</MenuItem>
+
+                            </Select>
+
+                            </label>
+
+                            <label htmlFor="school_name" className="self-end flex flex-col gap-2 font-bold">
+                                <p className="self-end">إسم المدرسة / الجامعة</p> 
+                        <TextField
+                          fullWidth
+                          id="school_name"
+                          name="school_name"
+                          label=""
+                          type="text"
+                          value={formik.values.school_name}
+                          onChange={formik.handleChange}
+                          error={formik.touched.school_name && Boolean(formik.errors.school_name)}
+                          helperText={formik.touched.school_name && formik.errors.school_name}
+                          placeholder="إسم المدرسة * "
+                          sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
+                        />
+                            </label>
+
+                            <label htmlFor="speciality" className="self-end flex flex-col gap-2 font-bold">
+                                <p className="self-end">التخصص</p> 
+                        <TextField
+                          fullWidth
+                          id="speciality"
+                          name="speciality"
+                          label=""
+                          type="text"
+                          value={formik.values.speciality}
+                          onChange={formik.handleChange}
+                          error={formik.touched.speciality && Boolean(formik.errors.speciality)}
+                          helperText={formik.touched.speciality && formik.errors.speciality}
+                          placeholder="إسم المدرسة * "
+                          sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
+                        />
+                            </label>
+
+                            <label htmlFor="saved_ahzab" className="self-end col-start-[span_2] flex flex-col gap-2 font-bold">
+                                <p className="self-end">عدد الأحزاب المحفوظة</p> 
+                        <TextField
+                          fullWidth
+                          id="saved_ahzab"
+                          name="saved_ahzab"
+                          label=""
+                          type="number"
+                          value={formik.values.saved_ahzab}
+                          onChange={formik.handleChange}
+                          error={formik.touched.saved_ahzab && Boolean(formik.errors.saved_ahzab)}
+                          helperText={formik.touched.saved_ahzab && formik.errors.saved_ahzab}
+                          placeholder="عدد الأحزاب * "
+                          sx={{'direction':'rtl','fontFamily':'Cairo','borderRadius':'10px'}}
+                        />
+                            </label>
+
+                            </section>
+                        }
+                        {step === 4 && 
+                         <section style={{'direction':'rtl',display:'flex',flexDirection:'column',gap:'2rem'}}>
+                         <h1 className="font-bold">شارك في حساباتنا على مواقع التواصل الاجتماعي</h1>
+     
+                         <ul className="flex flex-col gap-4" style={{'listStyleType':'initial','paddingRight':'2rem'}}>
+                             <li><a href="https://example.com" target="_blank" rel="noreferrer"> رابط صفحتنا على الفايسبوك  </a></li>
+                             <li><a href="https://example.com" target="_blank" rel="noreferrer"> رابط قناتنا على التليغرام </a></li>
+                             <li>
+                                {formik.values.gender === 'MALE' ? 
+                                <a href="https://example.com" target="_blank" rel="noreferrer"> رابط المجموعة التفاعلية للذكور على التليغرام  </a>
+                                : <a href="https://example.com" target="_blank" rel="noreferrer"> رابط المجموعة التفاعلية للإناث على التليغرام  </a>
+                                }
+                                </li>
+                         </ul>
+                         
+                         </section>}
+                    </form>}                   
+                    
 
                     <section className="self-center flex justify-between items-center w-full gap-3">
-                        <Button sx={{'paddingX':'2rem'}} disabled={checked === false} onClick={()=> nextStep()} variant="primary" type="submit">{step === 4 ? 'إنشاء الحساب' : 'التالي'}</Button>
+                        <Button sx={{'paddingX':'2rem'}} disabled={checked === false || (step === 4 && !formik.isValid)} onClick={()=> nextStep()} variant="primary" type="submit">{step === 4 ? 'إنشاء الحساب' : 'التالي'}</Button>
                         { step !== 1 && <Button sx={{'paddingX':'2rem'}} disabled={step === 1} onClick={()=> prevStep()} variant="secondary">السابق</Button>}            
                     </section>
 
