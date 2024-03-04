@@ -28,7 +28,7 @@ const Home = () => {
             description:'برنامج لحفظ القرآن الكريم كاملا مع التجويد  في مدة خمس سنوات.'
         },
     ]    
-
+    
     return ( 
         <main className="bg-BackgroundWhite flex flex-col gap-32">
 
@@ -187,7 +187,7 @@ const Home = () => {
             </Container>
 
         </main>
-     );
+    );
 }
  
 export default Home;

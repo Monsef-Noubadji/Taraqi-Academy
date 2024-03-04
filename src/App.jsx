@@ -7,6 +7,10 @@ import Programs from './components/pages/Programs.jsx'
 import ProgramDetails from './components/pages/ProgramDetails.jsx';
 import DashboardLayout from './components/layouts/DashboardLayout.jsx';
 import Profile from './components/pages/Profile.jsx';
+import Main from './components/dashboards/student/main.jsx';
+import ProgramGoals from './components/pages/ProgramGoals.jsx';
+import ProgramsList from './components/pages/ProgramsList.jsx'
+
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<HomeLayout/>}>
@@ -14,11 +18,14 @@ const router = createBrowserRouter(
             <Route path="login" element={<Login/>}/>
             <Route path='register' element={<Register/>} />
             <Route path='programs' element={<Programs/>}>
+              <Route index element={<ProgramGoals/>}/>
+              <Route path='list' element={<ProgramsList/>}/>
               <Route path=':id' element={<ProgramDetails/>}/>
             </Route>
             <Route path='dashboard' element={<DashboardLayout/>}>
                 <Route index element={<Profile/>}/>
             </Route>
+            <Route path='student/*' element={<Main/>} />
         </Route>
     )
 );
