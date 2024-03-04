@@ -1,6 +1,10 @@
+import { Outlet } from "react-router-dom";
+
 const Programs = () => {
     return ( 
-        <main>programs</main>
+        <main>
+            <Outlet/>
+        </main>
      );
 }
  
