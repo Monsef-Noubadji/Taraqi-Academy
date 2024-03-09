@@ -75,6 +75,7 @@ const Body = styled.div`
   position: relative;
   overflow: hidden;
   margin: 10px;
+  background-color: white;
 `
 
 

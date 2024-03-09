@@ -166,6 +166,10 @@ export default function HomeAfterInit({windowSize}) {
 }
 
 const Body = styled.div`
+    background-image: url('./../../../../src/assets/lightStar.svg');
+    background-position: -80px 0px;
+    background-size: 300px;
+    background-repeat: no-repeat;
     height: 100%;
     width: 100%;
     display: flex;
@@ -182,6 +186,9 @@ const WelcomeMessage = styled.div`
     align-items: center;
     background-color: ${UISettings.colors.darkGreen};
     border-radius: 20px;
+    background-image: url('./../../../../src/assets/lightStar.svg');
+    background-repeat: space;
+    background-size: 30%;
 `
 
 const Container = styled.div`
@@ -190,9 +197,10 @@ const Container = styled.div`
     flex-direction: ${props => props.width > UISettings.devices.phone ? 'row-reverse' : 'column'} ;
     justify-content: space-between;
     align-items: start;
-`
+    `
 
 const SubContainer = styled.div`
+    background-color: white ;
     width:${props => props.width > UISettings.devices.phone ? 'calc(40% - 10px)' : 'calc(100% - 10px)'} ;
     display: flex;
     flex-direction: column;
@@ -203,6 +211,7 @@ const SubContainer = styled.div`
     padding: 10px;
 `
 const SubContainer1 = styled.div`
+    background-color: white ;
     width:${props => props.width > UISettings.devices.phone ? 'calc(60% - 10px)' : 'calc(100% - 10px)'};
     display: flex;
     flex-direction: column;

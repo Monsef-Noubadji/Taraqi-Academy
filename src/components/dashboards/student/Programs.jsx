@@ -4,11 +4,13 @@ import UISettings from '../../../theme/UISettings'
 import { Typography } from '@mui/material'
 import Alert from './alert'
 import ProgramCard from './programCard'
+import { useNavigate } from 'react-router-dom'
 
 export default function Programs({windowSize}) {
+  const navigate = useNavigate()
   return (
     <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}>برامج الأكاديمية</Typography>
+        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h5'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/profile')} style={{cursor: 'pointer'}} >برامج الأكاديمية </span> <span> {">"} تفاصيل برامج الهمم  </span></Typography>
         <Alert text={'يجب اختيار برنامج واحد لمتابعة الدراسة عليه'} />
         
         <Container>
@@ -39,6 +41,10 @@ export default function Programs({windowSize}) {
 
 
 const Body = styled.div`
+  background-image: url('./../../../../src/assets/lightStar.svg');
+  background-position: -80px 0px;
+  background-size: 300px;
+  background-repeat: no-repeat;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -47,6 +53,7 @@ const Body = styled.div`
 `
 
 const Container = styled.div`
+background-color: white;
   width: calc(100%);
   margin-top: 20px;
   display: flex;

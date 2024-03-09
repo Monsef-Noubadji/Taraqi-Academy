@@ -20,7 +20,7 @@ export default function Exams({windowSize}) {
   
   return (
     <Body>
-        <Typography variant="h4" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}>امتحاناتي {">"} جميع الامتحانات</Typography>
+        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '0px'}}>امتحاناتي {">"} جميع الامتحانات</Typography>
         
         <Title style={{ marginBottom: '10px'}}>
           <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '40'} style={{margin: '0px 0px', marginLeft: '10px'}} />
@@ -110,6 +110,11 @@ const Body = styled.div`
   flex-direction: column;
   justify-content: start;
   padding: 20px 0px;
+  background-image: url('./../../../../src/assets/lightStar.svg');
+  background-position: -80px 0px;
+  background-size: 300px;
+  background-repeat: no-repeat;
+
 `
 const Title = styled.div`
     width: 100%;

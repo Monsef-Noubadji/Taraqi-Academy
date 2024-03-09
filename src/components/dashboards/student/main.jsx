@@ -9,12 +9,13 @@ import Home from './Home';
 import Programs from './Programs';
 import Exams from './Exams';
 import Profile from './Profile';
-import Settings from './Settings';
 import NotFound from './NotFound';
 import { IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import HomeAfterInit from './HomeAfterInit';
 import Program from './programDetailes';
 import Subscribe from './Subscribe';
+import EditProfile from './ProfileEdit';
+import Settings from './Settings';
 
 export default function Main() {
     
@@ -106,7 +107,7 @@ export default function Main() {
                 </SubSideBareActions>
                 <SubSideBareActions>
                     <NavbarSubInfo windowSize={windowSize} position={"sidebare"}>
-                        <img src={'../../../../src/assets/valueIcon2.svg'} alt="academy_logo" width={50} style={{margin: '0px 0px'}} />
+                        <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={50} style={{margin: '0px 0px', marginLeft: '5px'}} />
                         <NavbarSubInfoData>
                             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>منصف عبد الإله نوباجي</Typography>
                             <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب</Typography>
@@ -138,7 +139,7 @@ export default function Main() {
 
                 <NavbarInfo>
                     <NavbarSubInfo windowSize={windowSize} position={"navbare"}>
-                        <img src={'../../../../src/assets/valueIcon2.svg'} alt="academy_logo" width={50} style={{margin: '0px 0px'}} />
+                        <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={50} style={{margin: '0px 0px', marginLeft: '5px'}} />
                         <NavbarSubInfoData>
                             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>منصف عبد الإله نوباجي</Typography>
                             <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب</Typography>
@@ -156,6 +157,7 @@ export default function Main() {
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
+                <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
                 <Route exact path="/*" element={<NotFound />}></Route>
             </Routes>
@@ -172,9 +174,15 @@ const Body = styled.div`
     flex-direction: row-reverse;
     justify-content: start;
     padding: 15px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     position: relative;
+    /* background-image: url('./../../../../src/assets/lightStar.svg'); */
+    /* background-repeat: none ; */
+    /* background-position-x: center; */
+    /* background-position: center; */
+    /* background-size: 150px; */
+    /* background-size: cover; */
 `
 
 const SideBare = styled.div`
@@ -229,6 +237,7 @@ const SubSideBareAction = styled.div`
     cursor: pointer;
     margin: 3px 0px;
     transition: 400ms ease-in-out;
+
 `
 
 
@@ -244,7 +253,7 @@ const Container = styled.div`
     top: 15px;
     left: 15px;
     bottom: 15px;
-    //overflow: auto;
+
 `
 
 const Navbar = styled.div`
@@ -254,6 +263,7 @@ const Navbar = styled.div`
     justify-content: space-between;
     //height: 100vh;
     //overflow: auto;
+    background-color: white;
 `
 
 const NavbarInfo = styled.div`
