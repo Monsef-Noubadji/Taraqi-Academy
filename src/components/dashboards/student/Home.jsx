@@ -59,6 +59,9 @@ const WelcomeMessage = styled.div`
     align-items: center;
     background-color: ${UISettings.colors.darkGreen};
     border-radius: 20px;
+    background-image: url('./../../../../src/assets/lightStar.svg');
+    background-repeat: space;
+    background-size: 30%;
 `
 
 const Title = styled.div`

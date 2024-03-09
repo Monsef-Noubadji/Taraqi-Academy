@@ -64,6 +64,10 @@ export default function Program({windowSize}) {
 
 
 const Body = styled.div`
+   background-image: url('./../../../../src/assets/lightStar.svg');
+  background-position: -80px 0px;
+  background-size: 300px;
+  background-repeat: no-repeat;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -73,6 +77,7 @@ const Body = styled.div`
 
 
 const Container = styled.div`
+  background-color: white;
   width: calc(100%);
   margin-top: 20px;
   display: flex;
