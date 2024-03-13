@@ -92,12 +92,6 @@ export default function Main() {
         isAdmin:true
     }
 
-    const navigateAndCloseSidebar = (route) => {
-        navigate(route);
-        setPage(route);
-        setSidebarOpen(false);
-    };
-
   return (
     <Body
         ref={swipeRef}
@@ -115,7 +109,7 @@ export default function Main() {
                         الرئيسية
                     </SubSideBareAction>
                     <div>
-                    <SubSideBareAction open={page === 'students/all'} onClick={handleClick}>
+                    <SubSideBareAction open={page === 'all' || page === 'addNew'} onClick={handleClick}>
                         <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
                         إدارة الطلاب
                     {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
@@ -126,7 +120,7 @@ export default function Main() {
                             <Person2Outlined style={{marginLeft: '10px'}}></Person2Outlined>
                             جميع الطلاب
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === '' ? true : false} onClick={()=> {navigate(''); setPage(''); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'addNew' ? true : false} onClick={()=> {navigate('/admin/students/new'); setPage('addNew'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة طالب
                         </SubSideBareAction>
@@ -209,7 +203,7 @@ export default function Main() {
             </Navbar>
             <Routes >
                 <Route exact path="/" element={<HomeAfterInit windowSize={windowSize}/>}></Route>
-                <Route exact name='جميع الطلاب' path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
+                <Route exact path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
