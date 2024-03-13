@@ -1,17 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import logo from '../../../../src/assets/logo.svg'
 import UISettings from '../../../theme/UISettings'
 import HomeIcon from '@mui/icons-material/Home';
-import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, PaymentOutlined, Person, RouteOutlined, SearchOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, RouteOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Route, Routes, useNavigate } from 'react-router';
-import Home from './Home';
-import { useLocation } from 'react-router-dom';
-import Programs from './Programs';
+import {useLocation } from 'react-router-dom';
 import Exams from './Exams';
 import Profile from './Profile';
 import NotFound from './NotFound';
-import { IconButton, InputAdornment, List, TextField, Typography } from '@mui/material';
+import { IconButton, List, Typography } from '@mui/material';
 import HomeAfterInit from './HomeAfterInit';
 import Program from './programDetailes';
 import Subscribe from './Subscribe';
@@ -23,20 +21,17 @@ import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AirplayIcon from '@mui/icons-material/Airplay';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
-
-
+import AddIcon from '@mui/icons-material/Add';
+import AllStudents from './AllStudents.jsx'
 
 
 export default function Main() {
     
     // Detecting page
-    const [page, setPage] = useState('page');
+    const [page, setPage] = useState('');
     useEffect(() => {
         if(window.location.pathname.split('/')[2]){
             setPage(window.location.pathname.split('/')[2])
@@ -97,6 +92,12 @@ export default function Main() {
         isAdmin:true
     }
 
+    const navigateAndCloseSidebar = (route) => {
+        navigate(route);
+        setPage(route);
+        setSidebarOpen(false);
+    };
+
   return (
     <Body
         ref={swipeRef}
@@ -113,10 +114,25 @@ export default function Main() {
                         <HomeIcon style={{marginLeft: '10px'}}></HomeIcon>
                         الرئيسية
                     </SubSideBareAction>
-                    <SubSideBareAction open={page === 'programs' ? true : false} onClick={()=> {navigate('programs'); setPage('programs'); setSidebarOpen(false)}} >
+                    <div>
+                    <SubSideBareAction open={page === 'students/all'} onClick={handleClick}>
                         <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
-                            إدارة الطلاب
-                    </SubSideBareAction>
+                        إدارة الطلاب
+                    {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={open} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'all' ? true : false} onClick={()=> {navigate('/admin/students/all'); setPage('all'); setSidebarOpen(false)}}>
+                            <Person2Outlined style={{marginLeft: '10px'}}></Person2Outlined>
+                            جميع الطلاب
+                            </SubSideBareAction>
+                        <SubSideBareAction open={page === '' ? true : false} onClick={()=> {navigate(''); setPage(''); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة طالب
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'subscribe' ? true : false} onClick={()=> {navigate('subscribe'); setPage('subscribe'); setSidebarOpen(false)}}>
                         <SupervisorAccountIcon style={{marginLeft: '10px'}}></SupervisorAccountIcon>
                         إدارة المعلمين
@@ -190,11 +206,10 @@ export default function Main() {
 
             </section>
                 
-
             </Navbar>
             <Routes >
                 <Route exact path="/" element={<HomeAfterInit windowSize={windowSize}/>}></Route>
-                <Route exact path="/programs" element={<Programs  windowSize={windowSize} />}></Route>
+                <Route exact name='جميع الطلاب' path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
