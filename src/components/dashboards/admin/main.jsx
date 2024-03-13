@@ -260,6 +260,7 @@ const SideBare = styled.div`
     background-color: white;
     z-index: 10;
     transition: 200ms ;
+    overflow-y: auto;
 `
 
 const SubSideBare = styled.div`
@@ -273,7 +274,8 @@ const SubSideBare = styled.div`
 
 const SubSideBareActions = styled.div`
     width: 100%;
-    //height: 100%;
+    // height: 100vh;
+    overflow-y:scroll;
     display: flex;
     flex-direction: column;
     justify-content: start;
