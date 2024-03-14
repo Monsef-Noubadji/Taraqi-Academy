@@ -10,6 +10,7 @@ import Profile from './components/pages/Profile.jsx';
 import Main from './components/dashboards/student/main.jsx';
 import ProgramGoals from './components/pages/ProgramGoals.jsx';
 import ProgramsList from './components/pages/ProgramsList.jsx'
+import MainAdmin from './components/dashboards/admin/main.jsx'
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
                 <Route index element={<Profile/>}/>
             </Route>
             <Route path='student/*' element={<Main/>} />
+            <Route path='admin/*' element={<MainAdmin/>} />
         </Route>
     )
 );
