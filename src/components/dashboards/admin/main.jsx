@@ -26,6 +26,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import AddIcon from '@mui/icons-material/Add';
 import AllStudents from './AllStudents.jsx'
+import StudentDetails from './StudentDetails.jsx';
 
 
 export default function Main() {
@@ -204,6 +205,7 @@ export default function Main() {
             <Routes >
                 <Route exact path="/" element={<HomeAfterInit windowSize={windowSize}/>}></Route>
                 <Route exact path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
+                <Route exact path="/students/:id" element={<StudentDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>

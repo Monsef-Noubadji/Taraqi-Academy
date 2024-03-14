@@ -178,7 +178,7 @@ const columns = [
         width: 300, 
         renderCell: (params) => { 
             return (
-                <Link style={{'color':UISettings.colors.green}} to={`/students/${params.row.id}`}>
+                <Link style={{'color':UISettings.colors.green}} to={`/admin/students/${params.row.id}`}>
                     <OpenInNew />
                 </Link>
             );
