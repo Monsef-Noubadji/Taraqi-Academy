@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-
+import UISettings from "./UISettings";
 //MUI CUSTOM THEME
 export const theme = createTheme({
   
@@ -143,5 +143,25 @@ export const theme = createTheme({
           },
       ],
     },
-  },
+    MuiRadio: {
+      styleOverrides: {
+        root: {
+          '&.Mui-checked': {
+            color: UISettings.colors.green,
+          },
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: UISettings.colors.black,
+          fontWeight: 600,
+          '&.Mui-focused': {
+            color: UISettings.colors.black, // Change color when focused
+          },
+        },
+      },
+    },
+    }
 });
