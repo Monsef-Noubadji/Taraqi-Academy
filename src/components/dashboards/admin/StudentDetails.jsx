@@ -74,7 +74,7 @@ export default function StudentDetails({windowSize}) {
             </ProfileDatas>
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>رقم الهاتف</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>+2135588124957</Typography>
+              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons,direction:'ltr'}}>+2135588124957</Typography>
             </ProfileDatas>
           </SubContainer>
         </Container>

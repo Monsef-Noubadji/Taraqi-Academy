@@ -30,6 +30,7 @@ import AddStudent from './AddStudent.jsx';
 import AllTeachers from './AllTeachers.jsx';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import TeacherDetails from './TeacherDetails.jsx';
 
 export default function Main() {
     
@@ -231,6 +232,7 @@ export default function Main() {
                 <Route exact path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
                 <Route exact path="/teachers/all" element={<AllTeachers  windowSize={windowSize} />}></Route>
                 <Route exact path="/students/:id" element={<StudentDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/:id" element={<TeacherDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/students/new" element={<AddStudent  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
