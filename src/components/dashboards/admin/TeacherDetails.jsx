@@ -52,7 +52,7 @@ const denied = ()=>{
 
   return (
     <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{!studentDetails.isRecent ? studentDetails.session : studentDetails.recent + ' > ' + studentDetails.teacher}</Typography>
+        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{(!studentDetails.isRecent ? studentDetails.session : studentDetails.recent) + ' > ' + studentDetails.teacher}</Typography>
         {studentDetails.isRecent ? <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
             <Button variant='primary' onClick={()=> denied()  } endIcon={<Close/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >رفض إنشاء الحساب</Button>
             <Button variant='primary' onClick={()=> approved()} endIcon={<Check/>} style={{color: UISettings.colors.green, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} >قبول إنشاء الحساب</Button>
