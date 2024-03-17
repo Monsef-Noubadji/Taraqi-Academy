@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
 import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
-import { BlockOutlined, Clear, Print } from '@mui/icons-material'
+import { BlockOutlined, Check, Clear, Close, Print } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
-import SwitchIcon from './switchIcon'
 import { forwardRef, useState } from 'react'
-import { DataGrid } from '@mui/x-data-grid'
-
+import { ToastContainer, toast } from 'react-toastify'
 export default function TeacherDetails({windowSize}) {
   const navigate = useNavigate()
   const [isSubscribed,setIsSubscribed] = useState(true)
@@ -14,12 +12,31 @@ export default function TeacherDetails({windowSize}) {
   const studentDetails = {
     teacher:'العيد عبود',
     session:'جميع المعلمين',
-    isSubscribed: true
+    recent:'المسجلون حديثا',
+    isRecent: true
   }
 
   const handleActivate = () => {
     setIsSubscribed(!isSubscribed)
   }
+  const approved = ()=>{
+    toast('تم قبول طلب إنشاء الحساب',{
+        position:'top-left',
+        type:'success',
+        progress:undefined,
+        autoClose:3000,
+        theme:'colored'
+      })
+}
+const denied = ()=>{
+    toast('تم رفض طلب إنشاء الحساب',{
+        position:'top-left',
+        type:'error',
+        progress:undefined,
+        autoClose:3000,
+        theme:'colored'
+      })
+}
   const [openExam, setOpenExam] = useState(false);
   const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -35,11 +52,21 @@ export default function TeacherDetails({windowSize}) {
 
   return (
     <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{studentDetails.session + ' > ' + studentDetails.teacher}</Typography>
+        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{!studentDetails.isRecent ? studentDetails.session : studentDetails.recent + ' > ' + studentDetails.teacher}</Typography>
+        {studentDetails.isRecent ? <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
+            <Button variant='primary' onClick={()=> denied()  } endIcon={<Close/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >رفض إنشاء الحساب</Button>
+            <Button variant='primary' onClick={()=> approved()} endIcon={<Check/>} style={{color: UISettings.colors.green, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} >قبول إنشاء الحساب</Button>
+        </Box>
+        :
+      
         <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
             <Button variant='primary' onClick={()=> handleClickOpenExam()} endIcon={<BlockOutlined/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >حظر الأستاذ</Button>
             <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px',width: "fit-content"}} ><Print/></Button>
         </Box>
+
+
+        }
+
 
         <Container>
           <ProfileHeader>
@@ -119,6 +146,7 @@ export default function TeacherDetails({windowSize}) {
          
         </Dialog>
 
+    <ToastContainer/>
     </Body>
   )
 }

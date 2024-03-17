@@ -3,10 +3,11 @@ import UISettings from '../../../theme/UISettings';
 import { FilterList, OpenInNew, Print } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const AllStudents = () => {
 
+    const navigate = useNavigate()
     const sessions = [
         {id:0, name:"حلقة عمرو بن العاص"},
         {id:1, name:"حلقة عثمان بن عفان"},
@@ -90,7 +91,7 @@ const AllStudents = () => {
                     <div className='flex items-center justify-center gap-3'>
                         <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><Print/></Button>
                         <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} startIcon={<FilterList sx={{'marginLeft':'10px'}}/>} >تصفية الطلاب</Button>
-                        <Button variant='primary' startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة طالب</Button>
+                        <Button variant='primary' onClick={()=> navigate('/admin/students/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة طالب</Button>
                     </div>
                 </section>
 

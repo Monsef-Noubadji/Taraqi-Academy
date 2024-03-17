@@ -31,6 +31,8 @@ import AllTeachers from './AllTeachers.jsx';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import TeacherDetails from './TeacherDetails.jsx';
+import RecentTeachers from './RecentTeachers.jsx'
+import AddTeacher from './AddTeacher.jsx';
 
 export default function Main() {
     
@@ -146,7 +148,7 @@ export default function Main() {
                             <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
                             جميع المعلمين
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === 'recentTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/new'); setPage('recentTeachers'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'recentTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/recent'); setPage('recentTeachers'); setSidebarOpen(false)}}>
                             <PersonSearchIcon style={{marginLeft: '10px'}}></PersonSearchIcon>
                             المسجلون حديثا
                         </SubSideBareAction>
@@ -231,9 +233,11 @@ export default function Main() {
                 <Route exact path="/" element={<HomeAfterInit windowSize={windowSize}/>}></Route>
                 <Route exact path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
                 <Route exact path="/teachers/all" element={<AllTeachers  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/recent" element={<RecentTeachers  windowSize={windowSize} />}></Route>
                 <Route exact path="/students/:id" element={<StudentDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/teachers/:id" element={<TeacherDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/students/new" element={<AddStudent  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/new" element={<AddTeacher  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
