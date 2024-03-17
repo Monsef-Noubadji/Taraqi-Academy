@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Box, Button, Typography } from '@mui/material'
-import { BlockOutlined, BorderColorOutlined, Print } from '@mui/icons-material'
+import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
+import { BlockOutlined, BorderColorOutlined, Clear, Print, ReportProblem } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
-import { useState } from 'react'
+import { forwardRef, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 
 export default function StudentDetails({windowSize}) {
@@ -21,11 +21,24 @@ export default function StudentDetails({windowSize}) {
   const handleActivate = () => {
     setIsSubscribed(!isSubscribed)
   }
+  const [openExam, setOpenExam] = useState(false);
+  const Transition = forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
+  const handleClickOpenExam = () => {
+    setOpenExam(true);
+  };
+
+  const handleCloseExam = () => {
+    setOpenExam(false);
+  }
+
   return (
     <Body>
         <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{studentDetails.session + ' > ' + studentDetails.name}</Typography>
         <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
-            <Button variant='primary' endIcon={<BlockOutlined/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >حظر الطالب</Button>
+            <Button variant='primary' onClick={()=> handleClickOpenExam()} endIcon={<BlockOutlined/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >حظر الطالب</Button>
             <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px',width: "fit-content"}} ><Print/></Button>
         </Box>
 
@@ -61,7 +74,7 @@ export default function StudentDetails({windowSize}) {
             </ProfileDatas>
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>رقم الهاتف</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>+2135588124957</Typography>
+              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons,direction:'ltr'}}>+2135588124957</Typography>
             </ProfileDatas>
           </SubContainer>
         </Container>
@@ -183,6 +196,28 @@ export default function StudentDetails({windowSize}) {
           />
         </Container>
 
+        <Dialog
+          open={openExam}
+          TransitionComponent={Transition}
+          onClose={handleCloseExam}
+          aria-describedby="alert-dialog-slide-description"
+          style={{borderRadius: '40px'}}
+        >
+          <DialogTitle><Clear onClick={()=> handleCloseExam()} style={{cursor: 'pointer'}}/></DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <BlockOutlined style={{fontSize: '120px', color: UISettings.colors.red}}></BlockOutlined>
+              <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'center',marginBottom: '10px', marginTop: "20px"}}>هل أنت متاكد ؟</Typography>
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'center',marginBottom: '10px'}}>سيتم حظر هذا الطالب من المنصة، هل أنت متاكد من ذلك ؟؟</Typography>
+              <Buttons style={{justifyContent: 'center'}}>
+                <Button variant='secondary' style={{marginLeft: '20px'}}onClick={()=> setOpenExam(false)}>إلغاء</Button>
+                <Button variant='primary' sx={{backgroundColor:UISettings.colors.red,'&:hover':{backgroundColor:UISettings.colors.red}}} onClick={()=> handleCloseExam()}>نعم متأكد</Button>
+              </Buttons>
+            </DialogContentText>
+          </DialogContent>
+         
+        </Dialog>
+
     </Body>
   )
 }
@@ -199,6 +234,14 @@ const Body = styled.div`
   flex-direction: column;
   justify-content: start;
   padding: 20px 0px;
+`
+
+const Buttons = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: 20px;
 `
 
 const Container = styled.div`
