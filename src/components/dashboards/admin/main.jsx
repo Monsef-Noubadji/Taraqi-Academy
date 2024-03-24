@@ -48,11 +48,16 @@ export default function Main() {
     }, []);
     const [open, setOpen] = useState(false);
     const [openTeacher, setOpenTeacher] = useState(false);
+    const [openExams,setOpenExams] = useState(false)
     const handleClick = () => {
       setOpen(!open);
     };
     const handleClickTeacher = () => {
         setOpenTeacher(!openTeacher);
+      };
+
+      const handleClickExams = () => {
+        setOpenExams(!openExams);
       };
 
   const location = useLocation()
@@ -141,7 +146,7 @@ export default function Main() {
                     <SubSideBareAction open={page === 'allTeachers' || page === 'recentTeachers' || page === 'newTeacher'} onClick={handleClickTeacher}>
                         <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
                         إدارة المعلمين
-                    {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    {openTeacher ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
                     </SubSideBareAction>   
                     <Collapse in={openTeacher} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
@@ -161,12 +166,12 @@ export default function Main() {
                     </Collapse>                  
                     </div>
                     <div>
-                    <SubSideBareAction open={page === 'all' || page === 'addNew'} onClick={handleClick}>
+                    <SubSideBareAction open={page === 'allExams' || page === 'addNewExam'} onClick={handleClickExams}>
                         <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
                         إدارة الإمتحانات
-                    {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    {openExams ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
                     </SubSideBareAction>   
-                    <Collapse in={open} timeout="auto" unmountOnExit>
+                    <Collapse in={openExams} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
                         <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
                             <SchoolOutlined style={{marginLeft: '10px'}}></SchoolOutlined>

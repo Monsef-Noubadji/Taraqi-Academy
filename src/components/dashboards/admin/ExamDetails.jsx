@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Button, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, TextField, Typography, useMediaQuery } from '@mui/material'
+import { Button, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, Typography, useMediaQuery } from '@mui/material'
 import { Assignment, ChecklistOutlined, Save} from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types';
@@ -9,6 +9,9 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import './style.css'
+import { DataGrid } from '@mui/x-data-grid'
+import AddIcon from '@mui/icons-material/Add';
+
 
 
 
@@ -30,6 +33,16 @@ export default function ExamDetails({windowSize}) {
   return (
     <Body>
         <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':'bolder','textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '20px'}}>{'حلقة الأستاذ علي'  + ' > ' + 'الإمتحان التفاعلي الخامس'} </Typography>
+        <section className='flex flex-col md:flex-row lg:flex-row items-end md:items-center lg:items-center gap-3 justify-between my-4'>
+            <div className='flex gap-3 items-center justify-center'>
+              <Button variant='primary' onClick={()=> navigate('/admin/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
+              <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>تم تصحيحه</span>
+            </div>
+            <div>
+              <Typography variant="p">مجموع النقاط : </Typography>
+              <Typography variant="p" fontWeight={700} color={UISettings.colors.green}>20 نقطة</Typography>
+            </div>
+        </section>
         <Container className='mui-tabs-Global'>
 
         {
@@ -134,43 +147,50 @@ export default function ExamDetails({windowSize}) {
                   <ProfileDatas width={100}>
                     <section className='flex items-center justify-between w-full'>
                     <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الرابع</Typography>
-                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>نقطتان</span>
+                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>أربع نقاط</span>
                     </section>
                       <FormControl  sx={{paddingX:'2rem',paddingY:'2rem'}}>
-                       <textarea className=' placeholder:p-3 rounded-lg ' cols={cols}  rows={7} autoComplete='off' placeholder='أدخل الإجابة النموذجية هنا'  style={{
+                       <textarea className=' p-3 rounded-lg ' cols={cols}  rows={7} autoComplete='off' placeholder='أدخل الإجابة النموذجية هنا'  style={{
                         border: '1px solid ' + UISettings.colors.secondary,
                         }}/>
+                        <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' startIcon={<Save style={{marginLeft: '10px'}}/>} style={{color: UISettings.colors.black, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.black, float: 'left', width: "max-content", marginTop: '10px'}} >حفظ التغييرات</Button>
+
                     </FormControl>
                   </ProfileDatas>
                 </SubContainer>
               </Container>
 
             </TabPanel>
+            
             <TabPanel value={value}  style={{width: 'calc(100%)'}} index={1}>
               <Container>
-                <ProfileHeader  style={{marginBottom: '15px'}}>
+                <ProfileHeader style={{marginTop: '15px',marginBottom: '15px'}}>
                   <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
                   <ProfileInfos>
-                      <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>تعديل كلمة المرور</Typography>
+                      <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>نتائج الطلاب</Typography>
                   </ProfileInfos>
                 </ProfileHeader>
                 <SubContainer>
-                  <ProfileDatas width={100}>
-                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>كلمة المرور الحالية</Typography>
-                    <TextField style={{width: '100%'}} placeholder='كلمة المرور الحالية' />
-                  </ProfileDatas>
-                  <ProfileDatas width={100}>
-                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>كلمة المرور الجديدة</Typography>
-                    <TextField style={{width: '100%'}} placeholder='كلمة المرور الجديدة' />
-                  </ProfileDatas>
-                  <ProfileDatas width={100}>
-                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>تأكيد كلمة المرور الجديدة</Typography>
-                    <TextField style={{width: '100%'}} placeholder='تأكيد كلمة المرور الجديدة' />
-                  </ProfileDatas>
+                <div dir="rtl" style={{ height: 370, width: '100%' }}>
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                      },
+                    }}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    checkboxSelection
+                    componentsProps={{
+                      pagination: { style: {
+                        direction: 'ltr'
+                      }},
+                    }}
+                  />
+                </div>
                 </SubContainer>
-              
-                <Button onClick={()=> navigate('/student/profile/edit')} variant='primary' startIcon={<Save style={{marginLeft: '10px'}}/>} style={{color: UISettings.colors.black, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.black, float: 'left', width: "max-content", marginTop: '10px'}} >حفظ التغييرات</Button>
-
               </Container>
             </TabPanel>
             </Box>
@@ -298,3 +318,37 @@ const SubContainer = styled.div`
   flex-wrap: wrap;
   direction: rtl;
 `
+
+const columns = [
+  { field: 'name', headerName: (<span>إسم الطالب</span>), Width: 100, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.name}</span> </>);}, },
+
+  { field: 'status', headerName: 'الحالة', width: 150, renderCell: (params) => {
+      if(params.row.status === 'done'){
+        return (
+            <><span style={{color: UISettings.colors.green, backgroundColor: UISettings.colors.greenBG, padding: '5px 10px', borderRadius: '10px'}}>تم إنجازه</span> </>
+        );
+      }else if(params.row.status === 'notDoneYet'){
+        return (
+            <><span style={{color: UISettings.colors.brown, backgroundColor: UISettings.colors.brownBG, padding: '5px 10px', borderRadius: '10px'}}>لم ينجز بعد</span> </>
+        );
+      }
+      else{
+        return (
+            <><span style={{color: UISettings.colors.red, backgroundColor: UISettings.colors.redBG, padding: '5px 10px', borderRadius: '10px'}}>لم ينجز </span> </>
+        );
+      }
+    }, 
+  },
+  { field: 'result', headerName: 'النتيجة', Width: 150, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.result}</span> </>);}, },
+];
+
+const rows = [
+  { id: 1, name: 'الاختبار التفاعلي 1', status: 'done', result: '16/17' },
+  { id: 2, name: 'الاختبار التفاعلي 1', status: 'done', result: '16/17' },
+  { id: 3, name: 'الاختبار التفاعلي 1', status: 'notDoneYet', result: "--" },
+  { id: 4, name: 'الاختبار التفاعلي 1', status: 'done', result: '16/17' },
+  { id: 5, name: 'الاختبار التفاعلي 1', status: 'done', result: "18/20" },
+  { id: 6, name: 'الاختبار التفاعلي 1', status: 'notDone', result: "--" },
+  { id: 7, name: 'الاختبار التفاعلي 1', status: 'done', result: "18/20" },
+  { id: 8, name: 'الاختبار التفاعلي 1', status: 'notDoneYet', result: "--" },
+];
