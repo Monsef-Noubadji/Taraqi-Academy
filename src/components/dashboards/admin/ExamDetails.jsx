@@ -1,15 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Button, FormControl, FormControlLabel, FormLabel, IconButton, Radio, RadioGroup, TextField, Typography, makeStyles } from '@mui/material'
-import { Assignment, BorderColorOutlined, ChecklistOutlined, Delete, EditOutlined, List, NotificationAdd, Notifications, Person, PersonOutlineOutlined, Save, SaveOutlined, Security, TaskAltOutlined, Upload } from '@mui/icons-material'
+import { Button, FormControl, FormControlLabel, IconButton, Radio, RadioGroup, TextField, Typography, useMediaQuery } from '@mui/material'
+import { Assignment, ChecklistOutlined, Save} from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import './style.css'
-import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 
 
 
@@ -18,6 +17,11 @@ import { TextareaAutosize } from '@mui/base/TextareaAutosize';
 export default function ExamDetails({windowSize}) {
   const navigate = useNavigate()
   const [value, setValue] = React.useState(0);
+  const isLG = useMediaQuery('(min-width:1280px)');
+  const isMD = useMediaQuery('(min-width:960px)');
+  const isSM = useMediaQuery('(min-width:600px)');
+
+  const cols = isLG ? 100 : isMD ? 80 : isSM ? 60 : 40;
 
 
   const handleChange = (event, newValue) => {
@@ -127,18 +131,14 @@ export default function ExamDetails({windowSize}) {
                         </RadioGroup>
                     </FormControl>
                   </ProfileDatas>
-                  <ProfileDatas>
+                  <ProfileDatas width={100}>
                     <section className='flex items-center justify-between w-full'>
                     <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الرابع</Typography>
                     <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>نقطتان</span>
                     </section>
-                    <FormControl sx={{paddingX:'3rem',paddingY:'2rem'}}>
-                       <textarea className=' placeholder:p-3 ' cols={100} rows={7} placeholder='أدخل الإجابة النموذجية هنا'  style={{
+                      <FormControl  sx={{paddingX:'2rem',paddingY:'2rem'}}>
+                       <textarea className=' placeholder:p-3 rounded-lg ' cols={cols}  rows={7} autoComplete='off' placeholder='أدخل الإجابة النموذجية هنا'  style={{
                         border: '1px solid ' + UISettings.colors.secondary,
-                        borderRadius: '10px',
-                        resize: 'horizontal', // Auto resize horizontally
-                        minWidth: '100px', // Set a minimum width
-                        maxWidth: '100%', // Set a maximum width
                         }}/>
                     </FormControl>
                   </ProfileDatas>
