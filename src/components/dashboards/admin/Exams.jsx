@@ -89,8 +89,8 @@ const programs = [
         </Title>
         
         <CardsContainer>
-          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={false} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
-          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={false} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
+          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
+          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
         </CardsContainer>
         
         <section className='flex flex-col md:flex-row-reverse lg:flex-row-reverse justify-center items-center w-full'>
