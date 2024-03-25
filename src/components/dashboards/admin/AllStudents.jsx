@@ -113,7 +113,7 @@ const AllStudents = () => {
               }},
             }}
           />
-        </div>
+                </div>
             </section>
         </main>
     );

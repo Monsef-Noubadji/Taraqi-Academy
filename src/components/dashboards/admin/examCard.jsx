@@ -28,7 +28,7 @@ export default function ExamCard({title, desc, index, available, disabled, width
           <Typography variant={'h6'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', marginBottom: '10px'}}>{title}</Typography>
           <Typography variant={'p'} sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start'}}>{desc}</Typography>
           <Buttons>
-              <Button variant='primary' onClick={() => {if(available === true){setOpenExam(true)}}} disabled={disabled} style={{color: UISettings.colors.brown, backgroundColor: UISettings.colors.brownBG, border: 'none '}} >{status === 'notStarted' ? 'لم ينجز بعد' : 'إبدأ الامتحان'}</Button>
+              <Button variant='primary' onClick={() => {if(available === true){setOpenExam(true)}}} disabled={disabled} style={{color: UISettings.colors.brown, backgroundColor: UISettings.colors.brownBG, border: 'none '}} >{status === 'notStarted' ? 'لم ينجز بعد' : status === 'scheduled' ? 'تم برمجته' : 'إبدأ الامتحان'}</Button>
               <Button  variant='primary' disabled={true} style={{backgroundColor: 'white', color: UISettings.colors.green, border: "none", marginRight: '10px', textAlign: 'start', direction: 'rtl' }} >18 فيفري 2024</Button>
           </Buttons>
           <SideText style={{display: available ? 'none' : 'block'}} >غير متاح حاليا</SideText>

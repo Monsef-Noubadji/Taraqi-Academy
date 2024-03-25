@@ -17,6 +17,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import 'dayjs/locale/ar'; // Import the Arabic locale for dayjs
 import MiniStats from './MiniStats'
+import { Link } from 'react-router-dom'
 
 
 dayjs.locale('ar');
@@ -24,10 +25,6 @@ function getRandomNumber(min, max) {
   return Math.round(Math.random() * (max - min) + min);
 }
 
-/**
- * Mimic fetch with abort controller https://developer.mozilla.org/en-US/docs/Web/API/AbortController/abort
- * ⚠️ No IE11 support
- */
 function fakeFetch(date, { signal }) {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
@@ -69,7 +66,7 @@ const columns = [
 
   { field: 'id', headerName: ' الإعدادات', width: 200, renderCell: (params) => { return (
   <div className='flex gap-2 items-center justify-center'>
-    <span onClick={()=>{alert(params.row.id)}} style={{color: UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'7px',cursor:'pointer'}}><OpenInNewOutlined/></span>
+    <Link to={`/admin/teachers/${params.row.id}`} style={{color: UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'7px',cursor:'pointer'}}><OpenInNewOutlined/></Link>
     <span onClick={()=>{alert(params.row.id)}} style={{color: UISettings.colors.red,backgroundColor:UISettings.colors.redBG,padding:'.5rem',borderRadius:'7px',cursor:'pointer'}}><DeleteOutline/></span>
    </div>);}, },
 

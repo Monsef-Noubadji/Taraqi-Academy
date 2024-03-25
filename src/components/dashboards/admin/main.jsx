@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import logo from '../../../../src/assets/logo.svg'
 import UISettings from '../../../theme/UISettings'
 import HomeIcon from '@mui/icons-material/Home';
-import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, RouteOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, RouteOutlined, SchoolOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Route, Routes, useNavigate } from 'react-router';
 import {useLocation } from 'react-router-dom';
 import Exams from './Exams';
@@ -33,6 +33,7 @@ import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import TeacherDetails from './TeacherDetails.jsx';
 import RecentTeachers from './RecentTeachers.jsx'
 import AddTeacher from './AddTeacher.jsx';
+import ExamDetails from './ExamDetails.jsx';
 
 export default function Main() {
     
@@ -47,11 +48,16 @@ export default function Main() {
     }, []);
     const [open, setOpen] = useState(false);
     const [openTeacher, setOpenTeacher] = useState(false);
+    const [openExams,setOpenExams] = useState(false)
     const handleClick = () => {
       setOpen(!open);
     };
     const handleClickTeacher = () => {
         setOpenTeacher(!openTeacher);
+      };
+
+      const handleClickExams = () => {
+        setOpenExams(!openExams);
       };
 
   const location = useLocation()
@@ -140,7 +146,7 @@ export default function Main() {
                     <SubSideBareAction open={page === 'allTeachers' || page === 'recentTeachers' || page === 'newTeacher'} onClick={handleClickTeacher}>
                         <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
                         إدارة المعلمين
-                    {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    {openTeacher ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
                     </SubSideBareAction>   
                     <Collapse in={openTeacher} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
@@ -159,10 +165,25 @@ export default function Main() {
                         </List>
                     </Collapse>                  
                     </div>
-                    <SubSideBareAction open={page === 'exams' ? true : false} onClick={()=> {navigate('exams'); setPage('exams'); setSidebarOpen(false)}}>
-                        <ChecklistRtlIcon style={{marginLeft: '10px'}}></ChecklistRtlIcon>
+                    <div>
+                    <SubSideBareAction open={page === 'allExams' || page === 'addNewExam'} onClick={handleClickExams}>
+                        <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
                         إدارة الإمتحانات
-                    </SubSideBareAction>
+                    {openExams ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openExams} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
+                            <SchoolOutlined style={{marginLeft: '10px'}}></SchoolOutlined>
+                            جميع الإمتحانات
+                            </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة امتحان
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <Assignment style={{marginLeft: '10px'}}></Assignment>
                         إدارة التقارير
@@ -240,7 +261,8 @@ export default function Main() {
                 <Route exact path="/teachers/new" element={<AddTeacher  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
-                <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
