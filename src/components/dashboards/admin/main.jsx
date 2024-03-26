@@ -34,6 +34,7 @@ import TeacherDetails from './TeacherDetails.jsx';
 import RecentTeachers from './RecentTeachers.jsx'
 import AddTeacher from './AddTeacher.jsx';
 import ExamDetails from './ExamDetails.jsx';
+import AddExam from './AddExam.jsx';
 
 export default function Main() {
     
@@ -263,6 +264,7 @@ export default function Main() {
                 <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
