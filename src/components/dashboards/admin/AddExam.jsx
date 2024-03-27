@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
 import { Box, Button, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography, useMediaQuery } from '@mui/material'
-import { Add, Check, Remove, Save, VisibilityOutlined } from '@mui/icons-material'
+import { Add, Check, Remove, Save, VisibilityOutlined, Warning } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
 import { useState } from 'react'
@@ -14,7 +14,7 @@ export default function AddExam({windowSize}) {
   const isMD = useMediaQuery('(min-width:960px)');
   const isSM = useMediaQuery('(min-width:600px)');
 
-  const cols = isLG ? 67 : isMD ? 45 : isSM ? 40 : 55;
+  const cols = isLG ? 67 : isMD ? 45 : isSM ? 40 : 40;
   const rightValue = isLG ? '45%' : isMD ? '45%' : isSM ? '40%' : '40%'
   const navigate = useNavigate()
   const [isSubscribed,setIsSubscribed] = useState(true)
@@ -37,7 +37,7 @@ export default function AddExam({windowSize}) {
   const [isWritten,setIsWritten] = useState(true)
 
     const [questions, setQuestions] = useState([1]);
-
+    const [preview,setPreview] = useState(false)
   const handleAddQuestion = () => {
     setQuestions((prevQuestions) => [...prevQuestions, { id: questions.length + 1 }]);
   };
@@ -45,13 +45,17 @@ export default function AddExam({windowSize}) {
   const handleActivate = () => {
     setIsSubscribed(!isSubscribed)
   }
+  const handlePreview = ()=> {
+    setPreview(!preview)
+  }
   return (
-    <Body>
+    <>
+  { !preview ? <Body>
         <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/profile')} style={{cursor: 'pointer'}} >إدارة الإمتحانات </span> <span> {">"} إنشاء إمتحان  </span></Typography>
         <Box sx={{'display':'flex','gap':'1rem',flexDirection:{xs:'column',sm:'column',md:'row',lg:'row',xl:'row'},alignItems:{xs:'end',sm:'end',md:'center',lg:'center',xl:'center'}}}  justifyContent={'space-between'}>
             <Box display={'flex'} alignItems={'center'} justifyContent={'center'} gap={'1rem'}>
-            <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >حفظ الإمتحان</Button>
-            <Button variant='primary' endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >معاينة الإمتحان</Button>
+              <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >حفظ الإمتحان</Button>
+              <Button variant='primary' onClick={handlePreview} endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >معاينة الإمتحان</Button>
             </Box>
             <Typography variant="p" display={'flex'} alignItems={'center'} gap={'.5rem'}> 
             <p style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem'}}>04 نقاط</p>
@@ -59,7 +63,7 @@ export default function AddExam({windowSize}) {
            </Typography>
         </Box>
 
-        <Container>
+       <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -256,8 +260,100 @@ export default function AddExam({windowSize}) {
         </Container>
 
         <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content"}} >حفظ الإمتحان</Button>
-
     </Body>
+    :
+    <Body>
+      <Container style={{'padding':'2rem'}}>
+        <Box display={'flex'} alignItems={'start'} justifyContent={'space-between'}>
+          <Typography variant="p" sx={{backgroundColor:UISettings.colors.gray,padding:'.5rem',borderRadius:'5px'}}>--/20</Typography>
+          <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/profile')} style={{cursor: 'pointer'}} >إنشاء إمتحان </span> <span> {">"} معاينة الإمتحان  </span></Typography>
+        </Box>
+        <Box display={'flex'}  flexDirection={'column'} alignItems={'end'} gap={'1rem'} borderRadius={'5px'} marginY={'1rem'} bgcolor={UISettings.colors.brownBG} padding={'1rem'} border={'.5px solid'+ UISettings.colors.brown}>
+          <Box display={'flex'} alignItems={'center'} justifyContent={'end'} gap={'.5rem'}>
+            <Typography variant="h6">تنويه قبل إجراء الإمتحان</Typography>
+            <Warning sx={{color:UISettings.colors.orange}}></Warning>
+          </Box>
+          <Typography variant="p"> .يرجى التنويه إلى أنه لا يسمح بدخول الامتحان إلا مرة واحدة، كما يرجى عدم الاستعانة بأي مصدر خارجي حتى نهاية الامتحان</Typography>
+        </Box>
+          <ProfileHeader style={{marginTop: '15px',marginBottom: '15px',paddingRight:'1rem'}}>  
+                  <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
+                  <ProfileInfos>
+                      <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>أسئلة الإمتحان التفاعلي الخامس</Typography>
+                  </ProfileInfos>
+          </ProfileHeader>
+                
+          <SubContainer style={{'paddingRight':'1rem','paddingLeft':'1rem'}}>
+                  <ProfileDatas>
+                    <section className='flex items-center justify-between w-full'>
+                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الأول</Typography>
+                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>نقطتان</span>
+                    </section>
+                    <FormControl sx={{padding:'1rem'}}>
+                        <RadioGroup
+                          aria-labelledby="controlled-radio-buttons-group"
+                          name="controlled-radio-buttons-group"
+                        >
+                          <FormControlLabel checked value="answer1" control={<Radio />} label="الإجابة الأولى" />
+                          <FormControlLabel disabled value="answer2" control={<Radio />} label="الإجابة الثانية" />
+                          <FormControlLabel disabled value="answer3" control={<Radio />} label="الإجابة الثالثة" />
+                          <FormControlLabel disabled value="answer4" control={<Radio />} label="الإجابة الرابعة" />
+
+                        </RadioGroup>
+                    </FormControl>
+                  </ProfileDatas>
+                  <ProfileDatas>
+                    <section className='flex items-center justify-between w-full'>
+                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الثاني</Typography>
+                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>نقطتان</span>
+                    </section>
+                    <FormControl sx={{padding:'1rem'}}>
+                        <RadioGroup
+                          aria-labelledby="controlled-radio-buttons-group"
+                          name="controlled-radio-buttons-group"
+                        >
+                          <FormControlLabel disabled value="answer1" control={<Radio />} label="الإجابة الأولى" />
+                          <FormControlLabel disabled value="answer2" control={<Radio />} label="الإجابة الثانية" />
+                          <FormControlLabel checked value="answer3" control={<Radio />} label="الإجابة الثالثة" />
+                          <FormControlLabel disabled value="answer4" control={<Radio />} label="الإجابة الرابعة" />
+
+                        </RadioGroup>
+                    </FormControl>
+                  </ProfileDatas>
+                  <ProfileDatas>
+                    <section className='flex items-center justify-between w-full'>
+                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الثالث</Typography>
+                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>نقطتان</span>
+                    </section>
+                    <FormControl sx={{padding:'1rem'}}>
+                        <RadioGroup
+                          aria-labelledby="controlled-radio-buttons-group"
+                          name="controlled-radio-buttons-group"
+                        >
+                          <FormControlLabel disabled value="answer1" control={<Radio />} label="الإجابة الأولى" />
+                          <FormControlLabel checked  value="answer2" control={<Radio />} label="الإجابة الثانية" />
+                          <FormControlLabel disabled value="answer3" control={<Radio />} label="الإجابة الثالثة" />
+                          <FormControlLabel disabled value="answer4" control={<Radio />} label="الإجابة الرابعة" />
+
+                        </RadioGroup>
+                    </FormControl>
+                  </ProfileDatas>
+                  <ProfileDatas width={100}>
+                    <section className='flex items-center justify-between w-full'>
+                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> السؤال الرابع</Typography>
+                    <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>أربع نقاط</span>
+                    </section>
+                      <FormControl  sx={{paddingX:'2rem',paddingY:'2rem'}}>
+                       <textarea className=' p-3 rounded-lg ' cols={cols}  rows={7} autoComplete='off' placeholder='أدخل الإجابة النموذجية هنا'  style={{
+                        border: '1px solid ' + UISettings.colors.secondary,
+                        }}/>
+                    </FormControl>
+                  </ProfileDatas>
+          </SubContainer>
+          <Button variant='primary' onClick={handlePreview} endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:'white',border:'1px solid' + UISettings.colors.green}} >العودة إلى الإمتحان</Button>
+      </Container>
+    </Body>
+  }
+    </>
   )
 }
 
