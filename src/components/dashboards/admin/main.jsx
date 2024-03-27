@@ -12,7 +12,7 @@ import NotFound from './NotFound';
 import { IconButton, List, Typography } from '@mui/material';
 import HomeAfterInit from './HomeAfterInit';
 import Program from './programDetailes';
-import Subscribe from './Subscribe';
+import AllSubscribers from './AllSubscribers';
 import EditProfile from './ProfileEdit';
 import Settings from './Settings';
 import SchoolIcon from '@mui/icons-material/School';
@@ -50,6 +50,7 @@ export default function Main() {
     const [open, setOpen] = useState(false);
     const [openTeacher, setOpenTeacher] = useState(false);
     const [openExams,setOpenExams] = useState(false)
+    const [openSubs,setOpenSubs] = useState(false)
     const handleClick = () => {
       setOpen(!open);
     };
@@ -59,6 +60,9 @@ export default function Main() {
 
       const handleClickExams = () => {
         setOpenExams(!openExams);
+      };
+      const handleClickSubs = () => {
+        setOpenSubs(!openSubs);
       };
 
   const location = useLocation()
@@ -189,10 +193,25 @@ export default function Main() {
                         <Assignment style={{marginLeft: '10px'}}></Assignment>
                         إدارة التقارير
                     </SubSideBareAction>
-                    <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
+                    <div>
+                    <SubSideBareAction open={page === 'allSubs' || page === 'addNewSub'} onClick={handleClickSubs}>
                         <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
                         إدارة الإشتراكات
-                    </SubSideBareAction>
+                    {openSubs ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openSubs} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allSubs' ? true : false} onClick={()=> {navigate('/admin/subscriptions/all'); setPage('allSubs'); setSidebarOpen(false)}}>
+                            <PersonOutlineOutlinedIcon style={{marginLeft: '10px'}}></PersonOutlineOutlinedIcon>
+                        إشتراكات الطلاب
+                            </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة إشتراك    
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <AirplayIcon style={{marginLeft: '10px'}}></AirplayIcon>
                         إدارة الحلقات
@@ -261,7 +280,7 @@ export default function Main() {
                 <Route exact path="/students/new" element={<AddStudent  windowSize={windowSize} />}></Route>
                 <Route exact path="/teachers/new" element={<AddTeacher  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
-                <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/all" element={<AllSubscribers  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
