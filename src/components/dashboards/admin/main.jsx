@@ -35,6 +35,8 @@ import RecentTeachers from './RecentTeachers.jsx'
 import AddTeacher from './AddTeacher.jsx';
 import ExamDetails from './ExamDetails.jsx';
 import AddExam from './AddExam.jsx';
+import SubscriptionsTypes from './SubscritpionsTypes.jsx';
+import SubscriberDetails from './SubscriberDetails.jsx';
 
 export default function Main() {
     
@@ -194,7 +196,7 @@ export default function Main() {
                         إدارة التقارير
                     </SubSideBareAction>
                     <div>
-                    <SubSideBareAction open={page === 'allSubs' || page === 'addNewSub'} onClick={handleClickSubs}>
+                    <SubSideBareAction open={page === 'allSubs' || page === 'addNewSub' || page === 'subsTypes'} onClick={handleClickSubs}>
                         <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
                         إدارة الإشتراكات
                     {openSubs ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
@@ -204,8 +206,12 @@ export default function Main() {
                         <SubSideBareAction open={page === 'allSubs' ? true : false} onClick={()=> {navigate('/admin/subscriptions/all'); setPage('allSubs'); setSidebarOpen(false)}}>
                             <PersonOutlineOutlinedIcon style={{marginLeft: '10px'}}></PersonOutlineOutlinedIcon>
                         إشتراكات الطلاب
-                            </SubSideBareAction>
-                        <SubSideBareAction open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'subsTypes' ? true : false} onClick={()=> {navigate('/admin/subscriptions/list'); setPage('subsTypes'); setSidebarOpen(false)}}>
+                            <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
+                            أنواع الإشتراكات    
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/subscriptions/new'); setPage('addNewSub'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة إشتراك    
                         </SubSideBareAction>
@@ -281,6 +287,8 @@ export default function Main() {
                 <Route exact path="/teachers/new" element={<AddTeacher  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscriptions/all" element={<AllSubscribers  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/list" element={<SubscriptionsTypes  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/:id" element={<SubscriberDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>

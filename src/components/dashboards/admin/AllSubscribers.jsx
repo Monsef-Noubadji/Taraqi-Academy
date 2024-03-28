@@ -51,7 +51,7 @@ export const TeacherMenu = ({ id }) => {
               }}
           >
               <MenuItem >
-                  <Link to={`/admin/teachers/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/admin/subscriptions/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                       <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                           <BadgeIcon />
                       </ListItemIcon>
@@ -121,7 +121,7 @@ export default function Subscribe({windowSize}) {
         <Typography variant='h5' fontWeight={800}>{'إدارة الإشتراكات > إشتراكات الطلاب'}</Typography>
           <Typography variant='h7' fontWeight={700}>حدد الطلاب المراد عرضهم</Typography>
           {/* filter section */}
-          <section className='flex items-center justify-start gap-2 w-full'>
+          <section className='flex items-center justify-start gap-2 my-4 w-full'>
         <FormControl dir="rtl" style={{width: "33%"}}>
                 <InputLabel id="program" > البرنامج </InputLabel>
                     <Select
