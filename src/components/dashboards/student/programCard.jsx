@@ -1,25 +1,59 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Button, Typography } from '@mui/material'
-import { ArrowLeft, KeyboardArrowLeft } from '@mui/icons-material'
+import { Button, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
+import { ArrowLeft, Clear, KeyboardArrowLeft, LibraryAdd } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
+import { LoadingButton } from '@mui/lab'
 
 
-export default function ProgramCard({title, desc, index, available, disabled, width}) {
+
+export default function ProgramCard({title, desc, index, available, disabled, width, id, selected, alreadyRegister}) {
     const navigate = useNavigate()
-  return (
-    <Body width={width}>
-        <Index>{index}</Index> 
-        <Typography variant={'h6'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', marginBottom: '10px'}}>{title}</Typography>
-        <Typography variant={'p'} sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start'}}>{desc}</Typography>
-        <Buttons>
-            <Button variant='primary' disabled={disabled}>سجل الآن</Button>
-            <Button onClick={()=> navigate('/student/programs/program')} variant='primary' disabled={disabled} style={{backgroundColor: 'white', color: disabled ? UISettings.colors.secondary : UISettings.colors.green, borderColor: UISettings.colors.green, marginRight: '10px'}} startIcon={<KeyboardArrowLeft/>} >التفاصيل</Button>
-        </Buttons>
-        <SideText style={{display: available ? 'none' : 'block'}} >غير متاح حاليا</SideText>
-    </Body>
-  )
+    const [openProgramRegisterPopup, setOpenProgramRegisterPopup] = React.useState(false);
+    const handleCloseProgramRegisterPopup = () => {
+        setOpenProgramRegisterPopup(false);
+    }
+
+    const [loadingProgramRegister, setLoadingProgramRegister] = useState(false);
+
+    return (
+      <Body width={width}>
+          <Index>{index}</Index> 
+          <Typography variant={'h6'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', marginBottom: '10px'}}>{title}</Typography>
+          <Typography variant={'p'} sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start', flex: 1}}>{desc}</Typography>
+          <Buttons>
+              <Button variant={alreadyRegister === true ? 'primary':'primary'} disabled={!disabled || (alreadyRegister && selected === false) ? true : false} style={{display: selected ? 'flex' : 'flex'}} onClick={()=> selected || alreadyRegister ? console.log('') : setOpenProgramRegisterPopup(true)}>{selected ? 'مسجّل' : 'سجل الآن'}</Button>
+              <Button onClick={()=> navigate('/student/programs/program?id=' + id)} variant='primary' disabled={false} style={{backgroundColor: 'white', color:UISettings.colors.green, borderColor: UISettings.colors.green, marginRight: '10px',}} startIcon={<KeyboardArrowLeft/>} >التفاصيل</Button>
+          </Buttons>
+          <SideText style={{display: disabled === false ? 'block' : 'none'}} >غير متاح حاليا</SideText>
+          {/* // register popup */}
+          <Dialog
+                fullWidth
+                maxWidth={"sm"}
+                open={openProgramRegisterPopup}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleCloseProgramRegisterPopup}
+                aria-describedby="alert-dialog-slide-description"
+                style={{borderRadius: '20px'}}
+                >
+                <DialogTitle><Clear onClick={()=> setOpenProgramRegisterPopup(false)} style={{cursor: 'pointer'}}/></DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <LibraryAdd style={{fontSize: '100px', color: UISettings.colors.green}}></LibraryAdd>
+                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'center',marginBottom: '10px', marginTop: "20px"}}>التسجيل في البرنامج</Typography>
+                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'center',marginBottom: '10px'}}>يمكنك التسجيل في برنامج واحد فقط، هل تريد التسجيل في هذا البرنامج؟</Typography>
+                    <Buttons1 style={{justifyContent: 'center'}}>
+                        <Button variant='secondary' style={{marginLeft: '20px'}}onClick={()=> setOpenProgramRegisterPopup(false)}>رجوع</Button>
+                        <LoadingButton loading={loadingProgramRegister} loadingPosition='center'  variant='primary' style={{backgroundColor: UISettings.colors.green}} onClick={()=> setOpenProgramRegisterPopup(false)}>التسجيل في البرنامج</LoadingButton >
+                    </Buttons1>
+                    </DialogContentText>
+                </DialogContent>
+                
+            </Dialog>
+      </Body>
+    )
 }
 
 
@@ -74,3 +108,14 @@ const Buttons = styled.div`
     justify-content: end;
     margin-top: 20px;
 `
+
+const Buttons1 = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: 20px;
+`
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
