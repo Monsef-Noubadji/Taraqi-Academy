@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Typography } from '@mui/material'
-import { AutoStoriesOutlined } from '@mui/icons-material'
+import { Button, Typography } from '@mui/material'
+import { AutoStoriesOutlined, KeyboardArrowLeft } from '@mui/icons-material'
 import dayjs from 'dayjs';
 import Badge from '@mui/material/Badge';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -11,6 +11,7 @@ import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
 import 'dayjs/locale/ar'; // Import the Arabic locale for dayjs
+import Tafseer from '../../../../public/tafseer'
 dayjs.locale('ar');
 function getRandomNumber(min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -57,7 +58,7 @@ function ServerDay(props) {
 
 
 
-export default function HomeAfterInit({windowSize}) {
+export default function HomeAfterInit({windowSize, student}) {
 
     const requestAbortController = React.useRef(null);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -99,15 +100,26 @@ export default function HomeAfterInit({windowSize}) {
       setHighlightedDays([]);
       fetchHighlightedDays(date);
     };
+    const [myTafseer, setMyTafseer] = useState({});
+    function findTafseer(){
+      const myRandom = Math.floor(Math.random() * 11); // Generate a random integer between 0 and 12
+      var content = Tafseer.find((item) => item.id === myRandom);
+      if(content){
+        setMyTafseer(content);
+      }
+    }
+    useEffect(() => {
+      findTafseer()
+    }, []);
   
   return (
     <Body>
         <WelcomeMessage>
-            <Typography variant= {windowSize.width > UISettings.devices.phone ? "h5" : 'h4'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl','width':'90%', color: 'white', textAlign: 'center', marginBottom: '20px'}}>السلام عليكم و رحمة الله و بركاته منصف </Typography>
+            <Typography variant= {windowSize.width > UISettings.devices.phone ? "h5" : 'h4'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl','width':'90%', color: 'white', textAlign: 'center', marginBottom: '20px'}}>السلام عليكم و رحمة الله و بركاته {student.firstName} </Typography>
             <Typography variant="p" sx={{'whiteSpace':'normal', color: 'white', textAlign: 'center'}}>توكل على الله و لنبدأ رحلة التعلم </Typography>
         </WelcomeMessage>
         <Container width={windowSize.width}>
-            <SubContainer1 width={windowSize.width}>
+            {/* <SubContainer1 width={windowSize.width}>
                 <Element>
                     <img src={'../../../../src/assets/valueIcon2.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "50" : '40'} style={{margin: '0px 0px'}} />
                     <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>مقررات اليوم / الأسبوع</Typography>
@@ -138,6 +150,22 @@ export default function HomeAfterInit({windowSize}) {
                     <ElementVertical>
                         <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>مقرر حفظ القرآن الكريم </Typography>
                         <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start',marginBottom: '5px'}}>حلقة حفظ القرآن الكريم مع الأستاذ اسم الأستاذ</Typography>
+                    </ElementVertical>
+                </Element>
+            </SubContainer1>  */}
+
+            <SubContainer1 width={windowSize.width}>
+                <Element>
+                    <img src={'../../../../src/assets/valueIcon2.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "50" : '40'} style={{margin: '0px 0px'}} />
+                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>بلاغة القرآن</Typography>
+                </Element>
+                <Element>
+                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.brown, textAlign: 'center',marginLeft: '10px', padding: '15px', backgroundColor: UISettings.colors.brownBG, borderRadius: '10px', alignSelf: 'start', display: windowSize.width > UISettings.devices.phone ? 'flex' : 'none'}}> <AutoStoriesOutlined/> </Typography>
+                    <ElementVertical>
+                        <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>الوقفات التدبرية</Typography>
+                        <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start',marginBottom: '5px'}}>{ myTafseer.content }</Typography>
+                        <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start',marginBottom: '5px'}}>المصدر: { myTafseer.source }</Typography>
+                        <Button style={{alignSelf: 'start'}} variant={"primary"} onClick={findTafseer} startIcon={<KeyboardArrowLeft/>} >التالي</Button>
                     </ElementVertical>
                 </Element>
             </SubContainer1> 
