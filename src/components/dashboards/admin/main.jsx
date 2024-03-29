@@ -37,6 +37,7 @@ import ExamDetails from './ExamDetails.jsx';
 import AddExam from './AddExam.jsx';
 import SubscriptionsTypes from './SubscritpionsTypes.jsx';
 import SubscriberDetails from './SubscriberDetails.jsx';
+import AddSubscription from './AddSubscription.jsx';
 
 export default function Main() {
     
@@ -289,6 +290,7 @@ export default function Main() {
                 <Route exact path="/subscriptions/all" element={<AllSubscribers  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscriptions/list" element={<SubscriptionsTypes  windowSize={windowSize} />}></Route>
                 <Route exact path="/subscriptions/:id" element={<SubscriberDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/new" element={<AddSubscription  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>

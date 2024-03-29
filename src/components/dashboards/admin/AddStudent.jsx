@@ -26,7 +26,7 @@ export default function AddStudent({windowSize}) {
   }
   return (
     <Body>
-        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/profile')} style={{cursor: 'pointer'}} >إدارة الطلاب </span> <span> {">"} إضافة طالب  </span></Typography>
+        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الطلاب </span> <span> {">"} إضافة طالب  </span></Typography>
         <Button onClick={()=> navigate('/admin/students/all')} variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >حفظ المعلومات</Button>
         
         <Container>
