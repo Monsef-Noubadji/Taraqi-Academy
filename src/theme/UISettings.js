@@ -11,7 +11,9 @@ const UISettings = {
         brown: '#C28F0F',
         brownBG: '#EAC84233',
         orange:'#F3B77C',
-        orangeBG:'#FFE8D1'
+        orangeBG:'#FFE8D1',
+        gray:'#e0e0e0',
+        yellowBG:'#FFDC84'
     },
     devices: {
         desktop: '100%',

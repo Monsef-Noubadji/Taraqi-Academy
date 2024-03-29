@@ -1,20 +1,20 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
-import { BlockOutlined, BorderColorOutlined, Clear, Print, ReportProblem } from '@mui/icons-material'
+import { Box, Button, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, Slide, Typography } from '@mui/material'
+import { Add, BlockOutlined, BorderColorOutlined, Clear, CurrencyExchange, DataUsage, Print, Remove, ReportProblem } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
 import { forwardRef, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 
-export default function StudentDetails({windowSize}) {
+export default function SubscriberDetails({windowSize}) {
   const navigate = useNavigate()
   const [isSubscribed,setIsSubscribed] = useState(true)
 
   const studentDetails = {
     name: "منصف عبد الإله",
     teacher:'العيد عبود',
-    session:'حلقة الأستاذ عبود',
+    session:'جميع الإشتراكات ',
     isSubscribed: true
   }
 
@@ -38,86 +38,14 @@ export default function StudentDetails({windowSize}) {
     <Body>
         <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{studentDetails.session + ' > ' + studentDetails.name}</Typography>
         <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
-            <Button variant='primary' onClick={()=> handleClickOpenExam()} endIcon={<BlockOutlined/>} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >حظر الطالب</Button>
-            <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px',width: "fit-content"}} ><Print/></Button>
+            <Button variant='primary' endIcon={<CurrencyExchange/>} style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px',width: "fit-content"}} >تغيير حالة الإشتراك</Button>
         </Box>
 
         <Container>
-          <ProfileHeader>
-              <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={80} style={{margin: '0px 0px'}} />
-              <ProfileInfos>
-                  <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>منصف عبد الإله نوباجي</Typography>
-                  <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب</Typography>
-              </ProfileInfos>
-          </ProfileHeader>
-        </Container>
-
-        <Container>
-          <ProfileHeader style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>المعلومات الشخصية</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الاسم الكامل</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>منصف عبد الإله نوباجي</Typography>
+            <ProfileDatas style={{'marginTop':'1rem',flexDirection:'row',alignItems:'center',gap:'.8rem','marginBottom':'1rem'}}>
+                <DataUsage sx={{'color':UISettings.colors.green,height:'100%',width:'3rem'}}/>
+                <Typography variant="p">بقي 10 أيام على انتهاء الاشتراك</Typography>
             </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الوصف</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب قرآن و طالب جامعي</Typography>
-            </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>البريد الالكتروني</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>monsefemail@gmail.com</Typography>
-            </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>رقم الهاتف</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons,direction:'ltr'}}>+2135588124957</Typography>
-            </ProfileDatas>
-          </SubContainer>
-        </Container>
-
-        <Container>
-          <ProfileHeader  style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات العنوان</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>البلد</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>الجزائر</Typography>
-            </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الولاية</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>الجزائر العاصمة</Typography>
-            </ProfileDatas>
-          </SubContainer>
-        </Container>
-
-        <Container>
-          <ProfileHeader  style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات البرنامج المشترك فبه</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>اسم البرنامج</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>برنامج الهمم</Typography>
-            </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>المستوى</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>الأول</Typography>
-            </ProfileDatas>
-          </SubContainer>
-        </Container>
-
-        <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -148,6 +76,15 @@ export default function StudentDetails({windowSize}) {
               <Typography variant="p" sx={{'whiteSpace':'normal',padding:'6px',borderRadius:'5px', color: isSubscribed === true ? UISettings.colors.green : UISettings.colors.red, backgroundColor: isSubscribed === true ? UISettings.colors.greenBG : UISettings.colors.redBG}}>{isSubscribed === true ? 'الإشتراك مفعل' : ' الإشتراك غير مفعل'}</Typography>
             </ProfileDatas>
 
+            <ProfileDatas style={{ paddingRight: '.5rem' }}>
+            <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>إضافة مهلة</Typography>
+            <ExamNoteMaker>
+              <Add sx={{ color: UISettings.colors.green, backgroundColor: UISettings.colors.greenBG, borderRadius: '3px', cursor: 'pointer', width: '2rem', height: '2rem' }} />
+              <span> 3 أيام</span>
+              <Remove sx={{ color: UISettings.colors.red, backgroundColor: UISettings.colors.redBG, borderRadius: '3px', cursor: 'pointer', width: '2rem', height: '2rem' }} />
+            </ExamNoteMaker>
+          </ProfileDatas>
+
           </SubContainer>
           <Typography variant="h6" sx={{'fontFamily':'Cairo',marginY:'1rem','float':'left','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>قائمة الإشتراكات</Typography>
           <DataGrid
@@ -169,54 +106,6 @@ export default function StudentDetails({windowSize}) {
             }}
           />
         </Container>
-        <Container>
-            <ProfileHeader  style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>نتائج الإمتحانات</Typography>
-            </ProfileInfos>
-            </ProfileHeader>
-            <DataGrid
-            sx={{direction:'rtl'}}
-            rows={examRows}
-            columns={examColumns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
-        </Container>
-
-        <Dialog
-          open={openExam}
-          TransitionComponent={Transition}
-          onClose={handleCloseExam}
-          aria-describedby="alert-dialog-slide-description"
-          style={{borderRadius: '40px'}}
-        >
-          <DialogTitle><Clear onClick={()=> handleCloseExam()} style={{cursor: 'pointer'}}/></DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <BlockOutlined style={{fontSize: '120px', color: UISettings.colors.red}}></BlockOutlined>
-              <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'center',marginBottom: '10px', marginTop: "20px"}}>هل أنت متاكد ؟</Typography>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'center',marginBottom: '10px'}}>سيتم حظر هذا الطالب من المنصة، هل أنت متاكد من ذلك ؟؟</Typography>
-              <Buttons style={{justifyContent: 'center'}}>
-                <Button variant='secondary' style={{marginLeft: '20px'}}onClick={()=> setOpenExam(false)}>إلغاء</Button>
-                <Button variant='primary' sx={{backgroundColor:UISettings.colors.red,'&:hover':{backgroundColor:UISettings.colors.red}}} onClick={()=> handleCloseExam()}>نعم متأكد</Button>
-              </Buttons>
-            </DialogContentText>
-          </DialogContent>
-         
-        </Dialog>
 
     </Body>
   )
@@ -285,6 +174,18 @@ const ProfileDatas = styled.div`
     direction: rtl;
 `
 
+const ExamNoteMaker = styled.div`
+  display: flex;
+  border: 1px solid ${UISettings.colors.secondary};
+  border-radius: 10px;
+  width: 15rem;
+  height:3rem;
+  padding: .5rem;
+  align-items:center;
+  justify-content:space-between;
+  font-weight: bold;
+  
+`
 
 const SubContainer = styled.div`
   width: 100%;

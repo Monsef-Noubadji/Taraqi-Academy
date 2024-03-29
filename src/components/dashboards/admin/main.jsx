@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import logo from '../../../../src/assets/logo.svg'
 import UISettings from '../../../theme/UISettings'
 import HomeIcon from '@mui/icons-material/Home';
-import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, RouteOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, RouteOutlined, SchoolOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Route, Routes, useNavigate } from 'react-router';
 import {useLocation } from 'react-router-dom';
 import Exams from './Exams';
@@ -12,11 +12,10 @@ import NotFound from './NotFound';
 import { IconButton, List, Typography } from '@mui/material';
 import HomeAfterInit from './HomeAfterInit';
 import Program from './programDetailes';
-import Subscribe from './Subscribe';
+import AllSubscribers from './AllSubscribers';
 import EditProfile from './ProfileEdit';
 import Settings from './Settings';
 import SchoolIcon from '@mui/icons-material/School';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AirplayIcon from '@mui/icons-material/Airplay';
@@ -27,7 +26,19 @@ import Collapse from '@mui/material/Collapse';
 import AddIcon from '@mui/icons-material/Add';
 import AllStudents from './AllStudents.jsx'
 import StudentDetails from './StudentDetails.jsx';
-
+import AddStudent from './AddStudent.jsx';
+import AllTeachers from './AllTeachers.jsx';
+import GroupIcon from '@mui/icons-material/Group';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import TeacherDetails from './TeacherDetails.jsx';
+import RecentTeachers from './RecentTeachers.jsx'
+import AddTeacher from './AddTeacher.jsx';
+import ExamDetails from './ExamDetails.jsx';
+import AddExam from './AddExam.jsx';
+import SubscriptionsTypes from './SubscritpionsTypes.jsx';
+import SubscriberDetails from './SubscriberDetails.jsx';
+import AddSubscription from './AddSubscription.jsx';
+import EditSubscription from './EditSubscription.jsx';
 
 export default function Main() {
     
@@ -40,11 +51,23 @@ export default function Main() {
             setPage('')
         }
     }, []);
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
+    const [openTeacher, setOpenTeacher] = useState(false);
+    const [openExams,setOpenExams] = useState(false)
+    const [openSubs,setOpenSubs] = useState(false)
+    const handleClick = () => {
+      setOpen(!open);
+    };
+    const handleClickTeacher = () => {
+        setOpenTeacher(!openTeacher);
+      };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
+      const handleClickExams = () => {
+        setOpenExams(!openExams);
+      };
+      const handleClickSubs = () => {
+        setOpenSubs(!openSubs);
+      };
 
   const location = useLocation()
   const path = location.pathname.split('/')
@@ -128,22 +151,75 @@ export default function Main() {
                         </List>
                     </Collapse>                  
                     </div>
-                    <SubSideBareAction open={page === 'subscribe' ? true : false} onClick={()=> {navigate('subscribe'); setPage('subscribe'); setSidebarOpen(false)}}>
-                        <SupervisorAccountIcon style={{marginLeft: '10px'}}></SupervisorAccountIcon>
+                    <div>
+                    <SubSideBareAction open={page === 'allTeachers' || page === 'recentTeachers' || page === 'newTeacher'} onClick={handleClickTeacher}>
+                        <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
                         إدارة المعلمين
-                    </SubSideBareAction>
-                    <SubSideBareAction open={page === 'exams' ? true : false} onClick={()=> {navigate('exams'); setPage('exams'); setSidebarOpen(false)}}>
-                        <ChecklistRtlIcon style={{marginLeft: '10px'}}></ChecklistRtlIcon>
+                    {openTeacher ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openTeacher} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/all'); setPage('allTeachers'); setSidebarOpen(false)}}>
+                            <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
+                            جميع المعلمين
+                            </SubSideBareAction>
+                        <SubSideBareAction open={page === 'recentTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/recent'); setPage('recentTeachers'); setSidebarOpen(false)}}>
+                            <PersonSearchIcon style={{marginLeft: '10px'}}></PersonSearchIcon>
+                            المسجلون حديثا
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'newTeacher' ? true : false} onClick={()=> {navigate('/admin/teachers/new'); setPage('newTeacher'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة أستاذ
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
+                    <div>
+                    <SubSideBareAction open={page === 'allExams' || page === 'addNewExam'} onClick={handleClickExams}>
+                        <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
                         إدارة الإمتحانات
-                    </SubSideBareAction>
+                    {openExams ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openExams} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
+                            <SchoolOutlined style={{marginLeft: '10px'}}></SchoolOutlined>
+                            جميع الإمتحانات
+                            </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة امتحان
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <Assignment style={{marginLeft: '10px'}}></Assignment>
                         إدارة التقارير
                     </SubSideBareAction>
-                    <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
+                    <div>
+                    <SubSideBareAction open={page === 'allSubs' || page === 'addNewSub' || page === 'subsTypes'} onClick={handleClickSubs}>
                         <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
                         إدارة الإشتراكات
-                    </SubSideBareAction>
+                    {openSubs ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openSubs} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allSubs' ? true : false} onClick={()=> {navigate('/admin/subscriptions/all'); setPage('allSubs'); setSidebarOpen(false)}}>
+                            <PersonOutlineOutlinedIcon style={{marginLeft: '10px'}}></PersonOutlineOutlinedIcon>
+                        إشتراكات الطلاب
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'subsTypes' ? true : false} onClick={()=> {navigate('/admin/subscriptions/list'); setPage('subsTypes'); setSidebarOpen(false)}}>
+                            <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
+                            أنواع الإشتراكات    
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/subscriptions/new'); setPage('addNewSub'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة إشتراك    
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <AirplayIcon style={{marginLeft: '10px'}}></AirplayIcon>
                         إدارة الحلقات
@@ -205,10 +281,21 @@ export default function Main() {
             <Routes >
                 <Route exact path="/" element={<HomeAfterInit windowSize={windowSize}/>}></Route>
                 <Route exact path="/students/all" element={<AllStudents  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/all" element={<AllTeachers  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/recent" element={<RecentTeachers  windowSize={windowSize} />}></Route>
                 <Route exact path="/students/:id" element={<StudentDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/:id" element={<TeacherDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/students/new" element={<AddStudent  windowSize={windowSize} />}></Route>
+                <Route exact path="/teachers/new" element={<AddTeacher  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/program/*" element={<Program  windowSize={windowSize} />}></Route>
-                <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
-                <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/all" element={<AllSubscribers  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/list" element={<SubscriptionsTypes  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/:id" element={<SubscriberDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/:id/edit" element={<EditSubscription  windowSize={windowSize} />}></Route>
+                <Route exact path="/subscriptions/new" element={<AddSubscription  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
