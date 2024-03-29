@@ -4,7 +4,7 @@ import UISettings from '../../../theme/UISettings'
 import { useState } from "react";
 import { Save } from "@mui/icons-material";
 
-const AddSubscription = ({windowSize}) => {
+const EditSubscription = ({windowSize}) => {
     const [isSubscribed,setIsSubscribed] = useState(false)
     const programs = [
         {id:0, name:"شهري"},
@@ -19,7 +19,7 @@ const AddSubscription = ({windowSize}) => {
       ]
     return ( 
         <Body>
-            <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الإشتراكات </span> <span> {">"} إضافة اشتراك  </span></Typography>
+            <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الإشتراكات </span> <span> {">"} تعديل اشتراك  </span></Typography>
             <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
@@ -39,7 +39,7 @@ const AddSubscription = ({windowSize}) => {
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر نوع الاشتراك </span> </MenuItem>
+                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> سنوي </span> </MenuItem>
                         {programs.map((program,index)=>(
 
                             <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
@@ -49,7 +49,7 @@ const AddSubscription = ({windowSize}) => {
             </ProfileDatas>
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> سعر الاشتراك</Typography>
-              <TextField style={{width: '100%'}} type="number" placeholder='سعر الاشتراك' />
+              <TextField style={{width: '100%'}} type="number" defaultValue={3000} placeholder='سعر الاشتراك' />
             </ProfileDatas>
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>مدة البرنامج</Typography>
@@ -62,7 +62,7 @@ const AddSubscription = ({windowSize}) => {
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر مدة البرنامج </span> </MenuItem>
+                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>  ثلاث سنوات </span> </MenuItem>
                         {duration.map((program,index)=>(
 
                             <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
@@ -78,7 +78,7 @@ const AddSubscription = ({windowSize}) => {
      );
 }
  
-export default AddSubscription;
+export default EditSubscription;
 
 
 

@@ -1,12 +1,11 @@
 import { Button,ListItemIcon,Menu,MenuItem, Typography } from '@mui/material';
 import UISettings from '../../../theme/UISettings';
-import { MoreVert, Block, Delete, Comment, Info, Edit  } from '@mui/icons-material';
+import { MoreVert, Delete, Edit  } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {ToastContainer,toast} from 'react-toastify'
 import { useState } from 'react'
-import BadgeIcon from '@mui/icons-material/Badge';
 import { useMediaQuery } from '@mui/material';
 
 
@@ -19,6 +18,7 @@ const ban = ()=>{
         theme:'colored'
       })
 }
+
 const deleteTeacher = ()=>{
     toast('تم حذف الإشتراك',{
         position:'top-left',
@@ -57,14 +57,13 @@ export const TeacherMenu = ({ id }) => {
                     horizontal: 'right',
                 }}
             >
-                <MenuItem onClick={()=>{
-                    ban()
-                    handleClose()
-                }}>
-                    <ListItemIcon>
-                        <Edit />
-                    </ListItemIcon>
-                    <Typography variant="inherit">تعديل</Typography>
+                <MenuItem>
+                    <NavLink style={{'display':'flex'}} to={'/admin/subscriptions/2/edit'}>
+                        <ListItemIcon>
+                            <Edit />
+                        </ListItemIcon>
+                        <Typography variant="inherit">تعديل</Typography>
+                    </NavLink>
                 </MenuItem>
                 <MenuItem onClick={()=>{
                     deleteTeacher()
