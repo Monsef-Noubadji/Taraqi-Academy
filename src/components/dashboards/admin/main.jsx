@@ -39,6 +39,8 @@ import SubscriptionsTypes from './SubscritpionsTypes.jsx';
 import SubscriberDetails from './SubscriberDetails.jsx';
 import AddSubscription from './AddSubscription.jsx';
 import EditSubscription from './EditSubscription.jsx';
+import AllSessions from './AllSessions.jsx';
+import AddSession from './AddSession.jsx';
 
 export default function Main() {
     
@@ -55,19 +57,24 @@ export default function Main() {
     const [openTeacher, setOpenTeacher] = useState(false);
     const [openExams,setOpenExams] = useState(false)
     const [openSubs,setOpenSubs] = useState(false)
+    const [openSessions,setOpenSessions] = useState(false)
     const handleClick = () => {
       setOpen(!open);
     };
     const handleClickTeacher = () => {
         setOpenTeacher(!openTeacher);
-      };
+    };
 
-      const handleClickExams = () => {
+    const handleClickExams = () => {
         setOpenExams(!openExams);
-      };
-      const handleClickSubs = () => {
+    };
+
+    const handleClickSubs = () => {
         setOpenSubs(!openSubs);
-      };
+    };
+    const handleClickSessions = () => {
+        setOpenSessions(!openSessions);
+    };
 
   const location = useLocation()
   const path = location.pathname.split('/')
@@ -220,10 +227,25 @@ export default function Main() {
                         </List>
                     </Collapse>                  
                     </div>
-                    <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
+                    <div>
+                    <SubSideBareAction open={page === 'allSessions' || page === 'addNewSession'} onClick={handleClickSessions}>
                         <AirplayIcon style={{marginLeft: '10px'}}></AirplayIcon>
                         إدارة الحلقات
-                    </SubSideBareAction>
+                    {openSessions ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openSessions} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allSessions' ? true : false} onClick={()=> {navigate('/admin/sessions/all'); setPage('allSessions'); setSidebarOpen(false)}}>
+                            <AirplayIcon style={{marginLeft: '10px'}}></AirplayIcon>
+                        جميع الحلقات
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewSession' ? true : false} onClick={()=> {navigate('/admin/sessions/new'); setPage('addNewSession'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة حلقة    
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <RouteOutlined style={{marginLeft: '10px'}}></RouteOutlined>
                         إدارة البرامج
@@ -296,6 +318,8 @@ export default function Main() {
                 <Route exact path="/exams/all" element={<Exams  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/:id" element={<ExamDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
+                <Route exact path="/sessions/all" element={<AllSessions  windowSize={windowSize} />}></Route>
+                <Route exact path="/sessions/new" element={<AddSession  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
