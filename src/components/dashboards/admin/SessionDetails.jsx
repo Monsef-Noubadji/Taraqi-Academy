@@ -5,12 +5,12 @@ import { useState } from "react";
 import { Save } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
 
-const AddSession = ({windowSize}) => {
+const SessionDetails = ({windowSize}) => {
     const [isSubscribed,setIsSubscribed] = useState(false)
     const programs = [
-        {id:0, name:"شهري"},
-        {id:1, name:"دوري"},
-        {id:2, name:"سنوي"},
+        {id:0, name:"الأستاذ ياسين"},
+        {id:1, name:"الأستاد محمد دليحر"},
+        {id:2, name:"الأستاذة خولة"},
     ]
 
     const duration = [
@@ -28,7 +28,7 @@ const AddSession = ({windowSize}) => {
     const width = isXs ? '100%' : isSm ? '100%' : isMd ? '100%' : isLg ? '100%' : isXl ? '60%' : '80%';
     return ( 
         <Body>
-            <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الحلقات </span> <span> {">"} إضافة حلقة  </span></Typography>
+            <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الحلقات </span> <span> {">"} حلقة الفردوس   </span></Typography>
             <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
@@ -39,7 +39,7 @@ const AddSession = ({windowSize}) => {
           <SubContainer>
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إسم الحلقة</Typography>
-              <TextField style={{width: '100%'}} placeholder='إسم الحلقة' />
+              <TextField style={{width: '100%'}} defaultValue={'حلقة الفردوس'} placeholder='إسم الحلقة' />
             </ProfileDatas>
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الأستاذ المسؤول</Typography>
@@ -52,7 +52,7 @@ const AddSession = ({windowSize}) => {
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الأستاذ المسؤول </span> </MenuItem>
+                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> الأستاذ العيد عبود </span> </MenuItem>
                         {programs.map((program,index)=>(
 
                             <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
@@ -63,34 +63,33 @@ const AddSession = ({windowSize}) => {
             <ProfileDatas>
             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إختر طلاب الحلقة</Typography>
               <div dir="rtl" style={{ height: 370, width: width }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { page: 0, pageSize: 5 },
+                    },
+                  }}
+                  pageSize={5}
+                  rowsPerPageOptions={[5, 10, 20]}
+                  checkboxSelection
+                  componentsProps={{
+                    pagination: { style: {
+                      direction: 'ltr'
+                    }},
+                  }}
+                />
               </div>
             </ProfileDatas>
           </SubContainer>
-          <Button  variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:'white',border:'1px solid' + UISettings.colors.green}} >حفظ الحلقة</Button>
-
+          <Button  variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:'white',border:'1px solid' + UISettings.colors.green}} >حفظ التعديلات</Button>
             </Container>
         </Body>
      );
 }
  
-export default AddSession;
+export default SessionDetails;
 
 
 

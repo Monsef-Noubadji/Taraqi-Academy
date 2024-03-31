@@ -41,6 +41,7 @@ import AddSubscription from './AddSubscription.jsx';
 import EditSubscription from './EditSubscription.jsx';
 import AllSessions from './AllSessions.jsx';
 import AddSession from './AddSession.jsx';
+import SessionDetails from './SessionDetails.jsx';
 
 export default function Main() {
     
@@ -320,6 +321,7 @@ export default function Main() {
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
                 <Route exact path="/sessions/all" element={<AllSessions  windowSize={windowSize} />}></Route>
                 <Route exact path="/sessions/new" element={<AddSession  windowSize={windowSize} />}></Route>
+                <Route exact path="/sessions/:id/edit" element={<SessionDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>

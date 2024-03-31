@@ -47,7 +47,7 @@ export const TeacherMenu = ({ id }) => {
                 }}
             >
                 <MenuItem >
-                    <Link to={`/admin/subscriptions/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                    <Link to={`/admin/sessions/${id}/edit`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                         <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                             <BadgeIcon />
                         </ListItemIcon>
@@ -76,6 +76,7 @@ const AllSessions = () => {
         {id:1, name:"برنامج التميز"},
         {id:2, name:"برنامح الأساس"},
     ]
+
     return (
         <main style={{'direction':'rtl',padding:'1rem'}}>
             <Typography variant='h5' fontWeight={800}>{'إدارة الحلقات > جميع الحلقات'}</Typography>
