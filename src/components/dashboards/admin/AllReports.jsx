@@ -154,7 +154,7 @@ const AllReports = () => {
                         
                     </Select>
                         </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/reports/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >طلب تقرير</Button>
+                        <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >طلب تقرير</Button>
                     </div>
                 </section>
 
