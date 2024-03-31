@@ -216,7 +216,7 @@ export default function Main() {
                     <SubSideBareAction open={page === 'allReports' || page === 'askForReport'} onClick={handleClickReports}>
                         <Assignment style={{marginLeft: '10px'}}></Assignment>
                             إدارة التقارير      
-                    {openSessions ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    {openReports ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
                     </SubSideBareAction>   
                     <Collapse in={openReports} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
