@@ -42,6 +42,10 @@ import EditSubscription from './EditSubscription.jsx';
 import AllSessions from './AllSessions.jsx';
 import AddSession from './AddSession.jsx';
 import SessionDetails from './SessionDetails.jsx';
+import AllReports from './AllReports.jsx';
+import ReportDetails from './ReportDetails.jsx';
+import AskForReport from './AskForReport.jsx'
+
 
 export default function Main() {
     
@@ -59,9 +63,12 @@ export default function Main() {
     const [openExams,setOpenExams] = useState(false)
     const [openSubs,setOpenSubs] = useState(false)
     const [openSessions,setOpenSessions] = useState(false)
+    const [openReports,setOpenReports] = useState(false)
+
     const handleClick = () => {
       setOpen(!open);
     };
+
     const handleClickTeacher = () => {
         setOpenTeacher(!openTeacher);
     };
@@ -73,10 +80,14 @@ export default function Main() {
     const handleClickSubs = () => {
         setOpenSubs(!openSubs);
     };
+
     const handleClickSessions = () => {
         setOpenSessions(!openSessions);
     };
 
+    const handleClickReports = () => {
+        setOpenReports(!openReports);
+    };
   const location = useLocation()
   const path = location.pathname.split('/')
   
@@ -201,10 +212,25 @@ export default function Main() {
                         </List>
                     </Collapse>                  
                     </div>
-                    <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
+                    <div>
+                    <SubSideBareAction open={page === 'allReports' || page === 'askForReport'} onClick={handleClickReports}>
                         <Assignment style={{marginLeft: '10px'}}></Assignment>
-                        إدارة التقارير
-                    </SubSideBareAction>
+                            إدارة التقارير      
+                    {openSessions ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openReports} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allReports' ? true : false} onClick={()=> {navigate('/admin/reports/all'); setPage('allReports'); setSidebarOpen(false)}}>
+                            <Assignment style={{marginLeft: '10px'}}></Assignment>
+                        جميع التقارير
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'askForReport' ? true : false} onClick={()=> {navigate('/admin/reports/demande'); setPage('askForReport'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            طلب تقرير    
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <div>
                     <SubSideBareAction open={page === 'allSubs' || page === 'addNewSub' || page === 'subsTypes'} onClick={handleClickSubs}>
                         <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
@@ -322,6 +348,10 @@ export default function Main() {
                 <Route exact path="/sessions/all" element={<AllSessions  windowSize={windowSize} />}></Route>
                 <Route exact path="/sessions/new" element={<AddSession  windowSize={windowSize} />}></Route>
                 <Route exact path="/sessions/:id/edit" element={<SessionDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/reports/all" element={<AllReports  windowSize={windowSize} />}></Route>
+                <Route exact path="/reports/:id" element={<ReportDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/reports/demande" element={<AskForReport  windowSize={windowSize} />}></Route>
+
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
