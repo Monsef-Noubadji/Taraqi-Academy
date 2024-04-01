@@ -1,15 +1,18 @@
-import React from 'react'
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Button, Typography } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { ArrowBack, EditOutlined } from '@mui/icons-material'
 
 export default function Program({windowSize}) {
     const navigate = useNavigate()
   return (
     <Body>
         <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/programs')} style={{cursor: 'pointer'}} >برامج الأكاديمية </span> <span> {">"} تفاصيل برامج الهمم  </span></Typography>
-        <Button variant='primary' style={{alignSelf: 'start'}} >اختر هذا البرنامج</Button>
+        <Box display={'flex'} alignItems={'center'} justifyContent={'start'} gap={'1rem'}>
+          <Button variant='primary' onClick={()=> navigate('/admin/programs/all')} startIcon={<ArrowBack/>} style={{alignSelf: 'start'}} >العودة </Button>
+          <Button variant='primary' onClick={()=> navigate('/admin/programs/3/edit')} startIcon={<EditOutlined/>} style={{alignSelf: 'start',color:UISettings.colors.green,backgroundColor:'white',border:'1px solid' + UISettings.colors.green}} >تعديل </Button>
+        </Box>
         <Container>
             <Info width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>عنوان البرنامج</InfosTitle> 

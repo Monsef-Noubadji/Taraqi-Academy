@@ -16,7 +16,6 @@ import AllSubscribers from './AllSubscribers';
 import EditProfile from './ProfileEdit';
 import Settings from './Settings';
 import SchoolIcon from '@mui/icons-material/School';
-import ChecklistRtlIcon from '@mui/icons-material/ChecklistRtl';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AirplayIcon from '@mui/icons-material/Airplay';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -45,8 +44,10 @@ import SessionDetails from './SessionDetails.jsx';
 import AllReports from './AllReports.jsx';
 import ReportDetails from './ReportDetails.jsx';
 import AskForReport from './AskForReport.jsx'
-
-
+import Programs from './Programs.jsx';
+import AddProgram from './AddProgram.jsx';
+import ProgramDetails from './programDetailes.jsx'
+import EditProgram from './EditProgram.jsx'
 export default function Main() {
     
     // Detecting page
@@ -64,6 +65,8 @@ export default function Main() {
     const [openSubs,setOpenSubs] = useState(false)
     const [openSessions,setOpenSessions] = useState(false)
     const [openReports,setOpenReports] = useState(false)
+    const [openPrograms,setOpenPrograms] = useState(false)
+
 
     const handleClick = () => {
       setOpen(!open);
@@ -87,6 +90,10 @@ export default function Main() {
 
     const handleClickReports = () => {
         setOpenReports(!openReports);
+    };
+
+    const handleClickPrograms = () => {
+        setOpenPrograms(!openPrograms);
     };
   const location = useLocation()
   const path = location.pathname.split('/')
@@ -273,10 +280,25 @@ export default function Main() {
                         </List>
                     </Collapse>                  
                     </div>
-                    <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
+                    <div>
+                    <SubSideBareAction open={page === 'allPrograms' || page === 'addNewProgram'} onClick={handleClickPrograms}>
                         <RouteOutlined style={{marginLeft: '10px'}}></RouteOutlined>
                         إدارة البرامج
-                    </SubSideBareAction>
+                    {openPrograms ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
+                    </SubSideBareAction>   
+                    <Collapse in={openPrograms} timeout="auto" unmountOnExit>
+                        <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
+                        <SubSideBareAction open={page === 'allPrograms' ? true : false} onClick={()=> {navigate('/admin/programs/all'); setPage('allPrograms'); setSidebarOpen(false)}}>
+                            <RouteOutlined style={{marginLeft: '10px'}}></RouteOutlined>
+                        جميع البرامج
+                        </SubSideBareAction>
+                        <SubSideBareAction open={page === 'addNewProgram' ? true : false} onClick={()=> {navigate('/admin/programs/new'); setPage('addNewProgram'); setSidebarOpen(false)}}>
+                            <AddIcon style={{marginLeft: '10px'}}></AddIcon>
+                            إضافة برنامج    
+                        </SubSideBareAction>
+                        </List>
+                    </Collapse>                  
+                    </div>
                     <SubSideBareAction open={page === 'profile' ? true : false} onClick={()=> {navigate('profile'); setPage('profile'); setSidebarOpen(false)}}>
                         <PersonOutlineOutlinedIcon style={{marginLeft: '10px'}}></PersonOutlineOutlinedIcon>
                         حسابي  
@@ -351,7 +373,10 @@ export default function Main() {
                 <Route exact path="/reports/all" element={<AllReports  windowSize={windowSize} />}></Route>
                 <Route exact path="/reports/:id" element={<ReportDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/reports/demande" element={<AskForReport  windowSize={windowSize} />}></Route>
-
+                <Route exact path="/programs/all" element={<Programs  windowSize={windowSize} />}></Route>
+                <Route exact path="/programs/new" element={<AddProgram  windowSize={windowSize} />}></Route>
+                <Route exact path="/programs/:id" element={<ProgramDetails  windowSize={windowSize} />}></Route>
+                <Route exact path="/programs/:id/edit" element={<EditProgram  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>

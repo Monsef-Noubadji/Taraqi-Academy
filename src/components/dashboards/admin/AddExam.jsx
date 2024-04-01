@@ -259,7 +259,7 @@ export default function AddExam({windowSize}) {
       ))}
         </Container>
 
-        <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content"}} >حفظ الإمتحان</Button>
+        <Button onClick={()=> navigate('/admin/exams/all')} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content"}} >حفظ الإمتحان</Button>
     </Body>
     :
     <Body>
