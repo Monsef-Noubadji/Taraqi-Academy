@@ -105,7 +105,7 @@ const AllSessions = () => {
                         ))}
                     </Select>
                         </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/students/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة حلقة</Button>
+                        <Button variant='primary' onClick={()=> navigate('/admin/sessions/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة حلقة</Button>
                     </div>
                 </section>
 
