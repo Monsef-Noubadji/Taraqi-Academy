@@ -16,7 +16,7 @@ export default function Profile({windowSize}) {
               <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={80} style={{margin: '0px 0px'}} />
               <ProfileInfos>
                   <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>منصف عبد الإله نوباجي</Typography>
-                  <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب</Typography>
+                  <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>أستاذ علوم شرعية تخصص حديث وأصوله</Typography>
               </ProfileInfos>
           </ProfileHeader>
         </Container>
@@ -34,7 +34,7 @@ export default function Profile({windowSize}) {
             </ProfileDatas>
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الوصف</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب قرآن و طالب جامعي</Typography>
+              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>أستاذ علوم شرعية</Typography>
             </ProfileDatas>
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>البريد الالكتروني</Typography>
@@ -61,24 +61,6 @@ export default function Profile({windowSize}) {
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الولاية</Typography>
               <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>الجزائر العاصمة</Typography>
-            </ProfileDatas>
-          </SubContainer>
-        </Container>
-        <Container>
-          <ProfileHeader  style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات البرنامج المشترك فبه</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>اسم البرنامج</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>برنامج الهمم</Typography>
-            </ProfileDatas>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>المستوى</Typography>
-              <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>الأول</Typography>
             </ProfileDatas>
           </SubContainer>
         </Container>
