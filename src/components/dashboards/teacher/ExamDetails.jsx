@@ -32,10 +32,10 @@ export default function ExamDetails({windowSize}) {
   };
   return (
     <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':'bolder','textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '20px'}}>{'حلقة الأستاذ علي'  + ' > ' + 'الإمتحان التفاعلي الخامس'} </Typography>
+        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':'bolder','textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '20px'}}>{' إدارة الامتحانات'  + ' > ' + 'الإمتحان التفاعلي الخامس'} </Typography>
         <section className='flex flex-col md:flex-row lg:flex-row items-end md:items-center lg:items-center gap-3 justify-between my-4'>
             <div className='flex gap-3 items-center justify-center'>
-              <Button variant='primary' onClick={()=> navigate('/admin/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
+              <Button variant='primary' onClick={()=> navigate('/teacher/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
               <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'10px',borderRadius:'10px'}}>تم تصحيحه</span>
             </div>
             <div>

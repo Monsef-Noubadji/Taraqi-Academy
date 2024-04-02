@@ -41,7 +41,7 @@ export const TeacherMenu = ({ id }) => {
               }}
           >
               <MenuItem >
-                  <Link to={`/admin/exams/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                  <Link to={`/teacher/exams/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                       <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                           <BadgeIcon />
                       </ListItemIcon>
@@ -80,7 +80,7 @@ const programs = [
         <section className='flex flex-row-reverse items-center justify-between my-4 gap-2 w-full'>
                     <p>مجموع الإمتحانات : {rows.length} {rows.length > 11 ? 'إمتحانا' : 'إمتحانات'}</p>
                     <div className='flex items-center justify-center gap-3'>
-                        <Button variant='primary' onClick={()=> navigate('/admin/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
+                        <Button variant='primary' onClick={()=> navigate('/teacher/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
                     </div>
         </section>
         <Title style={{ marginBottom: '10px'}}>
@@ -133,26 +133,6 @@ const programs = [
                 {programs.map((program,index)=>(
 
                     <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span style={{padding: '3px 10px'}}>{program.name}</span> </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-
-          <FormControl dir="rtl" style={{width: "100%"}}>
-        <InputLabel id="session" > الحلقة </InputLabel>
-            <Select
-                dir="rtl"
-                style={{paddingTop: "3px", paddingBottom: '3px'}}
-                labelId="session"
-                id="session"
-                //value={age}
-                label="الحلقة"
-                defaultValue={'all'}
-                //onChange={handleChange}
-            >
-                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                {sessions.map((session,index)=>(
-
-                    <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
                 ))}
             </Select>
           </FormControl>

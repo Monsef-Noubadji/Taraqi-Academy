@@ -18,11 +18,6 @@ export default function AddExam({windowSize}) {
   const rightValue = isLG ? '45%' : isMD ? '45%' : isSM ? '40%' : '40%'
   const navigate = useNavigate()
   const [isSubscribed,setIsSubscribed] = useState(true)
-  const programs = [
-    {id:0, name:"برنامح الهمم"},
-    {id:1, name:"برنامج التميز"},
-    {id:2, name:"برنامح الأساس"},
-  ]
 
   const sessions = [
   {id:0, name:"حلقة الهمم"},
@@ -72,45 +67,6 @@ export default function AddExam({windowSize}) {
           </ProfileHeader>
           
           <SubContainer>
-            <ProfileDatas width={windowSize.width}>
-            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>البرنامج</Typography>
-              <FormControl dir="rtl" style={{width: "100%"}}>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        id="program"
-                        //value={age}
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر البرنامج </span> </MenuItem>
-                        {programs.map((program,index)=>(
-
-                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-              </FormControl>
-            </ProfileDatas>
-
-            <ProfileDatas width={windowSize.width}>
-            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الحلقة</Typography>
-              <FormControl dir="rtl" style={{width: "100%"}}>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        id="program"
-                        //value={age}
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الحلقة</span> </MenuItem>
-                        {sessions.map((session,index)=>(
-
-                            <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-              </FormControl>
-            </ProfileDatas>
 
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>عنوان الإمتحان</Typography>
@@ -137,7 +93,7 @@ export default function AddExam({windowSize}) {
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الحلقة</span> </MenuItem>
+                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر التاريخ</span> </MenuItem>
                         {sessions.map((session,index)=>(
 
                             <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
@@ -157,7 +113,7 @@ export default function AddExam({windowSize}) {
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الحلقة</span> </MenuItem>
+                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر التاريخ</span> </MenuItem>
                         {sessions.map((session,index)=>(
 
                             <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>

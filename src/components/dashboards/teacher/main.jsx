@@ -153,11 +153,11 @@ export default function Main() {
                     </SubSideBareAction>   
                     <Collapse in={openExams} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/teacher/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
                             <SchoolOutlined style={{marginLeft: '10px'}}></SchoolOutlined>
                             جميع الإمتحانات
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/teacher/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة امتحان
                         </SubSideBareAction>
@@ -173,11 +173,11 @@ export default function Main() {
                     </SubSideBareAction>   
                     <Collapse in={openReports} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'allReports' ? true : false} onClick={()=> {navigate('/admin/reports/all'); setPage('allReports'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'allReports' ? true : false} onClick={()=> {navigate('/teacher/reports/all'); setPage('allReports'); setSidebarOpen(false)}}>
                             <Assignment style={{marginLeft: '10px'}}></Assignment>
                         جميع التقارير
                         </SubSideBareAction>
-                        <SubSideBareAction open={page === 'askForReport' ? true : false} onClick={()=> {navigate('/admin/reports/demande'); setPage('askForReport'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'askForReport' ? true : false} onClick={()=> {navigate('/teacher/reports/demande'); setPage('askForReport'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             طلب تقرير    
                         </SubSideBareAction>
