@@ -1,0 +1,28 @@
+.mui-tabs-Global .MuiButtonBase-root.MuiTab-root.MuiTab-labelIcon{
+    min-height: 30px !important;
+    color: gray;
+}
+
+.mui-tabs-Global .Mui-selected{
+    border-right: none !important;
+    color: #1C1E1C !important;
+    border: none !important;
+}
+
+.MuiTabs-indicator {
+    background: none !important; /* Remove the left border */
+}
+
+.mui-tabs-Global{
+    padding: 10px 0px !important;
+}
+
+@media screen and (max-width: 600px) {
+    .MuiBox-root.css-19kzrtu{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+
+
