@@ -7,9 +7,9 @@ const HomeLayout = () => {
     const route = location.pathname.split("/")[1]
     return ( 
         <main>
-            {route === 'login' || route === 'register' || route === 'admin' || route === 'student' ? null : <NavBar/>}
-            <Outlet/>
-            {route === 'login' || route === 'register' || route === 'admin' || route === 'student' ? null : <Footer/>}
+            {route === 'login' || route === 'register' || route === 'admin' || route === 'student' || route === 'teacher' ? null : <NavBar/>}
+                <Outlet/>
+            {route === 'login' || route === 'register' || route === 'admin' || route === 'student' || route === 'teacher' ? null : <Footer/>}
         </main>
      );
 }
