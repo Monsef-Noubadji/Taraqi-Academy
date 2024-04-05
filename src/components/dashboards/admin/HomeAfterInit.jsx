@@ -183,54 +183,9 @@ export default function HomeAfterInit({windowSize}) {
   
   return (
     <Body>
-        <Box maxWidth={'lg'} sx={{
-          display:'flex',
-          width:'100%',
-          paddingTop:'1rem',
-          flexDirection:{
-            xs:'column',
-            sm:'row',
-            md:'row',
-            lg:'row',
-            xl:'row'
-          },
-          justifyContent:{
-            xs:'center',
-            sm:'center',
-            md:'end',
-            lg:'end',
-            xl:'end'
-          },
-          alignItems:{
-            xs:'center',
-            sm:'center',
-            md:'start',
-            lg:'start',
-            xl:'start'
-          },
-          gap:'4rem',
-          }}>
-
-            <Box display={'flex'} flexDirection={'column'} gap={3} sx={{'backgroundColor':'#fff',width:'100%',paddingX:{
-              xs:'4rem',
-              sm:'2rem',
-              md:'0rem',
-              lg:'0rem',
-              xl:'0rem'
-            }}} >
-          <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'direction':'rtl'}}> قائمة البرامج المتاحة </Typography>
-
-            {availablePrograms && availablePrograms.map((program,index)=>(
-              <Element key={index}>
-                <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.brown, textAlign: 'center',marginLeft: '10px', padding: '15px', backgroundColor: UISettings.colors.brownBG, borderRadius: '10px'}}> <RouteOutlined/> </Typography>
-                <ElementVertical>
-                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>{program.name}</Typography>
-                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start',marginBottom: '5px'}}>{program.desc}</Typography>
-                </ElementVertical>
-              </Element>
-            ))}
-            </Box>
-            <Box sx={{
+      <Container width={windowSize.width}>
+        <SubContainer style={{}} >
+          <Box sx={{
               display:'flex',
               flexDirection:{
                 xs:'column',
@@ -253,58 +208,80 @@ export default function HomeAfterInit({windowSize}) {
                 lg:'0rem',
                 xl:'0rem'
               },
-              justifyContent:'end',
+              justifyContent:'space-evenly',
               alignItems:'start',
               gap:'1rem',
           }} >
             {statistics && statistics.map((stat,index)=>(
               <MiniStats key={index} title={stat.title} icon={stat.icon} color={stat.color} bgColor={stat.bgColor} number={stat.number} />
             ))}
-            </Box>
+          </Box> 
 
-        </Box>
-        <Container width={windowSize.width}>
-            <SubContainer1 width={windowSize.width}>
-              <Element style={{display:'flex',flexDirection:'column',justifyContent:'end',alignItems:'center',padding:'2rem'}}>
-                <Typography variant="h5" style={{'direction':'rtl'}}>
+              <Element style={{display:'flex',flexDirection:'column',justifyContent:'end',alignItems:'center',padding:'10px 10px 10px 10px', margin: '20px 0px', border: '1px solid #F3F3F3', borderRadius: '20px', width: '100%'}}>
+                <Typography variant="h6" style={{'direction':'rtl'}}>
                  عدد الطلاب المسجلين في برامج الاكاديمية هذا الأسبوع
                 </Typography>
                 <BarChart
-                  xAxis={[{ scaleType: 'band', data: ['برنامج الهمم', 'برنامج التميز', 'برنامح الأساس'] }]}
-                  series={[{ data: [4, 3, 5] }]}
-                  width={500}
+                  xAxis={[{ scaleType: 'band', data: ['برنامج الهمم', 'برنامج التميز', 'برنامح الأساس', 'برنام0ح الأساس', 'برنا1مح الأساس', 'برنامح الأسا2س', '3برنامح الأساس'] }]}
+                  series={[{ data: [4, 3, 5, 2 ,45,6,58] }]}
+                  // width={'100%'}
                   height={300}
+                  style={{width: '100%'}}
                 />
               </Element>
-                <Element>
-                    <img src={'./../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '30'} style={{margin: '0px 0px'}} />
-                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px',marginRight:'10px'}}>الأساتذة المسجلين حديثا</Typography>
-                </Element>
+                <Element style={{display: 'flex', flexDirection: 'column', justifyContent: 'start', padding:'10px 10px 10px 10px', margin: '10px 0px', border: '1px solid #F3F3F3', borderRadius: '20px'}}>
+                    <div style={{width: '100%', display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'end', marginBottom: '10px'}}>
+                      <img src={'./../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '30'} style={{margin: '0px 0px'}} />
+                      <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '0px',marginRight:'10px'}}>الأساتذة المسجلين حديثا</Typography>
+                    </div>
+                    <DataGrid
+                    style={{width: "100%"}}
+                    sx={{'direction':'rtl'}}
+                      rows={rows}
+                      columns={columns}
+                      initialState={{
+                        pagination: {
+                          paginationModel: { page: 0, pageSize: 5 },
+                        },
+                      }}
+                      checkboxSelection={false}
+                      pageSize={5}
+                      rowsPerPageOptions={[1]}
+                      componentsProps={{
+                        pagination: { style: {
+                          direction: 'ltr'
+                        }},
+                      }}
+                      rowSelection={false}
+                    />
              
+                </Element>
           
-                  <DataGrid
-                  sx={{'direction':'rtl'}}
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                      },
-                    }}
-                    pageSize={5}
-                    rowsPerPageOptions={[1]}
-                    checkboxSelection
-                    componentsProps={{
-                      pagination: { style: {
-                        direction: 'ltr'
-                      }},
-                    }}
-                  />
-            </SubContainer1> 
-            <SubContainer width={windowSize.width}>
+        </SubContainer>
+        <SubContainer1 >
+        <Box display={'flex'} style={{ border: '1px solid #F3F3F3', borderRadius: '20px', padding: '20px'}} flexDirection={'column'} gap={3} sx={{'backgroundColor':'#fff',width:'100%',paddingX:{
+              xs:'4rem',
+              sm:'2rem',
+              md:'0rem',
+              lg:'0rem',
+              xl:'0rem'
+            }}} >
+          <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'direction':'rtl'}}> قائمة البرامج المتاحة </Typography>
+
+            {availablePrograms && availablePrograms.map((program,index)=>(
+              <Element key={index}>
+                <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.brown, textAlign: 'center',marginLeft: '10px', padding: '15px', backgroundColor: UISettings.colors.brownBG, borderRadius: '10px'}}> <RouteOutlined/> </Typography>
+                <ElementVertical>
+                    <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '5px'}}>{program.name}</Typography>
+                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start',marginBottom: '5px'}}>{program.desc}</Typography>
+                </ElementVertical>
+              </Element>
+            ))}
+            </Box>
+
                 <LocalizationProvider  dateAdapter={AdapterDayjs}>
                     <DateCalendar
-                       style={{width: '100%'}}
+                       style={{width: '100%', border: '1px solid #F3F3F3', borderRadius: '20px 20px 0px 0px', borderBottom: 'none', padding: '20px 10px 0px 10px', margin: '20px 0px'}}
                         defaultValue={initialValue}
                         loading={isLoading}
                         onMonthChange={handleMonthChange}
@@ -319,7 +296,7 @@ export default function HomeAfterInit({windowSize}) {
                         }}
                     />
                 </LocalizationProvider>
-                <Box display={'flex'} flexDirection={'column'} sx={{'backgroundColor':'#fff'}} >
+                <Box display={'flex'} flexDirection={'column'} sx={{'backgroundColor':'#fff'}} style={{border: '1px solid #F3F3F3', borderRadius: '0px 0px 20px 20px', borderTop: 'none', padding: '0px 10px 20px 10px', marginTop: '-20px'}} >
             {availableExams && availableExams.map((exam,index)=>(
               <Element key={index}>
                 <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.brown, textAlign: 'center',marginLeft: '10px', padding: '12px', backgroundColor: UISettings.colors.brownBG, borderRadius: '10px'}}> <ChecklistRtlIcon/> </Typography>
@@ -329,8 +306,12 @@ export default function HomeAfterInit({windowSize}) {
               </Element>
             ))}
             </Box>
-            </SubContainer> 
-        </Container>
+        </SubContainer1>
+      </Container>
+
+      
+        
+       
     </Body>
   )
 }
@@ -347,26 +328,14 @@ const Body = styled.div`
     justify-content: start;
     margin-top: 20px;
 `
-const WelcomeMessage = styled.div`
-    width: 100%;
-    height: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: ${UISettings.colors.darkGreen};
-    border-radius: 20px;
-    background-image: url('./../../../../src/assets/lightStar.svg');
-    background-repeat: space;
-    background-size: 30%;
-`
+
 
 const Container = styled.div`
     width: 100%;
     display: flex;
     flex-direction: ${props => props.width > UISettings.devices.phone ? 'row-reverse' : 'column'} ;
     justify-content: space-between;
-    align-items: start;
+    align-items: ${props => props.width > UISettings.devices.phone ? 'start' : 'center'} ;
     `
 
 const SubContainer = styled.div`
@@ -376,9 +345,10 @@ const SubContainer = styled.div`
     flex-direction: column;
     justify-content: start;
     border-radius: 20px;
-    border: 1px solid #F3F3F3;
+    border: 0px solid #F3F3F3;
     margin-top: 10px;
-    padding: 10px;
+    padding:${props => props.width > UISettings.devices.phone ? '10px' : '10px 0px'} ;
+
 `
 const SubContainer1 = styled.div`
     background-color: white ;
@@ -387,9 +357,10 @@ const SubContainer1 = styled.div`
     flex-direction: column;
     justify-content: start;
     border-radius: 20px;
-    border: 1px solid #F3F3F3;
+    border: 0px solid #F3F3F3;
     margin-top: 10px;
-    padding: 10px;
+    padding:${props => props.width > UISettings.devices.phone ? '10px' : '10px 0px'} ;
+    margin: ${props => props.width > UISettings.devices.phone ? '10px 0px 0px 0px' : '10px 20px'};
 `
 
 const Element = styled.div`

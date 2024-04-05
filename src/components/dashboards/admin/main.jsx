@@ -38,6 +38,7 @@ import SubscriptionsTypes from './SubscritpionsTypes.jsx';
 import SubscriberDetails from './SubscriberDetails.jsx';
 import AddSubscription from './AddSubscription.jsx';
 import EditSubscription from './EditSubscription.jsx';
+import './style.css'
 import AllSessions from './AllSessions.jsx';
 import AddSession from './AddSession.jsx';
 import SessionDetails from './SessionDetails.jsx';
@@ -149,28 +150,28 @@ export default function Main() {
         //onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
     >
-        <SideBare windowSize={windowSize} open={sidebarOpen}>
+        <SideBare  className='adminSideBar' windowSize={windowSize} open={sidebarOpen}>
             <IconButton style={{display: windowSize.width > UISettings.devices.phone ? 'none' : 'unset', alignSelf: 'start'}} onClick={() => setSidebarOpen(!sidebarOpen)}><MenuOpenOutlined style={{ fontSize: '38px'}}/></IconButton>
             <img src={logo} alt="academy_logo" width={100} style={{margin: '20px 0px'}} />
-            <SubSideBare>
+            <SubSideBare className='adminSideBar' style={{background: 'transparent', flex: 1, overflow: 'auto', maxHeight:  'calc(100vh - 200px)'}}>
                 <SubSideBareActions>
                     <SubSideBareAction open={page === '' ? true : false} onClick={()=> {navigate(''); setPage(''); setSidebarOpen(false)}}>
                         <HomeIcon style={{marginLeft: '10px'}}></HomeIcon>
                         الرئيسية
                     </SubSideBareAction>
                     <div>
-                    <SubSideBareAction open={page === 'all' || page === 'addNew'} onClick={handleClick}>
+                    <SubSideBareAction open={page === 'allStudents' || page === 'addNewStudent'} onClick={handleClick}>
                         <SchoolIcon style={{marginLeft: '10px'}}></SchoolIcon>
                         إدارة الطلاب
                     {open ? <ExpandLess style={{marginRight: 'auto'}}/> : <ExpandMore style={{marginRight: 'auto'}}/>} 
                     </SubSideBareAction>   
-                    <Collapse in={open} timeout="auto" unmountOnExit>
+                    <Collapse  in={open} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'all' ? true : false} onClick={()=> {navigate('/admin/students/all'); setPage('all'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'allStudents' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'allStudents' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'allStudents' ? true : false} onClick={()=> {navigate('/admin/students/all'); setPage('allStudents'); setSidebarOpen(false)}}>
                             <Person2Outlined style={{marginLeft: '10px'}}></Person2Outlined>
                             جميع الطلاب
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === 'addNew' ? true : false} onClick={()=> {navigate('/admin/students/new'); setPage('addNew'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor: page === 'addNewStudent' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'addNewStudent' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'addNewStudent' ? true : false} onClick={()=> {navigate('/admin/students/new'); setPage('addNewStudent'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة طالب
                         </SubSideBareAction>
@@ -185,15 +186,15 @@ export default function Main() {
                     </SubSideBareAction>   
                     <Collapse in={openTeacher} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'allTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/all'); setPage('allTeachers'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'allTeachers' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'allTeachers' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'allTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/all'); setPage('allTeachers'); setSidebarOpen(false)}}>
                             <GroupIcon style={{marginLeft: '10px'}}></GroupIcon>
                             جميع المعلمين
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === 'recentTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/recent'); setPage('recentTeachers'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'recentTeachers' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'recentTeachers' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'recentTeachers' ? true : false} onClick={()=> {navigate('/admin/teachers/recent'); setPage('recentTeachers'); setSidebarOpen(false)}}>
                             <PersonSearchIcon style={{marginLeft: '10px'}}></PersonSearchIcon>
                             المسجلون حديثا
                         </SubSideBareAction>
-                        <SubSideBareAction open={page === 'newTeacher' ? true : false} onClick={()=> {navigate('/admin/teachers/new'); setPage('newTeacher'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'newTeacher' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'newTeacher' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'newTeacher' ? true : false} onClick={()=> {navigate('/admin/teachers/new'); setPage('newTeacher'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة أستاذ
                         </SubSideBareAction>
@@ -208,11 +209,11 @@ export default function Main() {
                     </SubSideBareAction>   
                     <Collapse in={openExams} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'allExams' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'allExams' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'allExams' ? true : false} onClick={()=> {navigate('/admin/exams/all'); setPage('allExams'); setSidebarOpen(false)}}>
                             <SchoolOutlined style={{marginLeft: '10px'}}></SchoolOutlined>
                             جميع الإمتحانات
                             </SubSideBareAction>
-                        <SubSideBareAction open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'addNewExam' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'addNewExam' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'addNewExam' ? true : false} onClick={()=> {navigate('/admin/exams/new'); setPage('addNewExam'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة امتحان
                         </SubSideBareAction>
@@ -246,15 +247,15 @@ export default function Main() {
                     </SubSideBareAction>   
                     <Collapse in={openSubs} timeout="auto" unmountOnExit>
                         <List component="div" sx={{'display':'flex',flexDirection:'column',justifyContent:'start',direction:'rtl',marginRight:'20px'}} disablePadding>
-                        <SubSideBareAction open={page === 'allSubs' ? true : false} onClick={()=> {navigate('/admin/subscriptions/all'); setPage('allSubs'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'allSubs' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'allSubs' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'allSubs' ? true : false} onClick={()=> {navigate('/admin/subscriptions/all'); setPage('allSubs'); setSidebarOpen(false)}}>
                             <PersonOutlineOutlinedIcon style={{marginLeft: '10px'}}></PersonOutlineOutlinedIcon>
                         إشتراكات الطلاب
                         </SubSideBareAction>
-                        <SubSideBareAction open={page === 'subsTypes' ? true : false} onClick={()=> {navigate('/admin/subscriptions/list'); setPage('subsTypes'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'subsTypes' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'subsTypes' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'subsTypes' ? true : false} onClick={()=> {navigate('/admin/subscriptions/list'); setPage('subsTypes'); setSidebarOpen(false)}}>
                             <PaymentIcon style={{marginLeft: '10px'}}></PaymentIcon>
                             أنواع الإشتراكات    
                         </SubSideBareAction>
-                        <SubSideBareAction open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/subscriptions/new'); setPage('addNewSub'); setSidebarOpen(false)}}>
+                        <SubSideBareAction style={{backgroundColor:page === 'addNewSub' ? UISettings.colors.greenBG : '#efefef3b', color:page === 'addNewSub' ? UISettings.colors.green : UISettings.colors.secondary}} open={page === 'addNewSub' ? true : false} onClick={()=> {navigate('/admin/subscriptions/new'); setPage('addNewSub'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             إضافة إشتراك    
                         </SubSideBareAction>
@@ -309,7 +310,7 @@ export default function Main() {
                     </SubSideBareAction>
                 </SubSideBareActions>
 
-                <SubSideBareActions>
+                <SubSideBareActions style={{minHeight: windowSize.width > UISettings.devices.phone ? '60px' : '120px', justifyContent: 'end', overflow: 'hidden'}}>
                     <NavbarSubInfo windowSize={windowSize} position={"sidebare"}>
                         <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={50} style={{margin: '0px 0px', marginLeft: '5px'}} />
                         <NavbarSubInfoData>
@@ -443,6 +444,7 @@ const SubSideBareActions = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: start;
+    padding-right: 5px;
 `
 
 const SubSideBareAction = styled.div`

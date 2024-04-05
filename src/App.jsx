@@ -15,7 +15,10 @@ import StudentRegister from './components/dashboards/student/register.jsx';
 import ConfirmStudentEmail from './components/dashboards/student/confirmEmail.jsx';
 import StudentLogin from './components/dashboards/student/login.jsx';
 import ResetStudentPassword from './components/dashboards/student/resetPassword.jsx';
+import AdminLogin from './components/dashboards/admin/login.jsx';
+import ResetAdminPassword from './components/dashboards/admin/resetPassword.jsx';
 import MainTeacher from './components/dashboards/teacher/main.jsx'
+
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<HomeLayout/>}>
@@ -36,7 +39,13 @@ const router = createBrowserRouter(
             <Route path='student/check-email-link' element={<ConfirmStudentEmail/>} />
             <Route path='student/login' element={<StudentLogin/>} />
             <Route path='student/ResetPassword' element={<ResetStudentPassword/>} />
+            {/* admin */}
             <Route path='admin/*' element={<MainAdmin/>} />
+            <Route path='admin/login' element={<AdminLogin/>} />
+            <Route path='admin/check-email-link' element={<ConfirmStudentEmail/>} />
+            <Route path='admin/ResetPassword' element={<ResetAdminPassword/>} />
+
+
         </Route>
     )
 );

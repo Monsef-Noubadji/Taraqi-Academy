@@ -17,6 +17,29 @@
     padding: 10px 0px !important;
 }
 
+.adminSideBar ::-webkit-scrollbar {
+    width: 3px !important; /* Width of vertical scrollbar */
+    height: 10px !important; /* Height of horizontal scrollbar */
+}
+
+/* Track */
+.adminSideBar ::-webkit-scrollbar-track {
+    background: #3BB3491A  !important; /* Color of scrollbar track */
+    border-radius: 20px !important;
+}
+
+/* Handle */
+.adminSideBar ::-webkit-scrollbar-thumb {
+    background: #3BB349  !important; /* Color of scrollbar handle */
+    border-radius: 20px !important;
+}
+
+/* Handle on hover */
+.adminSideBar ::-webkit-scrollbar-thumb:hover {
+    background: #3BB349 !important; /* Color of scrollbar handle on hover */
+    border-radius: 20px !important;
+}
+
 @media screen and (max-width: 600px) {
     .MuiBox-root.css-19kzrtu{
         padding-left: 5px;

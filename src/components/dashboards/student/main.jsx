@@ -316,7 +316,7 @@ export default function Main() {
                     </DialogContentText>
                 </DialogContent>
                 
-                </Dialog>
+              </Dialog>   
           </Body>
         )
     }
