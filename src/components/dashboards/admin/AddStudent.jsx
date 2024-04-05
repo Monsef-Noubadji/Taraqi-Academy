@@ -1,85 +1,259 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
 import { Button, FormControl, FormControlLabel, FormLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography } from '@mui/material'
-import { Delete, PersonOutlineOutlined, Save, SaveAlt, Upload } from '@mui/icons-material'
+import { AddCircleOutlineOutlined, AddOutlined, Delete, Key, Password, PersonOutlineOutlined, Save, SaveAlt, Upload } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
 import { useState } from 'react'
+import axiosInstance from '../student/axiosInstance'
+import errorHandler from '../student/errorHandler'
+import { ToastContainer,toast } from "react-toastify";
+import { LoadingButton } from '@mui/lab'
+
 
 export default function AddStudent({windowSize}) {
   const navigate = useNavigate()
-  const [isSubscribed,setIsSubscribed] = useState(true)
-  const programs = [
-    {id:0, name:"برنامح الهمم"},
-    {id:1, name:"برنامج التميز"},
-    {id:2, name:"برنامح الأساس"},
-  ]
+  // const [isSubscribed,setIsSubscribed] = useState(true)
 
-  const sessions = [
-  {id:0, name:"حلقة الهمم"},
-  {id:1, name:"حلقة التميز"},
-  {id:2, name:"حلقة الأساس"},
-  ]
+  // const programs = [
+  //   {id:0, name:"برنامح الهمم"},
+  //   {id:1, name:"برنامج التميز"},
+  //   {id:2, name:"برنامح الأساس"},
+  // ]
 
-  const handleActivate = () => {
-    setIsSubscribed(!isSubscribed)
+  // const sessions = [
+  // {id:0, name:"حلقة الهمم"},
+  // {id:1, name:"حلقة التميز"},
+  // {id:2, name:"حلقة الأساس"},
+  // ]
+
+  const [firstName, setFirstName] = useState('');
+  const [familyName, setFamilyName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [gender, setGender] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [sendNotif, setSendNotif] = useState(false);
+
+
+
+  const [firstNameError, setFirstNameError] = useState('');
+  const [familyNameError, setFamilyNameError] = useState('');
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [genderError, setGenderError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  function generatePassword(length) {
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const numberChars = '0123456789';
+    const specialChars = '!@#%&*()';
+
+    const allChars = uppercaseChars + lowercaseChars + numberChars + specialChars;
+
+    let password = '';
+
+    // Ensure at least one character from each character set
+    password += uppercaseChars[Math.floor(Math.random() * uppercaseChars.length)];
+    password += lowercaseChars[Math.floor(Math.random() * lowercaseChars.length)];
+    password += numberChars[Math.floor(Math.random() * numberChars.length)];
+    password += specialChars[Math.floor(Math.random() * specialChars.length)];
+
+    // Generate the rest of the password
+    for (let i = 0; i < length - 4; i++) {
+        const randomIndex = Math.floor(Math.random() * allChars.length);
+        password += allChars[randomIndex];
+    }
+
+    // Shuffle the password characters
+    password = password.split('').sort(() => Math.random() - 0.5).join('');
+
+    setPassword(password)
+    setPasswordError('')
   }
+
+  const [loadingCreate, setLoadingCreate] = useState(false);
+
+  async function createStudent() {
+    try {
+      setLoadingCreate(true)
+        const response = await axiosInstance.post('/adminApi/createStudent', {firstName, familyName, phoneNumber, gender, email, password, sendNotif});
+        if(response.data.response === 'done'){
+            setLoadingCreate(false)
+            toast.error(response.data.message, {
+              position: 'top-right',
+              progress: undefined,
+              autoClose: 3000,
+              theme: 'colored'
+          });
+          setTimeout(() => {
+            navigate('/admin/students/' + response.data.studentId)
+          }, 3000);
+        }
+    } catch (error) {
+      if(error.response && error.response.status  === 400 && error.response.data && error.response.data.response === 'invalid_params'){
+        const errors = error.response.data.errors
+        toast.error(error.response.data.message, {
+            position: 'top-right',
+            progress: undefined,
+            autoClose: 5000,
+            theme: 'colored'
+        });
+        for (let i = 0; i < errors.length; i++) {
+            const error = errors[i];
+            if(error.field === 'firstName'){
+                setFirstNameError(error.message)
+            } else if(error.field === 'familyName'){
+                setFamilyNameError(error.message)
+            } else if(error.field === 'phoneNumber'){
+                setPhoneNumberError(error.message)
+            } else if(error.field === 'gender'){
+                setGenderError(error.message)
+            } else if(error.field === 'email'){
+              setEmailError(error.message)
+            } else if(error.field === 'password'){
+              setPasswordError(error.message)
+            }
+        }
+    }else{
+        errorHandler(error, toast, navigate)
+    }
+    }
+}
+
+ 
   return (
     <Body>
+          <ToastContainer rtl="true"/>
         <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الطلاب </span> <span> {">"} إضافة طالب  </span></Typography>
-        <Button onClick={()=> navigate('/admin/students/all')} variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >حفظ المعلومات</Button>
+        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createStudent()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة طالب</LoadingButton>
         
         <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>أدخل المعلومات الشخصية</Typography>
+                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>المعلومات الشخصية</Typography>
             </ProfileInfos>
           </ProfileHeader>
 
-          <div   style={{width: '280px', alignSelf: 'center', height: '100%', backgroundColor: '#3BB3490D', border: '2px dashed #5FCE6C', borderRadius: "5px", padding: "20px 10px" , display: 'flex', flexDirection: 'column', justifyContent: 'start', marginBottom: '20px'}}>
+          {/* profile picture not displayed */}
+          {/* <div   style={{width: '280px', alignSelf: 'center', height: '100%', backgroundColor: '#3BB3490D', border: '2px dashed #5FCE6C', borderRadius: "5px", padding: "20px 10px" , display: 'flex', flexDirection: 'column', justifyContent: 'start', marginBottom: '20px'}}>
             <PersonOutlineOutlined style={{padding: '10px', borderRadius: '50%', color: UISettings.colors.green, backgroundColor: UISettings.colors.greenBG, fontSize: '60px', alignSelf: 'center'}}/>
             <div style={{width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: '20px'}} >
               <Button variant='secondary' endIcon={<Delete/>} >حذف</Button>
               <Button variant='primary' endIcon={<Upload/>} style={{marginLeft:'10px'}} >تحميل</Button>
-
             </div>
-          </div>
+          </div> */}
           
           <SubContainer>
             <ProfileDatas width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الاسم الكامل (الثلاثي)</Typography>
-              <TextField style={{width: '100%'}} placeholder='الاسم الكامل (الثلاثي)' />
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الاسم</Typography>
+              <TextField 
+                style={{width: '100%'}} 
+                placeholder='الاسم' 
+                value={firstName} 
+                onChange={(e)=> {setFirstName(e.target.value); setFirstNameError('')}}
+                error={firstNameError.length > 0 ? true : false}
+                helperText={firstNameError}
+              />
             </ProfileDatas>
             <ProfileDatas width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الوصف</Typography>
-              <TextField style={{width: '100%'}} placeholder='الوصف' />
-            </ProfileDatas>
-            <ProfileDatas width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>البريد الالكتروني</Typography>
-              <TextField style={{width: '100%'}} placeholder='البريد الالكتروني' />
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>اللقب</Typography>
+              <TextField 
+                style={{width: '100%'}} 
+                placeholder='اللقب' 
+                value={familyName} 
+                onChange={(e)=> {setFamilyName(e.target.value); setFamilyNameError('')}}
+                error={familyNameError.length > 0 ? true : false}
+                helperText={familyNameError}
+              />
             </ProfileDatas>
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>رقم الهاتف</Typography>
-              <TextField style={{width: '100%'}} placeholder='رقم الهاتف' />
+              <TextField 
+                style={{width: '100%'}} 
+                placeholder='رقم الهاتف' 
+                value={phoneNumber} 
+                type='number'
+                onChange={(e)=> {setPhoneNumber(e.target.value); setPhoneNumberError('')}}
+                error={phoneNumberError.length > 0 ? true : false}
+                helperText={phoneNumberError}
+              />
             </ProfileDatas>
-            <ProfileDatas>
-            <FormControl sx={{padding:'1rem'}}>
-              <FormLabel id="controlled-radio-buttons-group">الجنس</FormLabel>
-              <RadioGroup
-              row
-                aria-labelledby="controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-              >
-                <FormControlLabel value="MALE" control={<Radio />} label="ذكر" />
-                <FormControlLabel value="FEMALE" control={<Radio />} label="أنثى" />
-              </RadioGroup>
-            </FormControl>
+            <ProfileDatas  width={windowSize.width}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الجنس</Typography>
+                <Select
+                    fullWidth
+                    id="gender"
+                    name="gender"
+                    label=""
+                    sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                    value={gender}
+                    onChange={(e)=> {setGender(e.target.value); setGenderError('')}}
+                    error={genderError.length > 0 ? true : false}
+                    helperText={genderError}
+                    >
+                    <MenuItem style={{direction: 'rtl'}} value={'أنثى'}>{'أنثى'}</MenuItem>
+                    <MenuItem style={{direction: 'rtl'}} value={'ذكر'}>{'ذكر'}</MenuItem>
+                </Select>
+              </ProfileDatas>
+          </SubContainer>
+        </Container>
+
+        <Container>
+          <ProfileHeader  style={{marginBottom: '15px'}}>
+            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
+            <ProfileInfos>
+                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات الدخول</Typography>
+            </ProfileInfos>
+          </ProfileHeader>
+          
+          <SubContainer>
+            <ProfileDatas width={windowSize.width}>
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>البريد الإلكتروني</Typography>
+              <TextField 
+                style={{width: '100%'}} 
+                placeholder='البريد الإلكتروني' 
+                value={email} 
+                onChange={(e)=> {setEmail(e.target.value); setEmailError('')}}
+                error={emailError.length > 0 ? true : false}
+                helperText={emailError}
+              />
             </ProfileDatas>
+            <ProfileDatas width={windowSize.width}>
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>كلمة المرور</Typography>
+              <TextField 
+                style={{width: '100%'}} 
+                placeholder='كلمة المرور' 
+                value={password} 
+                onChange={(e)=> {setPassword(e.target.value); setPasswordError('')}}
+                error={passwordError.length > 0 ? true : false}
+                helperText={passwordError}
+              />
+            </ProfileDatas>
+            
+           
+            
+            <ProfileDatas style={{width: '100%'}} width={windowSize.width}>
+              <Button onClick={()=> generatePassword(10)} variant='primary' endIcon={<Key style={{marginRight: '10px'}}/>} style={{alignSelf: 'end'}} >إنشاء كلمة مرور</Button>
+            </ProfileDatas>
+            
+            <ProfileDatas width={windowSize.width}>
+              <Notif>
+                <SwitchIcon open={sendNotif} change={setSendNotif} />
+                <ProfileDatas  width={100}>
+                  <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>إرسال بيانات تسجيل الدخول</Typography>
+                  <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginBottom: "10px", color: UISettings.colors.secondary}}>إرسال بيانات تسجيل الدخول عبر البريد الإلكتروني</Typography>
+                </ProfileDatas>
+              </Notif>
+            </ProfileDatas>
+
+
           </SubContainer>
         </Container>
         
-        <Container>
+        {/* <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -96,9 +270,9 @@ export default function AddStudent({windowSize}) {
               <TextField style={{width: '100%'}} placeholder='الولاية' />
             </ProfileDatas>
           </SubContainer>
-        </Container>
+        </Container> */}
 
-        <Container>
+        {/* <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -145,9 +319,9 @@ export default function AddStudent({windowSize}) {
               </FormControl>
             </ProfileDatas>
           </SubContainer>
-        </Container>
+        </Container> */}
 
-        <Container>
+        {/* <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -192,8 +366,8 @@ export default function AddStudent({windowSize}) {
             </ProfileDatas>
             
           </SubContainer>
-        </Container>
-        <Button onClick={()=> navigate('/admin/students/all')} variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >حفظ المعلومات</Button>
+        </Container> */}
+        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createStudent()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة طالب</LoadingButton>
 
     </Body>
   )
@@ -259,7 +433,7 @@ const SubContainer = styled.div`
   width: 100% !important;
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: start;
   flex-wrap: wrap;
   direction: rtl;
 `

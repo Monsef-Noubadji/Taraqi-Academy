@@ -8,11 +8,12 @@ import Typography from '@mui/material/Typography';
 import styling from 'styled-components'
 import UISettings from '../../../theme/UISettings';
 
-export default function SwitchIcon() {
+export default function SwitchIcon({open, change}) {
   return (
     <FormControlLabel
         style={{direction: 'ltr'}}
-        control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+        onChange={(e)=> change(e.target.checked)}
+        control={<IOSSwitch sx={{ m: 1 }} checked={open} />}
       />
   )
 }

@@ -17,11 +17,7 @@ function errorHandler(error, toast, navigate){
                     theme: 'colored'
                 });
                 setTimeout(() => {
-                    if(error.response.data.response === 'unauthorized_admin'){
-                        navigate('/admin/login', { replace: true})
-                    }else{
-                        navigate('/student/login', { replace: true})
-                    }
+                    navigate('/student/login', { replace: true})
                 }, 2000);
                 break;
             case 403:

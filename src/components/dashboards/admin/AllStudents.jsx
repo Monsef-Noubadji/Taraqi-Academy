@@ -1,218 +1,350 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, FormControl, InputLabel, MenuItem, Select, Slide, TextField, Typography } from '@mui/material';
 import UISettings from '../../../theme/UISettings';
-import { FilterList, OpenInNew, Print } from '@mui/icons-material';
+import { Clear, Error, FilterList, OpenInNew, Print } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from '@mui/x-data-grid';
 import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import axiosInstance from '../student/axiosInstance';
+import errorHandler from '../student/errorHandler';
+import { ToastContainer,toast } from "react-toastify";
+import { LoadingButton } from '@mui/lab';
+import styled from 'styled-components';
+import countriesArabic from '../student/countries';
 
-const AllStudents = () => {
 
-    const navigate = useNavigate()
+const AllStudents = ({windowSize}) => {
+
     const sessions = [
         {id:0, name:"حلقة عمرو بن العاص"},
         {id:1, name:"حلقة عثمان بن عفان"},
         {id:2, name:"حلقة مصعب بن عمير"},
         {id:3, name:"حلقة طلحة بن عبيد الله"},
-
+        
     ]
-
+    
     const programs = [
         {id:0, name:"برنامح الهمم"},
         {id:1, name:"برنامج التميز"},
         {id:2, name:"برنامح الأساس"},
     ]
-    return (
-        <main style={{'direction':'rtl',padding:'1rem'}}>
-            <Typography variant='h5' fontWeight={800}>{'إدارة الطلاب > جميع الطلاب'}</Typography>
-            <section className='flex flex-col items-start justify-center mt-20 gap-8'>
-                <Typography variant='h7' fontWeight={700}>حدد طلاب الحلقة المراد عرضها</Typography>
-                {/* filter section */}
-                <section className='flex items-center justify-start gap-2 w-full'>
-                <FormControl dir="rtl" style={{width: "33%"}}>
-                <InputLabel id="program" > البرنامج </InputLabel>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        labelId="program"
-                        id="program"
-                        //value={age}
-                        label="البرنامج"
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                        {programs.map((program,index)=>(
+    
+    const navigate = useNavigate()
+    
+    const [students, setStudents] = useState([]);
+    const [displayedStudents, setDisplayedStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl dir="rtl" style={{width: "33%"}}>
-                <InputLabel id="gender" > الجنس </InputLabel>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        labelId="gender"
-                        id="gender"
-                        //value={age}
-                        label="الجنس"
-                        defaultValue={0}
-                        //onChange={handleChange}
-                    >
-                    <MenuItem selected value={0} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                    <MenuItem selected value={"MALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>ذكر</span> </MenuItem>
-                    <MenuItem value={"FEMALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> أنثى</span> </MenuItem>
-                    </Select>
-                </FormControl>
-                <FormControl dir="rtl" style={{width: "33%"}}>
-                <InputLabel id="session" > الحلقة </InputLabel>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        labelId="session"
-                        id="session"
-                        //value={age}
-                        label="الحلقة"
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                        {sessions.map((session,index)=>(
+    async function getPaymentDetails() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getStudents');
+            console.log(response.data)
+            if(response.data.response === 'done'){
+                setStudents(response.data.students)
+                setDisplayedStudents(response.data.students)
+                setLoading(false)
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
 
-                            <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+    
+      useEffect(() => {
+          if (isMounted.current) {
+            getPaymentDetails()
+          }
+      }, []);
 
-                </section>
-                {/* CTA section */}
-                <section className='flex items-center justify-between gap-2 w-full'>
-                    <p>مجموع الطلاب : {rows.length} طالب</p>
-                    <div className='flex items-center justify-center gap-3'>
-                        <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><Print/></Button>
-                        <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} startIcon={<FilterList sx={{'marginLeft':'10px'}}/>} >تصفية الطلاب</Button>
-                        <Button variant='primary' onClick={()=> navigate('/admin/students/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة طالب</Button>
-                    </div>
-                </section>
+      const [openFilterPopup, setOpenFilterPopup] = React.useState(false);
+      const handleCloseFilterPopup = () => {
+          setOpenFilterPopup(false);
+      }
 
-                <div dir="rtl" style={{ height: 370, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
-                </div>
-            </section>
-        </main>
-    );
+
+      if(loading){
+        return(
+           <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+               <ToastContainer rtl="true"/>
+               <CircularProgress style={{color: UISettings.colors.green}}/>
+               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+             </div>
+           )
+        }else{
+            return (
+                <main style={{'direction':'rtl',padding:'1rem', paddingTop: '0px', marginTop: '0px'}}>
+                    <ToastContainer rtl="true"/>
+                    <Typography variant='h5' fontWeight={800}>{'إدارة الطلاب > جميع الطلاب'}</Typography>
+                    <section className='flex flex-col items-start justify-center mt-20 gap-8' style={{marginTop: '25px'}}>
+                        {/* filter section */}
+                        <Typography variant='h7' style={{display: 'none'}}  fontWeight={700}>حدد طلاب الحلقة المراد عرضها</Typography>
+                        <section className='flex items-center justify-start gap-2 w-full' style={{display: 'none'}} >
+                        <FormControl dir="rtl" style={{width: "33%"}}>
+                        <InputLabel id="program" > البرنامج </InputLabel>
+                            <Select
+                                dir="rtl"
+                                style={{paddingTop: "0px", paddingBottom: '0px'}}
+                                labelId="program"
+                                id="program"
+                                //value={age}
+                                label="البرنامج"
+                                defaultValue={'all'}
+                                //onChange={handleChange}
+                            >
+                                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                                {programs.map((program,index)=>(
+        
+                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl dir="rtl" style={{width: "33%"}}>
+                        <InputLabel id="gender" > الجنس </InputLabel>
+                            <Select
+                                dir="rtl"
+                                style={{paddingTop: "0px", paddingBottom: '0px'}}
+                                labelId="gender"
+                                id="gender"
+                                //value={age}
+                                label="الجنس"
+                                defaultValue={0}
+                                //onChange={handleChange}
+                            >
+                            <MenuItem selected value={0} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                            <MenuItem selected value={"MALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>ذكر</span> </MenuItem>
+                            <MenuItem value={"FEMALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> أنثى</span> </MenuItem>
+                            </Select>
+                        </FormControl>
+                        <FormControl dir="rtl" style={{width: "33%"}}>
+                        <InputLabel id="session" > الحلقة </InputLabel>
+                            <Select
+                                dir="rtl"
+                                style={{paddingTop: "0px", paddingBottom: '0px'}}
+                                labelId="session"
+                                id="session"
+                                //value={age}
+                                label="الحلقة"
+                                defaultValue={'all'}
+                                //onChange={handleChange}
+                            >
+                                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                                {sessions.map((session,index)=>(
+        
+                                    <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+        
+                        </section>
+                        {/* CTA section */}
+                        <section className='flex items-center justify-between gap-2 w-full' style={{flexDirection: windowSize.width > UISettings.devices.phone? 'row': 'column'}}>
+                            <p style={{alignSelf: 'start'}}>مجموع الطلاب : {students.length} طالب</p>
+                            <div className='flex items-center justify-center gap-3' style={{alignSelf: 'end'}}>
+                                {/* <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><Print/></Button> */}
+                                <Button variant='primary'  style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} startIcon={<FilterList sx={{'marginLeft':'10px'}}/>} onClick={()=> setOpenFilterPopup(true)} >تصفية الطلاب</Button>
+                                <Button variant='primary'  onClick={()=> navigate('/admin/students/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة طالب</Button>
+                            </div>
+                        </section>
+        
+                        <div dir="rtl" style={{ height: windowSize.width > UISettings.devices.phone? 'calc(100vh - 250px)' : 'calc(100vh - 300px)', width: '100%' }}>
+                        <DataGrid
+                            rows={displayedStudents}
+                            columns={columns}
+                            initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                            }}
+                            pageSize={5}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            checkboxSelection
+                            componentsProps={{
+                            pagination: { style: {
+                                direction: 'ltr'
+                            }}
+                            }}
+                        />
+                        </div>
+                    </section>
+                    {/* // filter popup */}
+                    <Dialog
+                        fullWidth
+                        maxWidth={"sm"}
+                        open={openFilterPopup}
+                        TransitionComponent={Transition}
+                        keepMounted
+                        onClose={handleCloseFilterPopup}
+                        aria-describedby="alert-dialog-slide-description"
+                        style={{borderRadius: '20px'}}
+                        >
+                        {/* <DialogTitle><Clear onClick={()=> setOpenFilterPopup(false)} style={{cursor: 'pointer'}}/></DialogTitle> */}
+                        <DialogContent>
+                            <Clear onClick={()=> setOpenFilterPopup(false)} style={{cursor: 'pointer', position: 'absolute'}}/>
+                            <DialogContentText id="alert-dialog-slide-description" style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                            {/* <Error style={{fontSize: '100px', color:'red'}}></Error> */}
+                            <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', width: '100%', marginBottom: '10px', marginTop: "0px"}}>تصفية الطالب</Typography>
+                            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>هنا يمكنك تصفية الطلاب لتسهيل العثور عليهم</Typography>
+                            
+                            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginTop: '10px', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>البرنامج</Typography>
+                            <Select
+                                fullWidth
+                                id="program"
+                                name="program"
+                                label=""
+                                sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                                // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
+                                // error={countryError.length > 0 ? true : false}
+                                // helperText={countryError}
+                                // value={country}
+                                >
+                                {programs.map((program,index)=>(
+                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                                ))}
+                            </Select>
+                            
+                            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginTop: '10px', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>الجنس</Typography>
+                            <Select
+                                fullWidth
+                                id="program"
+                                name="program"
+                                label=""
+                                sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                                // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
+                                // error={countryError.length > 0 ? true : false}
+                                // helperText={countryError}
+                                // value={country}
+                                >
+                                {programs.map((program,index)=>(
+                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                                ))}
+                            </Select>
+
+                            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginTop: '10px', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>الحلقة</Typography>
+                            <Select
+                                fullWidth
+                                id="program"
+                                name="program"
+                                label=""
+                                sx={{'direction':'rtl','fontFamily':'Cairo'}}
+                                // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
+                                // error={countryError.length > 0 ? true : false}
+                                // helperText={countryError}
+                                // value={country}
+                                >
+                                {programs.map((program,index)=>(
+                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                                ))}
+                            </Select>
+                            <Buttons style={{justifyContent: 'center'}}>
+                                <Button variant='secondary' style={{marginLeft: '20px'}}onClick={()=> setOpenFilterPopup(false)}>رجوع</Button>
+                                <LoadingButton loading={false} loadingPosition='center'  variant='primary' style={{backgroundColor: UISettings.colors.green}} >تصفية الطالب</LoadingButton >
+                            </Buttons>
+                            </DialogContentText>
+                        </DialogContent>
+                        
+                    </Dialog>  
+                </main>
+            );
+        }
+
 };
 
 export default AllStudents;
 
 
+const Buttons = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: 20px;
+`
+
+
 const columns = [
     { 
         field: 'name', 
-        headerName: (<span>نوع الاشتراك</span>), 
+        headerName: (<span>الاسم</span>), 
         minWidth: 150, 
         flex: 1, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
-                    <span style={{color: UISettings.colors.secondary}}>{params.row.name}</span>
+                <Link to={`/admin/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.firstName + ' ' + params.row.familyName}</span>
                 </Link>
             );
         }, 
     },
     { 
         field: 'email', 
-        headerName: 'الشهر', 
-        width: 200, 
+        headerName: 'البريد الإلكتروني', 
+        width: 250, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
+                <Link to={`/admin/students/${params.row.id}`}>
                     <span style={{color: UISettings.colors.secondary}}>{params.row.email}</span>
                 </Link>
             );
         }, 
     },
     { 
-        field: 'exams', 
-        headerName: 'تاريخ دفع الاشتراك', 
-        width: 200, 
+        field: 'program', 
+        headerName: ' البرنامج', 
+        width: 150, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
-                    <span style={{color: UISettings.colors.secondary}}>{params.row.exams}</span>
+                <Link to={`/admin/students/${params.row.id}`}>                
+                    <span style={{color: UISettings.colors.secondary}}>{params.row && params.row.studyPrograms &&  params.row.studyPrograms[0] && params.row.studyPrograms[0].name ? params.row.studyPrograms[0].name : '--' }</span>
                 </Link>
             );
         }, 
     },
     { 
-        field: 'planType', 
-        headerName: 'المبلغ المستحق', 
-        minWidth: 200, 
-        flex: 1, 
+        field: 'group', 
+        headerName: 'الحلقة', 
+        minWidth: 150, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
-                    <span style={{color: UISettings.colors.secondary}}>{params.row.plantype}</span>
+                <Link to={`/admin/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{'soon'}</span>
                 </Link>
             );
         }, 
     },
     { 
-        field: 'details', 
-        headerName: 'التفاصيل', 
-        width: 300, 
+        field: 'level', 
+        headerName: 'المستوى', 
+        minWidth: 100, 
         renderCell: (params) => { 
             return (
-                <Link style={{'color':UISettings.colors.green}} to={`/admin/students/${params.row.id}`}>
-                    <OpenInNew />
+                <Link to={`/admin/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row && params.row.studyPrograms && params.row.studyPrograms[0] && params.row.studyPrograms[0].studentStudyProgram && params.row.studyPrograms[0].studentStudyProgram.level ? params.row.studyPrograms[0].studentStudyProgram.level : '--' }</span>
+                </Link>
+            );
+        }, 
+    },
+    { 
+        field: 'expirationDate', 
+        headerName: 'انتهاء الاشتراك', 
+        width: 150, 
+        renderCell: (params) => { 
+            return (
+                <Link to={`/admin/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row && params.row.studyPrograms && params.row.studyPrograms[0] && params.row.studyPrograms[0].studentStudyProgram && params.row.studyPrograms[0].studentStudyProgram.experationDate ? params.row.studyPrograms[0].studentStudyProgram.experationDate.slice(0, 10) : '--' }</span>
                 </Link>
             );
         }, 
     },
 ];
 
-  
-const rows = [
-    { id: 1, name: 'عبد الإله', email: 'noubadjimonsef@gmail.com', exams: '5 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 2, name: 'محمد', email: 'mohammed@example.com', exams: '3 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 3, name: 'فاطمة', email: 'fatima@example.com', exams: '2 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 4, name: 'علي', email: 'ali@example.com', exams: '4 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 5, name: 'خديجة', email: 'khadija@example.com', exams: '1 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 6, name: 'يوسف', email: 'youssef@example.com', exams: '6 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 7, name: 'نور', email: 'nour@example.com', exams: '3 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 8, name: 'أمينة', email: 'amina@example.com', exams: '2 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 9, name: 'عبد الرحمن', email: 'abdelrahman@example.com', exams: '5 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 10, name: 'مريم', email: 'maryam@example.com', exams: '4 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 11, name: 'ياسين', email: 'yassine@example.com', exams: '2 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 12, name: 'ريم', email: 'reem@example.com', exams: '3 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 13, name: 'عمر', email: 'omar@example.com', exams: '1 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 14, name: 'رضا', email: 'reda@example.com', exams: '4 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 15, name: 'سارة', email: 'sara@example.com', exams: '2 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 16, name: 'أحمد', email: 'ahmed@example.com', exams: '3 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 17, name: 'ليلى', email: 'laila@example.com', exams: '5 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 18, name: 'عماد', email: 'imad@example.com', exams: '1 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 19, name: 'مهدي', email: 'mahdi@example.com', exams: '6 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 20, name: 'أميرة', email: 'amira@example.com', exams: '2 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 21, name: 'عبد الوهاب', email: 'abdulwahab@example.com', exams: '3 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 22, name: 'نادية', email: 'nadia@example.com', exams: '4 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 23, name: 'حسين', email: 'hussein@example.com', exams: '2 إمتحانات', plantype: 'اشتراك شهري' },
-    { id: 24, name: 'زينب', email: 'zeinab@example.com', exams: '5 إمتحانات', plantype: 'اشتراك سنوي' },
-    { id: 25, name: 'خالد', email: 'khaled@example.com', exams: '1 إمتحانات', plantype: 'اشتراك شهري' },
-
-];
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
