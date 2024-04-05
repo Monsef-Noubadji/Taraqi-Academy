@@ -47,7 +47,7 @@ export const TeacherMenu = ({ id }) => {
                 }}
             >
                 <MenuItem >
-                    <Link to={`/admin/programs/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                    <Link to={`/admin/sessions/${id}/edit`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                         <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                             <BadgeIcon />
                         </ListItemIcon>
@@ -67,7 +67,7 @@ export const TeacherMenu = ({ id }) => {
   };
 
 
-const AllPrograms = () => {
+const AllSessions = () => {
 
     const navigate = useNavigate()
 
@@ -76,54 +76,49 @@ const AllPrograms = () => {
         {id:1, name:"برنامج التميز"},
         {id:2, name:"برنامح الأساس"},
     ]
-    const sessions = [
-        {id:0, name:"حلقة عمرو بن العاص"},
-        {id:1, name:"حلقة عثمان بن عفان"},
-        {id:2, name:"حلقة مصعب بن عمير"},
-        {id:3, name:"حلقة طلحة بن عبيد الله"},
-
-    ]
 
     return (
         <main style={{'direction':'rtl',padding:'1rem'}}>
-            <Typography variant='h5' fontWeight={800}>{'إدارة البرامج > جميع البرامج'}</Typography>
+            <Typography variant='h5' fontWeight={800}>{'إدارة الحلقات > جميع الحلقات'}</Typography>
             <section className='flex flex-col items-start justify-center mt-20 gap-8'>
                 {/* CTA section */}
                 <section className='flex-col md:flex-row lg:flex-row justify-between gap-10 w-full'>
-                    <p className='mb-8 md:mb-0 lg:mb-0'>مجموع البرامج : {rows.length} برنامج</p>
+                    <p className='mb-8 md:mb-0 lg:mb-0'>مجموع الحلقات : {rows.length} حلقة</p>
                     <div className='flex items-center justify-start md:justify-end lg:justify-end gap-3'>
                         <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><PrintOutlined/></Button>
                         <FormControl dir="rtl" style={{'width':'7rem'}} >
+                <InputLabel id="program" > البرنامج </InputLabel>
                     <Select
                         dir="rtl"
                         style={{paddingTop: "0px", paddingBottom: '0px'}}
                         labelId="program"
                         id="program"
                         //value={age}
-                        label=""
+                        label="البرنامج"
                         defaultValue={'all'}
                         //onChange={handleChange}
                     >
                         <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                        <MenuItem  value={'des = -1'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الأقدم</span> </MenuItem>
-                        <MenuItem  value={'des = 1'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الأحدث</span> </MenuItem>
-                        
+                        {programs.map((program,index)=>(
+
+                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                        ))}
                     </Select>
                         </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/programs/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة برنامج</Button>
+                        <Button variant='primary' onClick={()=> navigate('/admin/sessions/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة حلقة</Button>
                     </div>
                 </section>
 
-                <div dir="rtl" style={{ height: 420, width: '100%' }}>
+                <div dir="rtl" style={{ height: 370, width: '100%' }}>
           <DataGrid
             rows={rows}
             columns={columns}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 6 },
+                paginationModel: { page: 0, pageSize: 5 },
               },
             }}
-            pageSize={6}
+            pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
             checkboxSelection
             componentsProps={{
@@ -138,13 +133,13 @@ const AllPrograms = () => {
     );
 };
 
-export default AllPrograms;
+export default AllSessions;
 
 
 const columns = [
     { 
         field: 'name', 
-        headerName: (<span>إسم البرنامج</span>), 
+        headerName: (<span>إسم الحلقة</span>), 
         minWidth: 150, 
         flex: 1, 
         renderCell: (params) => { 
@@ -157,36 +152,41 @@ const columns = [
     },
     { 
         field: 'number', 
-        headerName: 'عدد الطلاب المسجلين', 
+        headerName: 'عدد الطلاب', 
         width: 200, 
         renderCell: (params) => { 
             return (
-                <span style={{color: UISettings.colors.secondary}}>{params.row.number}</span>
+                <Link to={`/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.number}</span>
+                </Link>
             );
         }, 
     },
     { 
-        field: 'status', 
-        headerName: 'حالة البرنامج', 
+        field: 'program', 
+        headerName: 'البرنامج', 
+        width: 200, 
+        renderCell: (params) => { 
+            return (
+                <Link to={`/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.program}</span>
+                </Link>
+            );
+        }, 
+    },
+    { 
+        field: 'teacher', 
+        headerName: 'الأستاذ المسؤول', 
         minWidth: 200, 
         flex: 1, 
         renderCell: (params) => { 
             return (
-                <span style={{color: UISettings.colors.secondary}}>{params.row.status}</span>
+                <Link to={`/students/${params.row.id}`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.teacher}</span>
+                </Link>
             );
         }, 
     },
-    { 
-      field: 'duration', 
-      headerName: 'مدة البرنامج', 
-      minWidth: 200, 
-      flex: 1, 
-      renderCell: (params) => { 
-          return (
-              <span style={{color: UISettings.colors.secondary}}>{params.row.duration}</span>
-          );
-      }, 
-  },
     { 
         field: 'details', 
         headerName: <span><MoreVertIcon/></span>, 
@@ -201,11 +201,14 @@ const columns = [
 
   
 const rows = [
-    { id: 1, name: 'برنامج الهمم ', number: '200', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 2, name: 'برنامج الأساس ', number: '150', status: <span style={{'color':UISettings.colors.brown,backgroundColor:UISettings.colors.brownBG,padding:'.5rem',borderRadius:'10px'}}>غير متاح</span>, duration: '4 سنوات' },
-    { id: 3, name: 'برنامج التميز ', number: '100', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 4, name: 'برنامج النخبة ', number: '150', status: <span style={{'color':UISettings.colors.brown,backgroundColor:UISettings.colors.brownBG,padding:'.5rem',borderRadius:'10px'}}>غير متاح</span>, duration: '4 سنوات' },
-    { id: 5, name: 'برنامج المراقي ', number: '200', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 6, name: 'برنامج الحفاظ ', number: '100', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-
+    { id: 1, name: 'حلقة المعالي', number: '45', program: 'برنامج الأساس', teacher: 'الأستاذ العيد عبود' },
+    { id: 2, name: 'حلقة العلم والتعلم', number: '30', program: 'برنامج التميز', teacher: 'الأستاذة فاطمة خليل' },
+    { id: 3, name: 'حلقة النور', number: '20', program: 'برنامج الهمم', teacher: 'الأستاذ محمد علي' },
+    { id: 4, name: 'حلقة التدبر', number: '15', program: 'برنامج الإتقان', teacher: 'الأستاذة سارة حسن' },
+    { id: 5, name: 'حلقة القراءة', number: '10', program: 'برنامج الأساس', teacher: 'الأستاذ عبد الرحمن محمد' },
+    { id: 6, name: 'حلقة التجويد', number: '25', program: 'برنامج التميز', teacher: 'الأستاذة ليلى علي' },
+    { id: 7, name: 'حلقة الحفظ', number: '18', program: 'برنامج الهمم', teacher: 'الأستاذ يوسف صالح' },
+    { id: 8, name: 'حلقة التفسير', number: '22', program: 'برنامج الإتقان', teacher: 'الأستاذة نورة أحمد' }
+      
+      
 ];

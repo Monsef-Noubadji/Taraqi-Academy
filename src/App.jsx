@@ -17,6 +17,7 @@ import StudentLogin from './components/dashboards/student/login.jsx';
 import ResetStudentPassword from './components/dashboards/student/resetPassword.jsx';
 import AdminLogin from './components/dashboards/admin/login.jsx';
 import ResetAdminPassword from './components/dashboards/admin/resetPassword.jsx';
+import MainTeacher from './components/dashboards/teacher/main.jsx'
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
                 <Route index element={<Profile/>}/>
             </Route>
             <Route path='student/*' element={<Main/>} />
+            <Route path='teacher/*' element={<MainTeacher/>} />
             <Route path='student/register' element={<StudentRegister/>} />
             <Route path='student/check-email-link' element={<ConfirmStudentEmail/>} />
             <Route path='student/login' element={<StudentLogin/>} />

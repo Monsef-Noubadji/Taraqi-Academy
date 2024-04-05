@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import logo from '../../../../src/assets/logo.svg'
 import UISettings from '../../../theme/UISettings'
 import HomeIcon from '@mui/icons-material/Home';
-import { Assignment, Clear, Error, ErrorOutline, LogoutOutlined, MenuOpenOutlined, Notifications, PaymentOutlined, Person, ReportProblem, RouteOutlined, SearchOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Assignment, Clear, Error, LogoutOutlined, MenuOpenOutlined, Notifications, PaymentOutlined, Person, ReportProblem, RouteOutlined, SearchOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Route, Routes, useNavigate } from 'react-router';
 import Home from './Home';
 import Programs from './Programs';
@@ -22,15 +22,11 @@ import { ToastContainer,toast } from "react-toastify";
 import { LoadingButton } from '@mui/lab';
 import Payement from './payment';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import ImageIcon from '@mui/icons-material/Image';
-import WorkIcon from '@mui/icons-material/Work';
-import BeachAccessIcon from '@mui/icons-material/BeachAccess';
 
 
 export default function Main() {

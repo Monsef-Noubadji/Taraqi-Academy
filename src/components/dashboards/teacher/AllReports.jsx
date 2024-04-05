@@ -47,7 +47,7 @@ export const TeacherMenu = ({ id }) => {
                 }}
             >
                 <MenuItem >
-                    <Link to={`/admin/programs/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                    <Link to={`/admin/reports/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                         <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                             <BadgeIcon />
                         </ListItemIcon>
@@ -67,7 +67,7 @@ export const TeacherMenu = ({ id }) => {
   };
 
 
-const AllPrograms = () => {
+const AllReports = () => {
 
     const navigate = useNavigate()
 
@@ -86,11 +86,55 @@ const AllPrograms = () => {
 
     return (
         <main style={{'direction':'rtl',padding:'1rem'}}>
-            <Typography variant='h5' fontWeight={800}>{'إدارة البرامج > جميع البرامج'}</Typography>
+            <Typography variant='h5' fontWeight={800}>{'إدارة التقارير > جميع التقارير'}</Typography>
             <section className='flex flex-col items-start justify-center mt-20 gap-8'>
+            <Typography variant='h7' fontWeight={700}>حدد التقارير المراد عرضها</Typography>
+
+                {/* filter section */}
+                <section className='flex items-center justify-start gap-2 w-full'>
+                <FormControl dir="rtl" style={{width: "50%"}}>
+                <InputLabel id="program" > البرنامج </InputLabel>
+                    <Select
+                        dir="rtl"
+                        style={{paddingTop: "0px", paddingBottom: '0px'}}
+                        labelId="program"
+                        id="program"
+                        //value={age}
+                        label="البرنامج"
+                        defaultValue={'all'}
+                        //onChange={handleChange}
+                    >
+                        <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                        {programs.map((program,index)=>(
+
+                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl dir="rtl" style={{width: "50%"}}>
+                <InputLabel id="session" > الحلقة </InputLabel>
+                    <Select
+                        dir="rtl"
+                        style={{paddingTop: "0px", paddingBottom: '0px'}}
+                        labelId="session"
+                        id="session"
+                        //value={age}
+                        label="الحلقة"
+                        defaultValue={'all'}
+                        //onChange={handleChange}
+                    >
+                        <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                        {sessions.map((session,index)=>(
+
+                            <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                </section>
                 {/* CTA section */}
                 <section className='flex-col md:flex-row lg:flex-row justify-between gap-10 w-full'>
-                    <p className='mb-8 md:mb-0 lg:mb-0'>مجموع البرامج : {rows.length} برنامج</p>
+                    <p className='mb-8 md:mb-0 lg:mb-0'>مجموع التقارير : {rows.length} تقرير</p>
                     <div className='flex items-center justify-start md:justify-end lg:justify-end gap-3'>
                         <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><PrintOutlined/></Button>
                         <FormControl dir="rtl" style={{'width':'7rem'}} >
@@ -110,20 +154,20 @@ const AllPrograms = () => {
                         
                     </Select>
                         </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/programs/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة برنامج</Button>
+                        <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >طلب تقرير</Button>
                     </div>
                 </section>
 
-                <div dir="rtl" style={{ height: 420, width: '100%' }}>
+                <div dir="rtl" style={{ height: 370, width: '100%' }}>
           <DataGrid
             rows={rows}
             columns={columns}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 6 },
+                paginationModel: { page: 0, pageSize: 5 },
               },
             }}
-            pageSize={6}
+            pageSize={5}
             rowsPerPageOptions={[5, 10, 20]}
             checkboxSelection
             componentsProps={{
@@ -138,13 +182,13 @@ const AllPrograms = () => {
     );
 };
 
-export default AllPrograms;
+export default AllReports;
 
 
 const columns = [
     { 
         field: 'name', 
-        headerName: (<span>إسم البرنامج</span>), 
+        headerName: (<span>عنوان التقرير</span>), 
         minWidth: 150, 
         flex: 1, 
         renderCell: (params) => { 
@@ -156,37 +200,26 @@ const columns = [
         }, 
     },
     { 
-        field: 'number', 
-        headerName: 'عدد الطلاب المسجلين', 
+        field: 'date', 
+        headerName: 'تاريخ رفع التقرير', 
         width: 200, 
         renderCell: (params) => { 
             return (
-                <span style={{color: UISettings.colors.secondary}}>{params.row.number}</span>
+                <span style={{color: UISettings.colors.secondary}}>{params.row.date}</span>
             );
         }, 
     },
     { 
-        field: 'status', 
-        headerName: 'حالة البرنامج', 
+        field: 'teacher', 
+        headerName: 'الأستاذ المسؤول', 
         minWidth: 200, 
         flex: 1, 
         renderCell: (params) => { 
             return (
-                <span style={{color: UISettings.colors.secondary}}>{params.row.status}</span>
+                <span style={{color: UISettings.colors.secondary}}>{params.row.teacher}</span>
             );
         }, 
     },
-    { 
-      field: 'duration', 
-      headerName: 'مدة البرنامج', 
-      minWidth: 200, 
-      flex: 1, 
-      renderCell: (params) => { 
-          return (
-              <span style={{color: UISettings.colors.secondary}}>{params.row.duration}</span>
-          );
-      }, 
-  },
     { 
         field: 'details', 
         headerName: <span><MoreVertIcon/></span>, 
@@ -201,11 +234,14 @@ const columns = [
 
   
 const rows = [
-    { id: 1, name: 'برنامج الهمم ', number: '200', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 2, name: 'برنامج الأساس ', number: '150', status: <span style={{'color':UISettings.colors.brown,backgroundColor:UISettings.colors.brownBG,padding:'.5rem',borderRadius:'10px'}}>غير متاح</span>, duration: '4 سنوات' },
-    { id: 3, name: 'برنامج التميز ', number: '100', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 4, name: 'برنامج النخبة ', number: '150', status: <span style={{'color':UISettings.colors.brown,backgroundColor:UISettings.colors.brownBG,padding:'.5rem',borderRadius:'10px'}}>غير متاح</span>, duration: '4 سنوات' },
-    { id: 5, name: 'برنامج المراقي ', number: '200', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-    { id: 6, name: 'برنامج الحفاظ ', number: '100', status: <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>متاح</span>, duration: '3 سنوات' },
-
+    { id: 1, name: 'تقرير الإمتحان النهائي ', date: '03 جانفي 2023', teacher: 'الأستاذ العيد عبود' },
+    { id: 2, name: 'تقرير إمتحان السداسي ', date: '03 جانفي 2023', teacher: 'الأستاذة فاطمة خليل' },
+    { id: 3, name: 'تقرير إمتحان التفسير ', date: '03 جانفي 2023', teacher: 'الأستاذ محمد علي' },
+    { id: 4, name: 'تقرير إمتحان التجويد ', date: '03 جانفي 2023', teacher: 'الأستاذة سارة حسن' },
+    { id: 5, name: 'تقرير إمتحان الناسخ والمنسوخ ', date: '03 جانفي 2023', teacher: 'الأستاذ عبد الرحمن محمد' },
+    { id: 6, name: 'تقرير إمتحان المتشابهات ', date: '03 جانفي 2023', teacher: 'الأستاذة ليلى علي' },
+    { id: 7, name: 'تقرير إمتحان أسباب النزول ', date: '03 جانفي 2023', teacher: 'الأستاذ يوسف صالح' },
+    { id: 8, name: 'تقرير إمتحان المستوى الأول ', date: '03 جانفي 2023', teacher: 'الأستاذة نورة أحمد' }
+      
+      
 ];
