@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import logo from '../../../../src/assets/logo.svg'
 import UISettings from '../../../theme/UISettings'
 import HomeIcon from '@mui/icons-material/Home';
-import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, Person2Outlined, SchoolOutlined, SettingsOutlined } from '@mui/icons-material';
+import { Assignment, LogoutOutlined, MenuOpenOutlined, Notifications, SchoolOutlined, SettingsOutlined } from '@mui/icons-material';
 import { Route, Routes, useNavigate } from 'react-router';
 import {useLocation } from 'react-router-dom';
 import Exams from './Exams';
@@ -12,7 +12,6 @@ import NotFound from './NotFound';
 import { IconButton, List, Typography } from '@mui/material';
 import HomeAfterInit from './HomeAfterInit';
 import Program from './programDetailes';
-import EditProfile from './ProfileEdit';
 import Settings from './Settings';
 import SchoolIcon from '@mui/icons-material/School';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -177,7 +176,7 @@ export default function Main() {
                             <Assignment style={{marginLeft: '10px'}}></Assignment>
                         جميع التقارير
                         </SubSideBareAction>
-                        <SubSideBareAction open={page === 'askForReport' ? true : false} onClick={()=> {navigate('/teacher/reports/demande'); setPage('askForReport'); setSidebarOpen(false)}}>
+                        <SubSideBareAction open={page === 'askForReport' ? true : false} onClick={()=> {navigate('/teacher/reports/new'); setPage('askForReport'); setSidebarOpen(false)}}>
                             <AddIcon style={{marginLeft: '10px'}}></AddIcon>
                             طلب تقرير    
                         </SubSideBareAction>
@@ -245,10 +244,9 @@ export default function Main() {
                 <Route exact path="/exams/new" element={<AddExam  windowSize={windowSize} />}></Route>
                 <Route exact path="/reports/all" element={<AllReports  windowSize={windowSize} />}></Route>
                 <Route exact path="/reports/:id" element={<ReportDetails  windowSize={windowSize} />}></Route>
-                <Route exact path="/reports/demande" element={<AskForReport  windowSize={windowSize} />}></Route>
+                <Route exact path="/reports/new" element={<AskForReport  windowSize={windowSize} />}></Route>
                 <Route exact path="/programs/:id" element={<ProgramDetails  windowSize={windowSize} />}></Route>
                 <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
-                <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                 <Route exact path="/settings" element={<Settings  windowSize={windowSize} />}></Route>
                 <Route exact path="/*" element={<NotFound />}></Route>
             </Routes>

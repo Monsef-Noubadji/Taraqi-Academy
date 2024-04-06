@@ -29,10 +29,6 @@ export default function AskForReport({windowSize}) {
           </ProfileHeader>
           
           <SubContainer>
-            <ProfileDatas  width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إسم المرسل</Typography>
-              <TextField style={{width: '100%'}} placeholder='العيد عبود' />
-            </ProfileDatas>
 
             <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الأستاذ المرسل إليه</Typography>
@@ -54,9 +50,9 @@ export default function AskForReport({windowSize}) {
               </FormControl>
             </ProfileDatas>
 
-            <ProfileDatas>
+            <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> عنوان التقرير</Typography>
-              <TextField style={{width: '100%'}} placeholder='أدخل عنوانا للتقرير' />
+              <TextField InputProps={{style: { padding: '5px' } }} style={{width: '100%'}} placeholder='أدخل عنوانا للتقرير' />
             </ProfileDatas>
 
             <ProfileDatas>

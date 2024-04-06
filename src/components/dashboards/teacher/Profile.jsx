@@ -10,7 +10,7 @@ export default function Profile({windowSize}) {
   return (
     <Body>
         <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>بروفايلي</Typography>
-        <Button onClick={()=> navigate('/student/profile/edit')} variant='primary' endIcon={<BorderColorOutlined/>} style={{color: UISettings.colors.black, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.black, alignSelf: 'left', width: "fit-content"}} >تعديل</Button>
+        <Button onClick={()=> navigate('/teacher/settings')} variant='primary' endIcon={<BorderColorOutlined/>} style={{color: UISettings.colors.black, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.black, alignSelf: 'left', width: "fit-content"}} >تعديل</Button>
         <Container>
           <ProfileHeader>
               <img src={'../../../../src/assets/user.png'} alt="academy_logo" width={80} style={{margin: '0px 0px'}} />

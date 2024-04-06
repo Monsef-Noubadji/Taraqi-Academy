@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
 import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemIcon, Slide, Typography } from '@mui/material'
-import { BlockOutlined, Clear } from '@mui/icons-material'
+import { ArrowBack, BlockOutlined, Clear } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
 import { forwardRef, useState } from 'react'
@@ -39,7 +39,7 @@ export default function ReportDetails({windowSize}) {
     <Body>
         <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{'إدارة التقارير' + ' > ' + 'تقرير إمتحان السداسي'}</Typography>
         <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
-            <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} endIcon={<AddIcon/>} style={{color: UISettings.colors.green, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} >طلب تقرير من هذا الأستاذ</Button>
+            <Button variant='primary' onClick={()=> navigate('/teacher/reports/all')} startIcon={<ArrowBack/>} style={{color: 'white', backgroundColor: UISettings.colors.green, border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} > العودة</Button>
         </Box>
 
         <Container>

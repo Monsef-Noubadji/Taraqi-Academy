@@ -47,7 +47,7 @@ export const TeacherMenu = ({ id }) => {
                 }}
             >
                 <MenuItem >
-                    <Link to={`/admin/reports/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
+                    <Link to={`/teacher/reports/${id}`} style={{ display:'flex',alignItems:'center',justifyContent:'center', textDecoration: 'none', color: 'inherit' }}>
                         <ListItemIcon sx={{'color':UISettings.colors.secondary}}>
                             <BadgeIcon />
                         </ListItemIcon>
@@ -154,7 +154,7 @@ const AllReports = () => {
                         
                     </Select>
                         </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >طلب تقرير</Button>
+                        <Button variant='primary' onClick={()=> navigate('/teacher/reports/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >طلب تقرير</Button>
                     </div>
                 </section>
 
@@ -193,7 +193,7 @@ const columns = [
         flex: 1, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
+                <Link to={`/teacher/reports/${params.row.id}`}>
                     <span style={{color: UISettings.colors.secondary}}>{params.row.name}</span>
                 </Link>
             );
@@ -211,7 +211,7 @@ const columns = [
     },
     { 
         field: 'teacher', 
-        headerName: 'الأستاذ المسؤول', 
+        headerName: 'الأستاذ المرسل إليه', 
         minWidth: 200, 
         flex: 1, 
         renderCell: (params) => { 
