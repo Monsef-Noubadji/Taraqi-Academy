@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Button, FormControl, InputLabel, ListItemIcon, Menu, MenuItem, Select, Typography } from '@mui/material'
+import { Button, CircularProgress, FormControl, InputLabel, ListItemIcon, Menu, MenuItem, Select, Typography } from '@mui/material'
 import { DataGrid } from "@mui/x-data-grid";
 import { createTheme } from '@mui/material/styles';
 import CustomPagination from './CustomPagination'
@@ -9,7 +9,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import AddIcon from '@mui/icons-material/Add';
 import BadgeIcon from '@mui/icons-material/Badge';
 import { MoreVert } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import errorHandler from '../student/errorHandler';
+import axiosInstance from '../student/axiosInstance';
+import { ToastContainer,toast } from "react-toastify";
 
 
 export const TeacherMenu = ({ id }) => {
@@ -65,125 +68,187 @@ export default function Exams({windowSize}) {
 
 ]
 
-const programs = [
-    {id:0, name:"برنامح الهمم"},
-    {id:1, name:"برنامج التميز"},
-    {id:2, name:"برنامح الأساس"},
-]
+    const [programs, setPrograms] = useState([]);
+    const [groups, setGroups] = useState([]);
+
+    const [exams, setExams] = useState([]);
+    const [displayedExams, setDisplayedExams] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    async function getExams() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getExams');
+            console.log(response.data)
+            if(response.data.response === 'done'){
+              setExams(response.data.exams)
+              setDisplayedExams(response.data.exams)
+              setPrograms(response.data.programs)
+              setGroups(response.data.groups)
+              setLoading(false)
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
+
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+    
+      useEffect(() => {
+          if (isMounted.current) {
+            getExams()
+          }
+      }, []);
+
+      const [selectedProgram, setSelectedProgram] = useState('all');
+      const [selectedGroup, setSelectedGroup] = useState('all');
+      const [changes, setChanges] = useState(0);
+      useEffect(() => {
+        var data = exams
+        var dataAfterProgramFilter = []
+        var finalData = []
+        // program filter
+        if(selectedProgram === 'all'){
+          dataAfterProgramFilter = data
+        }else{
+          for (let i = 0; i < data.length; i++) {
+            const exam = data[i];
+            if(exam && exam.groups && exam.groups[0] && exam.groups[0].studyProgramId === selectedProgram ){
+              dataAfterProgramFilter.push(exam)
+            }
+          }
+        }
+        // froup filter
+        if(selectedGroup === 'all'){
+          finalData = dataAfterProgramFilter
+        }else{
+          for (let i = 0; i < dataAfterProgramFilter.length; i++) {
+            const exam = dataAfterProgramFilter[i];
+            if(exam && exam.groups && exam.groups[0] && exam.groups[0].id === selectedGroup ){
+              finalData.push(exam)
+            }
+          }
+        }
+
+        setDisplayedExams(finalData)
+        setChanges(changes + 1)
+      }, [selectedGroup, selectedProgram, exams]);
+
+if(loading){
+  return(
+     <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+         <ToastContainer rtl="true"/>
+         <CircularProgress style={{color: UISettings.colors.green}}/>
+         <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+       </div>
+     )
+  }else{
+    return (
+      <Body>
+          <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '0px', marginTop: '-20px'}}>إدارة الإمتحانات {">"} جميع الامتحانات</Typography>
+         <ToastContainer rtl="true"/>
+          
+          {/* CTA section */}
+          {/* <section className='flex flex-row-reverse items-center justify-between my-4 gap-2 w-full'>
+                      <p>مجموع الإمتحانات : {rows.length} {rows.length > 11 ? 'إمتحانا' : 'إمتحانات'}</p>
+                      <div className='flex items-center justify-center gap-3'>
+                          <Button variant='primary' onClick={()=> navigate('/admin/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
+                      </div>
+          </section> */}
+          {/* <Title style={{ marginBottom: '10px'}}>
+            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '40'} style={{margin: '0px 0px', marginLeft: '10px'}} />
+            <Typography variant={windowSize.width > UISettings.devices.phone ? "h5" : 'h5'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', flex: 1, minWidth: '250px', margin: '15px 0px'}}>إمتحانات تم برمجتها</Typography>
+          </Title> */}
+          
+          {/* <CardsContainer>
+            <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
+            <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
+          </CardsContainer> */}
+          
+          <section className='flex flex-col md:flex-row-reverse lg:flex-row-reverse justify-center items-center w-full'>
+          <Title style={{ marginBottom: '10px',width:'100%'}}>
+            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '40'} style={{margin: '0px 0px', marginLeft: '10px'}} />
+            <Typography variant={windowSize.width > UISettings.devices.phone ? "h5" : 'h5'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', flex: 1, minWidth: '250px', margin: '15px 0px'}}>جميع الامتحانات</Typography>
+          </Title>
+            <div className='flex flex-col md:flex-row lg:flex-row w-full my-2 items-center gap-3 justify-center'>
+  
+
+            <FormControl dir="rtl" style={{width: "100%"}}>
+              <InputLabel id="session" > الحلقة </InputLabel>
+              <Select
+                  dir="rtl"
+                  style={{paddingTop: "3px", paddingBottom: '3px'}}
+                  labelId="session"
+                  id="session"
+                  //value={age}
+                  label="الحلقة"
+                  value={selectedGroup}
+                  onChange={(e)=> setSelectedGroup(e.target.value)}
+              >
+                  <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                  {groups.map((session,index)=>(
+                      <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+
+
+            <FormControl dir="rtl" style={{width: "100%"}}>
+              <InputLabel id="program" > البرنامج </InputLabel>
+                  <Select
+                      dir="rtl"
+                      style={{paddingTop: "3px", paddingBottom: '3px'}}
+                      labelId="program"
+                      id="program"
+                      //value={age}
+                      label="البرنامج"
+                      value={selectedProgram}
+                      onChange={(e)=> setSelectedProgram(e.target.value)}
+                  >
+                  <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span style={{padding: '3px 10px'}}>الكل</span> </MenuItem>
+                  {programs.map((program,index)=>(
+                      <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span style={{padding: '3px 10px'}}>{program.name}</span> </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+  
+        
+            </div>
+          </section>
   
   
-  return (
-    <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '0px'}}>إدارة الإمتحانات {">"} جميع الامتحانات</Typography>
-        
-        {/* CTA section */}
-        <section className='flex flex-row-reverse items-center justify-between my-4 gap-2 w-full'>
-                    <p>مجموع الإمتحانات : {rows.length} {rows.length > 11 ? 'إمتحانا' : 'إمتحانات'}</p>
-                    <div className='flex items-center justify-center gap-3'>
-                        <Button variant='primary' onClick={()=> navigate('/admin/exams/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة إمتحان</Button>
-                    </div>
-        </section>
-        <Title style={{ marginBottom: '10px'}}>
-          <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '40'} style={{margin: '0px 0px', marginLeft: '10px'}} />
-          <Typography variant={windowSize.width > UISettings.devices.phone ? "h5" : 'h5'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', flex: 1, minWidth: '250px', margin: '15px 0px'}}>إمتحانات تم برمجتها</Typography>
-        </Title>
-        
-        <CardsContainer>
-          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
-          <ExamCard title='الاختبار التفاعلي الخامس'  desc='الاختبار التفاعلي الخامس للمستوى الأول من برنامج الهمم' index='1' available={true} disabled={true} status={"scheduled"} date={'18 فيفري 2024'} width={windowSize.width} />
-        </CardsContainer>
-        
-        <section className='flex flex-col md:flex-row-reverse lg:flex-row-reverse justify-center items-center w-full'>
-        <Title style={{ marginBottom: '10px',width:'100%'}}>
-          <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={windowSize.width > UISettings.devices.phone ? "35" : '40'} style={{margin: '0px 0px', marginLeft: '10px'}} />
-          <Typography variant={windowSize.width > UISettings.devices.phone ? "h5" : 'h5'} sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start', flex: 1, minWidth: '250px', margin: '15px 0px'}}>جميع الامتحانات</Typography>
-        </Title>
-          <div className='flex flex-col md:flex-row lg:flex-row w-full my-2 items-center gap-3 justify-center'>
-          <FormControl dir="rtl" style={{width: "100%"}}>
-            <InputLabel id="demo-simple-select-label"> الحالة </InputLabel>
-            <Select
-              dir="rtl"
-              style={{paddingTop: "0px", paddingBottom: '0px'}}
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              //value={age}
-              label="الحالة"
-              defaultValue={0}
-              //onChange={handleChange}
-            >
-              <MenuItem selected value={0} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}> <span style={{width: 'max-content', padding: '3px 10px', borderRadius: "10px", float: 'right'}} >الكل</span> </MenuItem>
-              <MenuItem value={10} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}> <span style={{width: 'max-content', padding: '3px 10px', backgroundColor: UISettings.colors.greenBG, color: UISettings.colors.green, borderRadius: "10px", float: 'right'}} >تم تصحيحه </span> </MenuItem>
-              <MenuItem value={12} style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}> <span style={{width: 'max-content', padding: '3px 10px', backgroundColor: UISettings.colors.redBG, color: UISettings.colors.red, borderRadius: "10px", float: 'right'}} >لم يصحح</span> </MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl dir="rtl" style={{width: "100%"}}>
-        <InputLabel id="program" > البرنامج </InputLabel>
-            <Select
-                dir="rtl"
-                style={{paddingTop: "3px", paddingBottom: '3px'}}
-                labelId="program"
-                id="program"
-                //value={age}
-                label="البرنامج"
-                defaultValue={'all'}
-                //onChange={handleChange}
-            >
-                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span style={{padding: '3px 10px'}}>الكل</span> </MenuItem>
-                {programs.map((program,index)=>(
-
-                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span style={{padding: '3px 10px'}}>{program.name}</span> </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
-
-          <FormControl dir="rtl" style={{width: "100%"}}>
-        <InputLabel id="session" > الحلقة </InputLabel>
-            <Select
-                dir="rtl"
-                style={{paddingTop: "3px", paddingBottom: '3px'}}
-                labelId="session"
-                id="session"
-                //value={age}
-                label="الحلقة"
-                defaultValue={'all'}
-                //onChange={handleChange}
-            >
-                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                {sessions.map((session,index)=>(
-
-                    <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+          <div dir="rtl" style={{ height: 'calc(100vh - 230px)', width: '100%' }}>
+            <DataGrid
+              rows={displayedExams}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+              }}
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 20]}
+              checkboxSelection={false}
+              rowSelection={false}
+              componentsProps={{
+                pagination: { style: {
+                  direction: 'ltr'
+                }},
+              }}
+            />
           </div>
-        </section>
-
-
-        <div dir="rtl" style={{ height: 370, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
-        </div>
-
-      
-
-    </Body>
-  )
+  
+        
+  
+      </Body>
+    )
+  }
 }
 
 
@@ -247,30 +312,32 @@ const styles = {
 
 
 const columns = [
-  { field: 'title', headerName: (<span>عنوان الامتحان</span>), minWidth: 150, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.title}</span> </>);}, },
+  { field: 'title', headerName: (<span>العنوان</span>), minWidth: 150, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.title}</span> </>);}, },
 
-  { field: 'organiser', headerName: (<span>محرر الامتحان</span>), minWidth: 150, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.organiser}</span> </>);}, },
+  { field: 'group', headerName: (<span>الحلقة</span>), width: 150, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.groups && params.row.groups[0] ? params.row.groups[0].name : '--'}</span> </>);}, },
 
-  { field: 'start', headerName: 'تاريخ بداية الامتحان', width: 200, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.start}</span> </>);}, },
-  { field: 'end', headerName: 'تاريخ نهاية الامتحان', width: 200, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.end}</span> </>);}, },
-  { field: 'status', headerName: 'الحالة', width: 110, renderCell: (params) => {
-      if(params.row.status === 'corrected'){
-        return (
-            <><span style={{color: UISettings.colors.green, backgroundColor: UISettings.colors.greenBG, padding: '5px 10px', borderRadius: '10px'}}>تم تصحيحه</span> </>
-        );
-      }else if(params.row.status === 'notCorrected'){
-        return (
-            <><span style={{color: UISettings.colors.red, backgroundColor: UISettings.colors.redBG, padding: '5px 10px', borderRadius: '10px'}}>لم يصحح بعد</span> </>
-        );
-      }
-    }, 
-  },
-  { field: 'result', headerName: 'النتيجة', minWidth: 110, flex: 1, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.result}</span> </>);}, },
+  { field: 'start', headerName: 'تاريخ بداية الامتحان', width: 130, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.startExam ? params.row.startExam.split(' ')[0] : ''}</span> </>);}, },
+  { field: 'end', headerName: 'تاريخ نهاية الامتحان', width: 130, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.endExam ? params.row.endExam.split(' ')[0] : '' }</span> </>);}, },
+  { field: 'time', headerName: 'مدة الامتحان', width: 120, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.time ? params.row.time : '0'} دقيقة</span> </>);}, },
+  { field: 'note', headerName: 'مجموع النقاط', width: 120, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.note}</span> </>);}, },
+  // { field: 'status', headerName: 'الحالة', width: 110, renderCell: (params) => {
+  //     if(params.row.status === 'corrected'){
+  //       return (
+  //           <><span style={{color: UISettings.colors.green, backgroundColor: UISettings.colors.greenBG, padding: '5px 10px', borderRadius: '10px'}}>تم تصحيحه</span> </>
+  //       );
+  //     }else if(params.row.status === 'notCorrected'){
+  //       return (
+  //           <><span style={{color: UISettings.colors.red, backgroundColor: UISettings.colors.redBG, padding: '5px 10px', borderRadius: '10px'}}>لم يصحح بعد</span> </>
+  //       );
+  //     }
+  //   }, 
+  // },
+  { field: 'type', headerName: 'نوع الامتحان', width: 150, renderCell: (params) => { return (<><span style={{color: UISettings.colors.secondary}}>{params.row.type === "levelUpExam" ? 'امتحان رفع المستوى' : 'امتحان' } </span> </>);}, },
 
   { 
     field: 'details', 
-    headerName: 'التفاصيل', 
-    width: 200, 
+    headerName: '', 
+    width: 50, 
     renderCell: (params) => { 
         return (
             <TeacherMenu id={params.row.id} />

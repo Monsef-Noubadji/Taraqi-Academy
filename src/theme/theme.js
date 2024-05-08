@@ -94,6 +94,33 @@ export const theme = createTheme({
       },
     },
 
+    //Textfield
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          color: '#9A9A9A',
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: '#9A9A9A',
+            },
+            "&:hover fieldset": {
+              border: `2px solid #F3F3F3`,
+            },
+            "&:focus fieldset": {
+              border: `2px solid #F3F3F3`,
+            },
+            "&.Mui-focused fieldset": {
+              border: `2px solid #F3F3F3`,
+            },
+
+            "& .MuiInputBase-input ": {
+              padding: "12px 10px",
+            },
+          },
+        },
+      },
+    },
+
     MuiButton: {
       //BUTTONS VARIANTS
       variants: [

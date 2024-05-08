@@ -1,68 +1,139 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Box, Button, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { ArrowBack, EditOutlined } from '@mui/icons-material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ArrowBack, EditOutlined, ErrorOutlineOutlined } from '@mui/icons-material'
+import { useEffect, useRef, useState } from 'react'
+import errorHandler from '../student/errorHandler'
+import axiosInstance from '../student/axiosInstance'
+import { ToastContainer,toast } from "react-toastify";
+
 
 export default function Program({windowSize}) {
     const navigate = useNavigate()
-  return (
-    <Body>
-        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/student/programs')} style={{cursor: 'pointer'}} >برامج الأكاديمية </span> <span> {">"} تفاصيل برامج الهمم  </span></Typography>
-        <Box display={'flex'} alignItems={'center'} justifyContent={'start'} gap={'1rem'}>
-          <Button variant='primary' onClick={()=> navigate('/admin/programs/all')} startIcon={<ArrowBack/>} style={{alignSelf: 'start'}} >العودة </Button>
-          <Button variant='primary' onClick={()=> navigate('/admin/programs/3/edit')} startIcon={<EditOutlined/>} style={{alignSelf: 'start',color:UISettings.colors.green,backgroundColor:'white',border:'1px solid' + UISettings.colors.green}} >تعديل </Button>
-        </Box>
-        <Container>
-            <Info width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>عنوان البرنامج</InfosTitle> 
-                <InfosContent  width={windowSize.width} style={{color: UISettings.colors.black, fontWeight: 600}}> 
-                    <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={"35"} style={{margin: '0px 0px', marginLeft: '10px'}} />
-                  برنامج الهمم</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>وصف البرنامج</InfosTitle> 
-                <InfosContent  width={windowSize.width}>برنامج لحفظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات.برنامج لحفظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات.فظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السن المقترح</InfosTitle> 
-                <InfosContent  width={windowSize.width}>13 سنة فما فوق</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>مدة البرنامج كاملا</InfosTitle> 
-                <InfosContent  width={windowSize.width}>3 سنوات</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>مدة الدراسة الفعلية</InfosTitle> 
-                <InfosContent  width={windowSize.width}>30 شهرا ( 10 أشهر كل سنة)</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>مدة العطل و الامتحانات</InfosTitle> 
-                <InfosContent  width={windowSize.width}>6 أشهر ( شهرين كل سنة)</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>عدد المستويات</InfosTitle> 
-                <InfosContent  width={windowSize.width}>7 مستويات</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الأولى</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الثانية</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الثالثة</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>سعر البرنامج</InfosTitle> 
-                <InfosContent  width={windowSize.width}>5000.00 دج</InfosContent> 
-            </Info>
-        </Container>
-    </Body>
-  )
+
+    const [displayedProgram, setDisplayedProgram] = useState({});
+    const [semesters, setSemesters] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const  id  = useParams();
+
+    async function getProgram() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getProgram', {id: id.id});
+            console.log(response.data)
+            if(response.data.response === 'done'){
+              if(response.data.program){
+                setDisplayedProgram(response.data.program)
+                if(response.data.program && response.data.program.levelsDescription){
+                  if(JSON.parse(response.data.program.levelsDescription)){
+                    setSemesters(JSON.parse(response.data.program.levelsDescription))
+                  }
+                }
+                setLoading(false)
+                setStatus('')
+              }else{
+                setLoading(false)
+                setStatus('notFound')
+              }
+            }else if (response.data.response === 'notFound'){
+              setLoading(false)
+              setStatus('notFound')
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
+
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+    
+      useEffect(() => {
+          if (isMounted.current) {
+            getProgram()
+          }
+      }, []);
+
+      const [status, setStatus] = useState('notFound');
+
+      if(loading){
+        return(
+           <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+               <ToastContainer rtl="true"/>
+               <CircularProgress style={{color: UISettings.colors.green}}/>
+               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+             </div>
+           )
+      }else if(status === 'notFound'){
+        return(
+           <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+               <ToastContainer rtl="true"/>
+               <ErrorOutlineOutlined style={{color: UISettings.colors.green, fontSize: '35px'}}/>
+               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>لم يتم العثور على البرنامج</Typography>
+             </div>
+           )
+      }else{
+        return (
+          <Body>
+               <ToastContainer rtl="true"/>
+              <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/admin/programs/all')} style={{cursor: 'pointer'}} >برامج الأكاديمية </span> <span> {">"} تفاصيل البرنامج  </span></Typography>
+              <Box display={'flex'} alignItems={'center'} justifyContent={'start'} gap={'1rem'}>
+                <Button variant='primary' onClick={()=> navigate('/admin/programs/all')} startIcon={<ArrowBack/>} style={{alignSelf: 'start'}} >العودة </Button>
+                <Button variant='primary' onClick={()=> navigate('/admin/programs/'+id.id+'/edit')} startIcon={<EditOutlined/>} style={{alignSelf: 'start',color:UISettings.colors.green,backgroundColor:'white',border:'1px solid' + UISettings.colors.green}} >تعديل </Button>
+              </Box>
+              <Container>
+                  <Info width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>عنوان البرنامج</InfosTitle> 
+                      <InfosContent  width={windowSize.width} style={{color: UISettings.colors.black, fontWeight: 600}}> 
+                          <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={"35"} style={{margin: '0px 0px', marginLeft: '10px'}} />
+                        {displayedProgram.name}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>وصف البرنامج</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.description}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>السن المقترح</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.age}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>مدة البرنامج كاملا</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.duration}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>مدة الدراسة الفعلية</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.studyDuration}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>مدة العطل و الامتحانات</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.vacationDuration}</InfosContent> 
+                  </Info>
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>عدد المستويات</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.levels} مستويات</InfosContent> 
+                  </Info>
+                  {
+                    semesters.map((semester, key)=>(
+                      <Info key={key}  width={windowSize.width}>
+                          <InfosTitle  width={windowSize.width}>{semester.name}</InfosTitle> 
+                          <InfosContent  width={windowSize.width}>{semester.message}</InfosContent> 
+                      </Info>
+                    ))
+                  }
+                  <Info  width={windowSize.width}>
+                      <InfosTitle  width={windowSize.width}>سعر البرنامج</InfosTitle> 
+                      <InfosContent  width={windowSize.width}>{displayedProgram.price}.00 دج</InfosContent> 
+                  </Info>
+              </Container>
+          </Body>
+        )
+      }
 }
 
 
@@ -114,7 +185,8 @@ const InfosContent = styled.div`
   text-align: end;
   color: ${UISettings.colors.secondary};
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: end;
+  flex-direction: row;
+  justify-content: start;
   align-items: center;
+  direction: rtl;
 `

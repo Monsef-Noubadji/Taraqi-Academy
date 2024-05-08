@@ -1,12 +1,16 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemIcon, Slide, Typography } from '@mui/material'
-import { BlockOutlined, Clear } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
+import { Box, Button, CircularProgress, Dialog, DialogContent, DialogContentText, DialogTitle, List, ListItem, ListItemIcon, Slide, Typography } from '@mui/material'
+import { BlockOutlined, Clear, ErrorOutlineOutlined } from '@mui/icons-material'
+import { useNavigate, useParams } from 'react-router-dom'
 import SwitchIcon from './switchIcon'
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid'
 import AddIcon from '@mui/icons-material/Add';
+import axiosInstance from '../student/axiosInstance'
+import errorHandler from '../student/errorHandler'
+import { ToastContainer,toast } from "react-toastify";
+
 
 export default function ReportDetails({windowSize}) {
   const navigate = useNavigate()
@@ -35,83 +39,122 @@ export default function ReportDetails({windowSize}) {
     setOpenExam(false);
   }
 
-  return (
-    <Body>
-        <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}>{'إدارة التقارير' + ' > ' + 'تقرير إمتحان السداسي'}</Typography>
-        <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
-            <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} endIcon={<AddIcon/>} style={{color: UISettings.colors.green, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} >طلب تقرير من هذا الأستاذ</Button>
-        </Box>
 
-        <Container>
-          <ProfileHeader style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>حلقة سورة الفاتحة</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas>
-                <Typography variant="h7" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl',fontSize:'1.2rem', marginBottom: "5px"}}>تفصيل التقرير</Typography>
-                <List>
-                    <ListItem>الحلقة من تقديم: الأستاذ محمد علي</ListItem>
-                    <ListItem>تاريخ الحلقة: 10 فبراير 2024</ListItem>
-                    <ListItem>المنصة: المجموعة التفاعلية للذكور الخاصة بحساب أكاديمية الترقي في التلغرام</ListItem>
-                    <ListItem>عنوان الحلقة: تدبر وتلاوة سورة الفاتحة</ListItem>
-                    <ListItem>الحضور: حوالي 30 طالبًا من مختلف الفئات العمرية</ListItem>
+    const [loading, setLoading] = useState(true);
+    const [report, setReport] = useState({});
 
-                </List>
+    const  id  = useParams();
 
-            </ProfileDatas>
-            <ProfileDatas>
-                <Typography variant="h7" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl',fontSize:'1.2rem', marginBottom: "5px"}}>الوصف</Typography>
-                <List>
+    async function getReport() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getReport', {id: id.id});
+            console.log(response.data)
+            if(response.data.response === 'done'){
+              if(response.data.report){
+                setReport(response.data.report)
+                setLoading(false)
+                setStatus('')
+              }else{
+                setLoading(false)
+                setStatus('notFound')
+              }
+            }else if (response.data.response === 'notFound'){
+              setLoading(false)
+              setStatus('notFound')
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
 
-                <List>
-                    <Box sx={{ 'margin': '1rem',lineHeight:'2rem',lineBreak:'auto' }}>
-    <ListItemIcon>
-      <Typography variant="p">•</Typography>
-    </ListItemIcon>
-      <Typography variant='h7'>
-        في يوم الأربعاء الموافق 10 فبراير 2024، قدمت حلقة قرآنية عبر المجموعة التفاعلية للذكور الخاصة بحساب أكاديمية الترقي في التلغرام. تمحورت الحلقة حول تدبر وتلاوة سورة الفاتحة، وهي أول سورة في القرآن الكريم والتي لها أهمية كبيرة في الصلاة والتلاوة.
-      </Typography>
-                    </Box>
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+    
+      useEffect(() => {
+          if (isMounted.current) {
+            getReport()
+          }
+      }, []);
 
-                    <Box sx={{ 'margin': '1rem',lineHeight:'2rem',lineBreak:'auto' }}>
-    <ListItemIcon>
-      <Typography variant="inherit">•</Typography>
-    </ListItemIcon>
-      <Typography variant='h7'>
-        حاولت تقديم شرح مفصل لمعاني آيات الفاتحة و فضائل هذه السورة العظيمة. كما تناولنا أحكام التجويد التلاوة الصحيحة الفاتحة، كما قمنا بتصحيح التلاوة.
-      </Typography>
-                    </Box>
-  
-                    <Box sx={{ 'margin': '1rem',lineHeight:'2rem',lineBreak:'auto' }}>
-    <ListItemIcon>
-      <Typography variant="inherit">•</Typography>
-    </ListItemIcon>
-      <Typography variant='h7'>
-        حضر الحلقة حوالي 30 طالبًا من مختلف الفئات العمرية. تفاعل الحضور بنشاط مع الحلقة، وتمت مناقشة الأسئلة والتحاور حول مفاهيم السورة.
-      </Typography>
-                    </Box>
+      const [status, setStatus] = useState('notFound');
 
-                    <Box sx={{ 'margin': '1rem',lineHeight:'2rem',lineBreak:'auto' }}>
-    <ListItemIcon>
-      <Typography variant="inherit">•</Typography>
-    </ListItemIcon>
-      <Typography variant='h7'>
-        استمرت الحلقة لمدة ساعتين، وتم توفير موارد تعليمية إضافية للطلاب لمراجعة محتوى الحلقة وتطبيقه في حياتهم اليومية. كما قدمت بعض النصائح للطلاب للاستمرار في تطوير تلاوتهم للقرآن الكريم.
-      </Typography>
-                    </Box>
-                </List>
-
-
-                </List>
-
-            </ProfileDatas>
-          </SubContainer>
-        </Container>
-    </Body>
-  )
+      if(loading){
+        return(
+           <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+               <ToastContainer rtl="true"/>
+               <CircularProgress style={{color: UISettings.colors.green}}/>
+               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+             </div>
+           )
+      }else if(status === 'notFound'){
+        return(
+           <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+               <ToastContainer rtl="true"/>
+               <ErrorOutlineOutlined style={{color: UISettings.colors.green, fontSize: '35px'}}/>
+               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>لم يتم العثور على التقرير</Typography>
+             </div>
+           )
+      }else{
+        return (
+          <Body>
+               <ToastContainer rtl="true"/>
+              <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}><span onClick={()=> navigate('/admin/reports/all')} style={{cursor: 'pointer'}} >إدارة التقارير</span>{' > ' + ' تقرير ' + report.title}</Typography>
+              {/* <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
+                  <Button variant='primary' onClick={()=> navigate('/admin/reports/demande')} endIcon={<AddIcon/>} style={{color: UISettings.colors.green, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.green, alignSelf: 'left', width: "fit-content"}} >طلب تقرير من هذا الأستاذ</Button>
+              </Box> */}
+              <Container>
+                <ProfileHeader style={{marginBottom: '15px'}}>
+                  <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
+                  <ProfileInfos>
+                      <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}> عنوان التقرير :  {report.title}</Typography>
+                  </ProfileInfos>
+                </ProfileHeader>
+                <SubContainer>
+                  <ProfileDatas style={{ borderBottom: '1px solid whitesmoke'}}>
+                      {/* <Typography variant="h7" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl',fontSize:'1.2rem', marginBottom: "5px"}}> تفاصيل التقرير</Typography> */}
+                      <List style={{marginTop: '-10px',}}>
+                          <ListItem > <strong style={{marginLeft: '10px'}}>حالة التقرير :</strong>  
+                            {report && report.replied === true ?
+                                <span style={{'color':UISettings.colors.green,backgroundColor:UISettings.colors.greenBG,padding:'.5rem',borderRadius:'10px'}}>تم الإرسال</span>
+                                :
+                                <span style={{'color':UISettings.colors.brown,backgroundColor:UISettings.colors.brownBG,padding:'.5rem',borderRadius:'10px'}}>لم يتم الإرسال</span>
+                            }
+                          </ListItem>
+                          <ListItem > <strong style={{marginLeft: '10px'}}>الأستاذ المسؤول :</strong>  {report.teacher ? report.teacher.firstName + ' ' + report.teacher.familyName : '--'}</ListItem>
+                          <ListItem > <strong style={{marginLeft: '10px'}}>تاريخ طلب التقرير :</strong>  {report.createdAt ? report.createdAt.split('T')[0] : '--'}</ListItem>
+                          <ListItem style={{alignItems: 'start'}} > <strong style={{marginLeft: '10px', minWidth: '100px'}}>وصف التقرير :</strong> <div dangerouslySetInnerHTML={{ __html: report.text }} style={{direction: 'rtl', textAlign: 'right'}}></div></ListItem>
+                      </List>
+      
+                  </ProfileDatas>
+                  {/* <ProfileDatas >
+                      <Typography variant="h7" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl',fontSize:'1.2rem', marginBottom: "5px"}}>تفصيل التقرير</Typography>
+                      <List>
+                          <ListItem>الحلقة من تقديم: الأستاذ محمد علي</ListItem>
+                          <ListItem>تاريخ الحلقة: 10 فبراير 2024</ListItem>
+                          <ListItem>المنصة: المجموعة التفاعلية للذكور الخاصة بحساب أكاديمية الترقي في التلغرام</ListItem>
+                          <ListItem>عنوان الحلقة: تدبر وتلاوة سورة الفاتحة</ListItem>
+                          <ListItem>الحضور: حوالي 30 طالبًا من مختلف الفئات العمرية</ListItem>
+      
+                      </List>
+      
+                  </ProfileDatas> */}
+                  <ProfileDatas>
+                      <Typography variant="h7" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl',fontSize:'1.2rem', marginBottom: "5px"}}>التقرير</Typography>
+                        <List>
+                          <ListItem ><div dangerouslySetInnerHTML={{ __html: report.reply }}></div></ListItem>
+                        </List>
+                  </ProfileDatas>
+                </SubContainer>
+              </Container>
+          </Body>
+        )
+      }
 }
 
 

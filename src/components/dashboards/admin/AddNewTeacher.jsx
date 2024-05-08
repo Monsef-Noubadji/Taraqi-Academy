@@ -11,7 +11,7 @@ import { ToastContainer,toast } from "react-toastify";
 import { LoadingButton } from '@mui/lab'
 
 
-export default function AddStudent({windowSize}) {
+export default function AddNewTeacher({windowSize}) {
   const navigate = useNavigate()
   // const [isSubscribed,setIsSubscribed] = useState(true)
 
@@ -75,10 +75,10 @@ export default function AddStudent({windowSize}) {
 
   const [loadingCreate, setLoadingCreate] = useState(false);
 
-  async function createStudent() {
+  async function createTeacher() {
     try {
       setLoadingCreate(true)
-        const response = await axiosInstance.post('/adminApi/createStudent', {firstName, familyName, phoneNumber, gender, email, password, sendNotif});
+        const response = await axiosInstance.post('/adminApi/createTeacher', {firstName, familyName, phoneNumber, gender, email, password, sendNotif});
         if(response.data.response === 'done'){
             setLoadingCreate(false)
             toast.success(response.data.message, {
@@ -88,7 +88,7 @@ export default function AddStudent({windowSize}) {
               theme: 'colored'
           });
           setTimeout(() => {
-            navigate('/admin/students/' + response.data.studentId)
+            navigate('/admin/teachers/' + response.data.teacherId)
           }, 1500);
         }
     } catch (error) {
@@ -127,8 +127,8 @@ export default function AddStudent({windowSize}) {
   return (
     <Body>
           <ToastContainer rtl="true"/>
-        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} onClick={()=> navigate('/admin/students/all')} >إدارة الطلاب </span> <span> {">"} إضافة طالب  </span></Typography>
-        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createStudent()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة طالب</LoadingButton>
+        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} onClick={()=> navigate('/admin/teachers/all')} >إدارة المعلمين </span> <span> {">"} إضافة معلم  </span></Typography>
+        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createTeacher()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة معلم</LoadingButton>
         
         <Container>
           <ProfileHeader  style={{marginBottom: '15px'}}>
@@ -368,7 +368,7 @@ export default function AddStudent({windowSize}) {
             
           </SubContainer>
         </Container> */}
-        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createStudent()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة طالب</LoadingButton>
+        <LoadingButton loading={loadingCreate} loadingPosition='center' onClick={()=> createTeacher()} variant='primary' endIcon={<AddCircleOutlineOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color: loadingCreate ? 'transparent' : UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >إضافة معلم</LoadingButton>
 
     </Body>
   )

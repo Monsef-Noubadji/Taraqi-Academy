@@ -1,12 +1,17 @@
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { Box, Button, FormControl, FormControlLabel, MenuItem, Radio, RadioGroup, Select, TextField, Typography, useMediaQuery } from '@mui/material'
-import { Add, Check, CheckBox, Remove, Save, VisibilityOutlined, Warning } from '@mui/icons-material'
+import { Autocomplete, Box, Button, FormControl, FormControlLabel, IconButton, MenuItem, Radio, RadioGroup, Select, TextField, Typography, useMediaQuery } from '@mui/material'
+import { Add, AddCircleOutlineOutlined, Check, CheckBox, EditOutlined, Remove, RemoveCircleOutlineOutlined, Save, VisibilityOutlined, Warning } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import SwitchIcon from './switchIcon'
+import axiosInstance from '../student/axiosInstance'
+import errorHandler from '../student/errorHandler'
+import { ToastContainer,toast } from "react-toastify";
+import { LoadingButton } from '@mui/lab'
+
 
 export default function AddProgram({windowSize}) {
 
@@ -25,27 +30,21 @@ export default function AddProgram({windowSize}) {
   ]
 
   const sessions = [
-  {id:0, name:"10 - 15"},
-  {id:1, name:"15 - 20"},
-  {id:2, name:"20 فما فوق"},
+  "10 - 15",
+  "15 - 20",
+  "20 فما فوق",
   ]
 
   const programDuration = [
-    {id:0, name:"6 أشهر"},
-    {id:1, name:"سنة"},
-    {id:1, name:"سنتين"},
-    {id:1, name:"3 سنوات"},
-    {id:1, name:"4 سنوات"},
-    {id:1, name:"5 سنوات"},    
+    "6 أشهر",
+    "سنة",
+    "سنتين",
+    "3 سنوات",
+    "4 سنوات",
+    "5 سنوات",    
     ]
 
-    const levels = [
-        {id:0, name:"1"},
-        {id:1, name:"2"},
-        {id:2, name:"3"},
-        {id:3, name:"4 "},
-        {id:4, name:"5 "},
-    ]
+    const levels = [1, 2, 3, 4, 5]
 
     const prices = [
         {id:0, name:"3000"},
@@ -66,13 +65,87 @@ export default function AddProgram({windowSize}) {
   const handlePreview = ()=> {
     setPreview(!preview)
   }
+
+
+  const [semesterChanges, setSemesterChanges] = useState(0);
+  const [semesters, setSemesters] = useState([]);
+  function removeLastObjectFromArray() {
+    var data = semesters
+    if ( data.length > 0) {
+        data.pop(); // Removes the last element from the array
+    }
+    setSemesters(data)
+    setSemesterChanges(semesterChanges + 1)
+  }
+  function addObjectToArray() {
+    var data = semesters
+    data.push({name: '', message: ''})
+    console.log(data)
+    setSemesters(data)
+    setSemesterChanges(semesterChanges + 1)
+  }
+  function updateObjectToArray(key, field, value) {
+    var data = semesters
+    if(field === 'name'){
+      data[key].name = value
+    }else{
+      data[key].message = value
+    }
+    setSemesters(data)
+    setSemesterChanges(semesterChanges + 1)
+  }
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [age, setAge] = useState('');
+  const [duration, setDuration] = useState('');
+  const [studyDuration, setStudyDuration] = useState('');
+  const [vacationDuration, setVacationDuration] = useState('');
+  const [level, setlevel] = useState('');
+  const [price, setPrice] = useState('');
+  const [status, setStatus] = useState(true);
+
+  const [nameError, setNameError] = useState('');
+  const [descriptionError, setDescriptionError] = useState('');
+  const [ageError, setAgeError] = useState('ss');
+  const [durationError, setDurationError] = useState('');
+  const [studyDurationError, setStudyDurationError] = useState('');
+  const [vacationDurationError, setVacationDurationError] = useState('');
+  const [levelError, setlevelError] = useState('');
+  const [priceError, setPriceError] = useState('');
+  const [statusError, setStatusError] = useState(true);
+  const [loadingCreation, setLoadingCreation] = useState(false);
+
+  async function createProgram() {
+    try {
+        setLoadingCreation(true)
+        const response = await axiosInstance.post('/adminApi/createProgram', {name, description, age, duration, studyDuration, vacationDuration, semesters, level, price, status});
+        console.log(response.data)
+        if(response.data.response === 'done'){
+          toast.success(response.data.message, {
+            position: 'top-right',
+            progress: undefined,
+            autoClose: 1000,
+            theme: 'colored'
+          });
+          setTimeout(() => {
+            setLoadingCreation(false)
+            navigate('/admin/programs/all')
+          }, 1000);
+        }
+    } catch (error) {
+        setLoadingCreation(false)
+        errorHandler(error, toast, navigate)
+    }
+}
+  
   return (
     <>
+    <ToastContainer rtl="true"/>
   { !preview ? <Body>
-        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة البرامج </span> <span> {">"} إنشاء برنامج  </span></Typography>
+        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px', marginTop: '-20px'}}><span onClick={()=> navigate('/admin/programs/all')} style={{cursor: 'pointer'}} >إدارة البرامج </span> <span> {">"} إنشاء برنامج  </span></Typography>
         <Box sx={{'display':'flex','gap':'1rem',flexDirection:{xs:'column',sm:'column',md:'row',lg:'row',xl:'row'},alignItems:{xs:'end',sm:'end',md:'center',lg:'center',xl:'center'}}}  justifyContent={'space-between'}>
             <Box display={'flex'} alignItems={'center'} justifyContent={'center'} gap={'1rem'}>
-              <Button onClick={()=> navigate('/admin/programs/all')} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >حفظ البرنامج</Button>
+              <LoadingButton loading={loadingCreation} loadingPosition='center' onClick={()=> createProgram()} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >إنشاء البرنامج</LoadingButton>
               <Button variant='primary' onClick={handlePreview} endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >معاينة البرنامج</Button>
             </Box>
         </Box>
@@ -89,19 +162,52 @@ export default function AddProgram({windowSize}) {
 
             <ProfileDatas width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>عنوان البرنامج</Typography>
-              <TextField InputProps={{style: { padding: '5px' } }} style={{width: '100%'}} placeholder='أدخل عنوان البرنامج' />
+              <TextField 
+                InputProps={{style: { padding: '5px' } }} 
+                style={{width: '100%'}} 
+                placeholder='أدخل عنوان البرنامج' 
+                value={name}
+                onChange={(e) => {setName(e.target.value)}}
+              />
             </ProfileDatas>
 
             <ProfileDatas  width={windowSize.width}>
               <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الوصف</Typography>
               <FormControl>
-                <textarea className=' p-3 rounded-lg ' cols={cols}  rows={7} autoComplete='off' placeholder='أدخل وصف البرنامج هنا'  style={{
+                <textarea className=' p-3 rounded-lg ' cols={cols}  rows={4} autoComplete='off' placeholder='أدخل وصف البرنامج هنا'  
+                style={{
                  border: '1px solid ' + UISettings.colors.secondary,
-                 }}/>
+                }}
+                value={description}
+                onChange={(e) => {setDescription(e.target.value)}}
+                />
               </FormControl>
             </ProfileDatas>
+
+            {/* <ProfileDatas width={windowSize.width}>
+              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>السن المقترح</Typography>
+              <TextField InputProps={{style: { padding: '5px' } }} style={{width: '100%'}} placeholder='أدخل السن المقترح' />
+            </ProfileDatas> */}
+
+            <ProfileDatas width={windowSize.width}>
+              <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>السن المقترح</Typography>
+              <Autocomplete
+                className='autocompleteFreeSolo'
+                dir="rtl" 
+                style={{width: '100%', direction: 'rtl'}}
+                id="free-solo-demo"
+                ListboxProps={{
+                  style: { direction: 'rtl', /* Add any other styles here */ }
+                }}
+                freeSolo
+                value={age}
+                onChange={(e, newValue) => {setAge(newValue)}}
+                options={sessions}
+                renderInput={(params) => <TextField onChange={(e) => {setAge(e.target.value)}} placeholder='أدخل السن المقترح'  {...params} style={{ height: '50px', direction: 'rtl' /* Add any other styles here */ }} />}
+              />
+            </ProfileDatas>
             
-            <ProfileDatas width={windowSize.width} style={{'alignItems':'start'}}>
+            {/* <ProfileDatas width={windowSize.width} style={{'alignItems':'start'}}>
             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>السن المقترح</Typography>
               <FormControl dir="rtl" style={{width: "100%"}}>
                     <Select
@@ -119,12 +225,12 @@ export default function AddProgram({windowSize}) {
                         ))}
                     </Select>
               </FormControl>
-            </ProfileDatas>
+            </ProfileDatas> */}
 
           </SubContainer>
         </Container>
 
-        <Container style={{'marginBottom':'2rem'}}>
+        <Container style={{'marginBottom':'0rem'}}>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -132,9 +238,65 @@ export default function AddProgram({windowSize}) {
             </ProfileInfos>
           </ProfileHeader>
     
-        <SubContainer style={{ position: 'relative',marginBottom:'6rem' }}>
-        
+        <SubContainer style={{ position: 'relative',marginBottom:'0rem' }}>
+
         <ProfileDatas width={windowSize.width}>
+          <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة البرنامج كاملا</Typography>
+          <Autocomplete
+            className='autocompleteFreeSolo'
+            dir="rtl" 
+            style={{width: '100%', direction: 'rtl'}}
+            id="free-solo-demo"
+            ListboxProps={{
+              style: { direction: 'rtl', /* Add any other styles here */ }
+            }}
+            freeSolo
+            value={duration}
+            onChange={(e, newValue) => {setDuration(newValue)}}
+            options={programDuration.map((option) => option)}
+            renderInput={(params) => <TextField onChange={(e) => {setDuration(e.target.value)}} placeholder='إختر مدة البرنامج'  {...params} style={{ height: '50px', direction: 'rtl' /* Add any other styles here */ }} />}
+          />
+        </ProfileDatas>
+
+
+
+        <ProfileDatas width={windowSize.width}>
+          <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة الدراسة الفعلية</Typography>
+          <Autocomplete
+            className='autocompleteFreeSolo'
+            dir="rtl" 
+            style={{width: '100%', direction: 'rtl'}}
+            id="free-solo-demo"
+            ListboxProps={{
+              style: { direction: 'rtl', /* Add any other styles here */ }
+            }}
+            freeSolo
+            value={studyDuration}
+            onChange={(e, newValue) => {setStudyDuration(newValue)}}
+            options={programDuration.map((option) => option)}
+            renderInput={(params) => <TextField onChange={(e) => {setStudyDuration(e.target.value)}} placeholder='إختر مدة الدراسة الفعلية'  {...params} style={{ height: '50px', direction: 'rtl' /* Add any other styles here */ }} />}
+          />
+        </ProfileDatas>
+
+        <ProfileDatas width={windowSize.width}>
+          <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة العطل والامتحانات</Typography>
+          <Autocomplete
+            className='autocompleteFreeSolo'
+            dir="rtl" 
+            style={{width: '100%', direction: 'rtl'}}
+            id="free-solo-demo"
+            ListboxProps={{
+              style: { direction: 'rtl', /* Add any other styles here */ }
+            }}
+            value={vacationDuration}
+            onChange={(e, newValue) => {setVacationDuration(newValue)}}
+            freeSolo
+            options={programDuration.map((option) => option)}
+            renderInput={(params) => <TextField onChange={(e) => {setVacationDuration(e.target.value)}} placeholder='أدخل مدة العطل والامتحانات'  {...params} style={{ height: '50px', direction: 'rtl' /* Add any other styles here */ }} />}
+          />
+        </ProfileDatas>
+        
+        {/* <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة البرنامج كاملا</Typography>
             <FormControl dir="rtl" style={{ width: "100%" }}>
               <Select
@@ -150,35 +312,81 @@ export default function AddProgram({windowSize}) {
                 ))}
               </Select>
             </FormControl>
-          </ProfileDatas>
+          </ProfileDatas> */}
 
-          <ProfileDatas width={windowSize.width}>
+          {/* <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة الدراسة الفعلية</Typography>
             <FormControl dir="rtl" style={{ width: "100%" }}>
               <TextField InputProps={{style: { padding: '5px' } }} placeholder='أدخل مدة الدراسة الفعلية'/>
             </FormControl>
-          </ProfileDatas>
-          <ProfileDatas width={windowSize.width}>
+          </ProfileDatas> */}
+          {/* <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>مدة العطل والامتحانات</Typography>
             <FormControl dir="rtl" style={{ width: "100%" }}>
               <TextField InputProps={{style: { padding: '5px' } }} placeholder='أدخل مدة العطل والامتحانات'/>
             </FormControl>
-          </ProfileDatas>
+          </ProfileDatas> */}
 
         </SubContainer>
         </Container>
 
-        <Container style={{'marginBottom':'2rem'}}>
+        <Container style={{'marginBottom':'0rem'}}>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>مستويات البرنامج</Typography>
+                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>مستويات و فصول البرنامج</Typography>
             </ProfileInfos>
           </ProfileHeader>
 
-        <SubContainer style={{ position: 'relative',marginBottom:'6rem' }}>
-        
+        <SubContainer style={{ position: 'relative',marginBottom:'0rem' }}>
+
         <ProfileDatas width={windowSize.width}>
+              <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>عدد مستويات البرنامج</Typography>
+              <Autocomplete
+                className='autocompleteFreeSolo'
+                dir="rtl" 
+                style={{width: '100%', direction: 'rtl'}}
+                id="free-solo-demo"
+                ListboxProps={{
+                  style: { direction: 'rtl', /* Add any other styles here */ }
+                }}
+                freeSolo
+                value={level}
+                onChange={(e, newValue) => {setlevel(newValue)}}
+                options={levels.map((option) => option)}
+                renderInput={(params) => <TextField onChange={(e) => {setlevel(e.target.value)}} placeholder='أدخل عدد مستويات البرنامج'  {...params} style={{ height: '50px', direction: 'rtl' /* Add any other styles here */ }} />}
+              />
+        </ProfileDatas>
+        <ProfileDatas width={windowSize.width}>
+
+        </ProfileDatas>
+
+        <ProfileDatas width={windowSize.width}>
+          <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginTop: "10px", marginBottom: '-10px' }}>فصول البرنامج <IconButton onClick={addObjectToArray} style={{color: UISettings.colors.green, padding: '5px'}}><AddCircleOutlineOutlined/></IconButton> {semesters.length} <IconButton onClick={removeLastObjectFromArray} style={{color : 'red', padding: '5px'}}><RemoveCircleOutlineOutlined/></IconButton> </Typography> 
+        </ProfileDatas>
+
+        <ProfileDatas width={windowSize.width}>
+
+        </ProfileDatas>
+
+        {
+          semesters.map((semester, key) => {
+            return(
+              <>
+                <ProfileDatas width={windowSize.width}>
+                    <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px", color: UISettings.colors.secondary}}>اسم الفصل الدراسي {key + 1}</Typography>
+                    <TextField InputProps={{style: { padding: '5px' } }} style={{width: '100%'}} value={semester.name} onChange={(e)=> updateObjectToArray(key, 'name', e.target.value)} placeholder='أدخل اسم الفصل ' />
+                </ProfileDatas>
+                <ProfileDatas width={windowSize.width}>
+                  <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px", color: UISettings.colors.secondary}}>وصف الفصل الدراسي {key + 1}</Typography>
+                  <TextField InputProps={{style: { padding: '5px' } }} style={{width: '100%'}} value={semester.message} onChange={(e)=> updateObjectToArray(key, 'message', e.target.value)} placeholder='أدخل وصف الفصل' />
+                </ProfileDatas>  
+              </>
+            )
+          })
+        }
+        
+        {/* <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}> عدد مستويات البرنامج</Typography>
             <FormControl dir="rtl" style={{ width: "100%" }}>
               <Select
@@ -194,12 +402,12 @@ export default function AddProgram({windowSize}) {
                 ))}
               </Select>
             </FormControl>
-        </ProfileDatas>
+        </ProfileDatas> */}
 
         </SubContainer>
         </Container>
 
-        <Container style={{'marginBottom':'2rem'}}>
+        <Container style={{'marginBottom':'0rem'}}>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -207,9 +415,20 @@ export default function AddProgram({windowSize}) {
             </ProfileInfos>
           </ProfileHeader>
         
-        <SubContainer style={{ position: 'relative',marginBottom:'6rem' }}>
+        <SubContainer style={{ position: 'relative',marginBottom:'0rem' }}>
         
-        <ProfileDatas width={windowSize.width}>
+          <ProfileDatas width={windowSize.width}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>سعر الإشتراك</Typography>
+                <TextField 
+                  InputProps={{style: { padding: '5px' } }} 
+                  style={{width: '100%'}} 
+                  placeholder='أدخل سعر الإشتراك' 
+                  value={price}
+                  onChange={(e) => {setPrice(e.target.value)}}  
+                />
+          </ProfileDatas>
+          
+        {/* <ProfileDatas width={windowSize.width}>
             <Typography variant="p" sx={{ fontFamily: 'Cairo', fontWeight: 600, textWrap: 'wrap', direction: 'rtl', marginBottom: "10px" }}>  سعر الإشتراك</Typography>
             <FormControl dir="rtl" style={{ width: "100%" }}>
               <Select
@@ -225,13 +444,13 @@ export default function AddProgram({windowSize}) {
                 ))}
               </Select>
             </FormControl>
-        </ProfileDatas>
+        </ProfileDatas> */}
 
 
         </SubContainer>
         </Container>
 
-        <Container style={{'marginBottom':'2rem'}}>
+        <Container style={{'marginBottom':'0rem'}}>
           <ProfileHeader  style={{marginBottom: '15px'}}>
             <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
             <ProfileInfos>
@@ -239,68 +458,73 @@ export default function AddProgram({windowSize}) {
             </ProfileInfos>
           </ProfileHeader>
 
-        <SubContainer style={{ position: 'relative',marginBottom:'6rem' }}>
+        <SubContainer style={{ position: 'relative',marginBottom:'0rem' }}>
         
             <ProfileDatas style={{'flexDirection':'row',alignItems:'center'}}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px", color: UISettings.colors.secondary}}>تفعيل هذا البرنامج ليتمكن الطلاب من التسجيل فيه </Typography>
-                <SwitchIcon sx={{'marginRight':'10px'}}/>
+                <SwitchIcon open={status} change={setStatus} sx={{'marginRight':'10px'}}/>
             </ProfileDatas>  
 
         </SubContainer>
         </Container>
 
-        <Button onClick={()=> navigate('/admin/programs/all')} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content"}} >حفظ البرنامج</Button>
+        <Box style={{paddingTop: '20px'}} sx={{'display':'flex','gap':'1rem',flexDirection:{xs:'column',sm:'column',md:'row',lg:'row',xl:'row'},alignItems:{xs:'end',sm:'end',md:'center',lg:'center',xl:'center'}}}  justifyContent={'space-between'}>
+            <Box display={'flex'} alignItems={'center'} justifyContent={'center'} gap={'1rem'}>
+              <LoadingButton loading={loadingCreation} loadingPosition='center' onClick={()=> createProgram()} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >إنشاء البرنامج</LoadingButton>
+              <Button variant='primary' onClick={handlePreview} endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >معاينة البرنامج</Button>
+            </Box>
+        </Box>
+        {/* <Button onClick={()=> console.log()} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content"}} >إنشاء البرنامج</Button> */}
     </Body>
     :
     <Body>
-        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span onClick={()=> navigate('/admin/programs/all')} style={{cursor: 'pointer'}} > إدارة البرامج </span> <span> {">"} تفاصيل برامج الهمم  </span></Typography>
-        <Button variant='primary' onClick={handlePreview} endIcon={<VisibilityOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >العودة إلى إنشاء البرنامج</Button>
+        <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px', marginTop: '-20px', paddingTop: '0px'}}><span onClick={()=> navigate('/admin/programs/all')} style={{cursor: 'pointer'}} > إدارة البرامج </span> <span> {">"} إنشاء برنامج  </span></Typography>
+        <Box sx={{'display':'flex','gap':'1rem',flexDirection:{xs:'column',sm:'column',md:'row',lg:'row',xl:'row'},alignItems:{xs:'end',sm:'end',md:'center',lg:'center',xl:'center'}}}  justifyContent={'space-between'}>
+            <Box display={'flex'} alignItems={'center'} justifyContent={'center'} gap={'1rem'}>
+              <LoadingButton loading={loadingCreation} loadingPosition='center' onClick={()=> createProgram()} variant='primary' endIcon={<Check/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:UISettings.colors.white,white:'1px solid' + UISettings.colors.green}} >إنشاء البرنامج</LoadingButton>
+              <Button variant='primary' onClick={handlePreview} endIcon={<EditOutlined/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:'white',color:UISettings.colors.green,border:'1px solid' + UISettings.colors.green}} >تعديل البرنامج</Button>
+            </Box>
+        </Box>
         <Container>
             <Info width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>عنوان البرنامج</InfosTitle> 
                 <InfosContent  width={windowSize.width} style={{color: UISettings.colors.black, fontWeight: 600}}> 
                     <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={"35"} style={{margin: '0px 0px', marginLeft: '10px'}} />
-                  برنامج الهمم</InfosContent> 
+                  {name}</InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>وصف البرنامج</InfosTitle> 
-                <InfosContent  width={windowSize.width}>برنامج لحفظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات.برنامج لحفظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات.فظ القرآن الكريم كاملا مع التجويد  بالاضافة لحفظ الغريب و قراءة التفسير المختصر له في مدة ثلاث سنوات</InfosContent> 
+                <InfosContent  width={windowSize.width}>{description}</InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>السن المقترح</InfosTitle> 
-                <InfosContent  width={windowSize.width}>13 سنة فما فوق</InfosContent> 
+                <InfosContent  width={windowSize.width}>{age}</InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>مدة البرنامج كاملا</InfosTitle> 
-                <InfosContent  width={windowSize.width}>3 سنوات</InfosContent> 
+                <InfosContent  width={windowSize.width}>{duration} </InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>مدة الدراسة الفعلية</InfosTitle> 
-                <InfosContent  width={windowSize.width}>30 شهرا ( 10 أشهر كل سنة)</InfosContent> 
+                <InfosContent  width={windowSize.width}>{studyDuration} </InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>مدة العطل و الامتحانات</InfosTitle> 
-                <InfosContent  width={windowSize.width}>6 أشهر ( شهرين كل سنة)</InfosContent> 
+                <InfosContent  width={windowSize.width}>{vacationDuration}</InfosContent> 
             </Info>
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>عدد المستويات</InfosTitle> 
-                <InfosContent  width={windowSize.width}>7 مستويات</InfosContent> 
+                <InfosContent  width={windowSize.width}>{level} مستويات</InfosContent> 
             </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الأولى</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الثانية</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
-            <Info  width={windowSize.width}>
-                <InfosTitle  width={windowSize.width}>السنة الثالثة</InfosTitle> 
-                <InfosContent  width={windowSize.width}>ثلاث مستويات, المستوى الأول: شهران, والمستوى الثاني: ثلاثة أشهر, والمستوى الثالث: خمسة أشهر</InfosContent> 
-            </Info>
+            {semesters.map((semester, key)=> (
+              <Info key={key}  width={windowSize.width}>
+                <InfosTitle  width={windowSize.width}>{semester.name}</InfosTitle> 
+                <InfosContent  width={windowSize.width}>{semester.message}</InfosContent> 
+              </Info>
+            ))}
             <Info  width={windowSize.width}>
                 <InfosTitle  width={windowSize.width}>سعر البرنامج</InfosTitle> 
-                <InfosContent  width={windowSize.width}>5000.00 دج</InfosContent> 
+                <InfosContent  width={windowSize.width}>{price}.00 دج</InfosContent> 
             </Info>
         </Container>
     </Body>
@@ -327,7 +551,7 @@ const Container = styled.div`
   background-color: white;
   width: calc(100%);
   margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -397,7 +621,8 @@ const InfosContent = styled.div`
   text-align: end;
   color: ${UISettings.colors.secondary};
   display: flex;
-  flex-direction: row-reverse;
-  justify-content: end;
+  flex-direction: row;
+  justify-content: start;
   align-items: center;
+  direction: rtl;
 `

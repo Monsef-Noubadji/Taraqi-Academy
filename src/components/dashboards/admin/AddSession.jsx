@@ -1,93 +1,205 @@
-import { Button, FormControl, MenuItem, Select, TextField, Typography, useMediaQuery } from "@mui/material";
+import { Button, CircularProgress, FormControl, MenuItem, Select, TextField, Typography, useMediaQuery } from "@mui/material";
 import styled from 'styled-components'
 import UISettings from '../../../theme/UISettings'
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Save } from "@mui/icons-material";
 import { DataGrid } from "@mui/x-data-grid";
+import { ToastContainer,toast } from "react-toastify";
+import errorHandler from "../student/errorHandler";
+import axiosInstance from "../student/axiosInstance";
+import { useNavigate } from "react-router";
+import { LoadingButton } from "@mui/lab";
+
 
 const AddSession = ({windowSize}) => {
-    const [isSubscribed,setIsSubscribed] = useState(false)
-    const programs = [
-        {id:0, name:"شهري"},
-        {id:1, name:"دوري"},
-        {id:2, name:"سنوي"},
-    ]
+  const navigate = useNavigate()
 
-    const duration = [
-        {id:0, name:"سنتين"},
-        {id:1, name:" ثلاث سنوات"},
-        {id:2, name:"أربع سنوات"},
-      ]
+    const [teachers, setTeachers] = useState([]);
+    const [programs, setPrograms] = useState([]);
+    const [students, setStudents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-      const isXs = useMediaQuery((theme) => theme.breakpoints.down('xs'));
-      const isSm = useMediaQuery((theme) => theme.breakpoints.down('sm'));
-      const isMd = useMediaQuery((theme) => theme.breakpoints.down('md'));
-      const isLg = useMediaQuery((theme) => theme.breakpoints.down('lg'));
-      const isXl = useMediaQuery((theme) => theme.breakpoints.up('xl'));
+    async function getCreateGroupBaseInfo() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getCreateGroupBaseInfo');
+            console.log(response.data)
+            if(response.data.response === 'done'){
+              setTeachers(response.data.teachers)
+              setStudents(response.data.students)
+              setDisplayedStudents(response.data.students)
+              setPrograms(response.data.programs)
+              setLoading(false)
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
+
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+
+      useEffect(() => {
+          if (isMounted.current) {
+            getCreateGroupBaseInfo()
+          }
+      }, []);
+
+      const [groupName, setGroupName] = useState('');
+      const [teacher, setTeacher] = useState('all');
+      const [program, setProgram] = useState('all');
+      const [selectedStudents, setSelectedStudents] = useState([]);
+
+      const handleSelectionChange = (selection) => {
+        console.log(selection)
+        setSelectedStudents(selection);
+      };
+
+      const [loadingCreate, setLoadingCreate] = useState(false);
+      
+      async function createGroup() {
+        try {
+            setLoadingCreate(true)
+            const response = await axiosInstance.post('/adminApi/createGroup', {name: groupName, teacher, program, students: selectedStudents});
+            console.log(response.data)
+            if(response.data.response === 'done'){
+              setLoadingCreate(false)
+              toast.success(response.data.message, {
+                position: 'top-right',
+                progress: undefined,
+                autoClose: 1000,
+                theme: 'colored'
+              });
+              setTimeout(() => {
+                navigate('/admin/sessions/all')
+              }, 1000);
+            }
+        } catch (error) {
+            setLoadingCreate(false)
+            errorHandler(error, toast, navigate)
+        }
+    }
+
+    const [displayedStudents, setDisplayedStudents] = useState([]);
+      
+    useEffect(() => {
+      if(program === "all"){
+        setDisplayedStudents(students)
+      }else{
+        const data = []
+        for (let i = 0; i < students.length; i++) {
+          const student = students[i];
+          if(student.studyPrograms && student.studyPrograms[0] && student.studyPrograms[0].id === program){
+            data.push(student)
+          }
+        }
+        setDisplayedStudents(data)
+      }
+    }, [program]);
+
+    if(loading){
+      return(
+         <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+             <ToastContainer rtl="true"/>
+             <CircularProgress style={{color: UISettings.colors.green}}/>
+             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+           </div>
+         )
+    }else{
+      return ( 
+          <Body>
+              <ToastContainer rtl="true"/>
+              <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} onClick={()=> navigate('/admin/sessions/all')} >إدارة الحلقات </span> <span> {">"} إضافة حلقة  </span></Typography>
+              <Container>
+            <ProfileHeader  style={{marginBottom: '15px'}}>
+              <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
+              <ProfileInfos>
+                  <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات الحلقة</Typography>
+              </ProfileInfos>
+            </ProfileHeader>
+            <SubContainer>
+              
+              <ProfileDatas  width={windowSize.width}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إسم الحلقة</Typography>
+                <TextField style={{width: '100%', maxWidth: '600px'}} placeholder='إسم الحلقة' value={groupName} onChange={(e)=> setGroupName(e.target.value)} />
+              </ProfileDatas>
+              <ProfileDatas  width={windowSize.width}>
+              </ProfileDatas>
+              
+              <ProfileDatas width={windowSize.width}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>البرنامج</Typography>
+                <FormControl dir="rtl" style={{width: "100%"}}>
+                      <Select
+                          dir="rtl"
+                          style={{paddingTop: "0px", paddingBottom: '0px'}}
+                          id="program"
+                          value={program}
+                          onChange={(e)=> setProgram(e.target.value)}
+                      >
+                          <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر البرنامج </span> </MenuItem>
+                          {programs.map((program,index)=>(
+                              <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                          ))}
+                      </Select>
+                </FormControl>
+              </ProfileDatas>
   
-    const width = isXs ? '100%' : isSm ? '100%' : isMd ? '100%' : isLg ? '100%' : isXl ? '60%' : '80%';
-    return ( 
-        <Body>
-            <Typography variant={windowSize.width > UISettings.devices.phone ?  "h5" : 'h6'} sx={{'fontFamily':'Cairo','fontWeight':800,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '25px'}}><span style={{cursor: 'pointer'}} >إدارة الحلقات </span> <span> {">"} إضافة حلقة  </span></Typography>
-            <Container>
-          <ProfileHeader  style={{marginBottom: '15px'}}>
-            <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
-            <ProfileInfos>
-                <Typography variant="h6" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>معلومات الحلقة</Typography>
-            </ProfileInfos>
-          </ProfileHeader>
-          <SubContainer>
-            <ProfileDatas width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إسم الحلقة</Typography>
-              <TextField style={{width: '100%'}} placeholder='إسم الحلقة' />
-            </ProfileDatas>
-            <ProfileDatas width={windowSize.width}>
-              <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الأستاذ المسؤول</Typography>
-              <FormControl dir="rtl" style={{width: "100%"}}>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        id="program"
-                        //value={age}
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الأستاذ المسؤول </span> </MenuItem>
-                        {programs.map((program,index)=>(
-
-                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-              </FormControl>
-            </ProfileDatas>
-            <ProfileDatas>
-            <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إختر طلاب الحلقة</Typography>
-              <div dir="rtl" style={{ height: 370, width: width }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
-              </div>
-            </ProfileDatas>
-          </SubContainer>
-          <Button  variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color:'white',border:'1px solid' + UISettings.colors.green}} >حفظ الحلقة</Button>
-
-            </Container>
-        </Body>
-     );
+              <ProfileDatas width={windowSize.width}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}>الأستاذ المسؤول</Typography>
+                <FormControl dir="rtl" style={{width: "100%"}}>
+                      <Select
+                          dir="rtl"
+                          style={{paddingTop: "0px", paddingBottom: '0px'}}
+                          id="teacher"
+                          value={teacher}
+                          onChange={(e)=> setTeacher(e.target.value)}
+                      >
+                          <MenuItem selected disabled value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> إختر الأستاذ المسؤول </span> </MenuItem>
+                          {teachers.map((teacher,index)=>(
+                              <MenuItem key={index} value={teacher.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{teacher.firstName + ' ' + teacher.familyName + ' ( ' + teacher.email + ' )'}</span> </MenuItem>
+                          ))}
+                      </Select>
+                </FormControl>
+              </ProfileDatas>
+              
+              
+              
+              <ProfileDatas width={windowSize.width} style={{width: '100%'}}>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "10px"}}> إختر طلاب الحلقة</Typography>
+                <div dir="rtl" style={{ height: 370, width: '100%' }}>
+                  <DataGrid
+                    rows={displayedStudents}
+                    columns={columns}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 5 },
+                      },
+                    }}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    checkboxSelection
+                    // onRowSelectionModelChange={}
+                    onRowSelectionModelChange={handleSelectionChange}
+                    componentsProps={{
+                      pagination: { style: {
+                        direction: 'ltr'
+                      }},
+                    }}
+                  />
+                </div>
+              </ProfileDatas>
+            </SubContainer>
+            <LoadingButton loading={loadingCreate} loadingPosition={"center"} onClick={()=> createGroup()}  variant='primary' endIcon={<Save/>} style={{alignSelf: 'left', width: "fit-content",backgroundColor:UISettings.colors.green,color: loadingCreate ? 'transparent' : 'white',border:'1px solid' + UISettings.colors.green}} >حفظ الحلقة</LoadingButton>
+  
+              </Container>
+          </Body>
+      );
+    }
 }
  
 export default AddSession;
@@ -172,11 +284,11 @@ const columns = [
   { 
       field: 'name', 
       headerName: (<span>إسم الطالب</span>), 
-      minWidth: 100, 
+      minWidth: 150, 
       flex: 1, 
       renderCell: (params) => { 
           return (
-            <span style={{color: UISettings.colors.secondary}}>{params.row.name}</span>
+            <span style={{color: UISettings.colors.secondary}}>{params.row.firstName + ' ' + params.row.familyName}</span>
           );
       }, 
   },
@@ -191,43 +303,34 @@ const columns = [
       }, 
   },
   { 
-    field: 'plantype', 
-    headerName: 'نوع الإشتراك', 
-    width: 250, 
+    field: 'program', 
+    headerName: 'البرنامج', 
+    width: 150, 
     renderCell: (params) => { 
         return (
-          <span style={{color: UISettings.colors.secondary}}>{params.row.plantype}</span>
+          <span style={{color: UISettings.colors.secondary}}>{params.row.studyPrograms && params.row.studyPrograms[0] ? params.row.studyPrograms[0].name : '--'}</span>
         );
     }, 
-},
+} ,
+{ 
+  field: 'group', 
+  headerName: 'الحلقة', 
+  width: 150, 
+  renderCell: (params) => { 
+      return (
+        <span style={{color: UISettings.colors.secondary}}>{'--'}</span>
+      );
+  }, 
+} ,
+{ 
+  field: 'data', 
+  headerName: 'تاريخ اختيار البرنامج', 
+  width: 180, 
+  renderCell: (params) => { 
+      return (
+        <span style={{color: UISettings.colors.secondary}}>{params.row.studyPrograms && params.row.studyPrograms[0] && params.row.studyPrograms[0].studentStudyProgram && params.row.studyPrograms[0].studentStudyProgram.createdAt ? params.row.studyPrograms[0].studentStudyProgram.createdAt.split('T')[0] : '--'}</span>
+      );
+  }, 
+}
 ];
 
-
-const rows = [
-  { id: 1, name: 'عبد الإله', email: 'noubadjimonsef@gmail.com', plantype: 'اشتراك شهري' },
-  { id: 2, name: 'محمد', email: 'mohammed@example.com', plantype: 'اشتراك سنوي' },
-  { id: 3, name: 'فاطمة', email: 'fatima@example.com', plantype: 'اشتراك شهري' },
-  { id: 4, name: 'علي', email: 'ali@example.com', plantype: 'اشتراك سنوي' },
-  { id: 5, name: 'خديجة', email: 'khadija@example.com', plantype: 'اشتراك شهري' },
-  { id: 6, name: 'يوسف', email: 'youssef@example.com', plantype: 'اشتراك شهري' },
-  { id: 7, name: 'نور', email: 'nour@example.com', plantype: 'اشتراك سنوي' },
-  { id: 8, name: 'أمينة', email: 'amina@example.com', plantype: 'اشتراك سنوي' },
-  { id: 9, name: 'عبد الرحمن', email: 'abdelrahman@example.com', plantype: 'اشتراك شهري' },
-  { id: 10, name: 'مريم', email: 'maryam@example.com', plantype: 'اشتراك سنوي' },
-  { id: 11, name: 'ياسين', email: 'yassine@example.com', plantype: 'اشتراك شهري' },
-  { id: 12, name: 'ريم', email: 'reem@example.com', plantype: 'اشتراك سنوي' },
-  { id: 13, name: 'عمر', email: 'omar@example.com', plantype: 'اشتراك شهري' },
-  { id: 14, name: 'رضا', email: 'reda@example.com', plantype: 'اشتراك شهري' },
-  { id: 15, name: 'سارة', email: 'sara@example.com', plantype: 'اشتراك سنوي' },
-  { id: 16, name: 'أحمد', email: 'ahmed@example.com', plantype: 'اشتراك شهري' },
-  { id: 17, name: 'ليلى', email: 'laila@example.com', plantype: 'اشتراك سنوي' },
-  { id: 18, name: 'عماد', email: 'imad@example.com', plantype: 'اشتراك سنوي' },
-  { id: 19, name: 'مهدي', email: 'mahdi@example.com', plantype: 'اشتراك شهري' },
-  { id: 20, name: 'أميرة', email: 'amira@example.com', plantype: 'اشتراك سنوي' },
-  { id: 21, name: 'عبد الوهاب', email: 'abdulwahab@example.com', plantype: 'اشتراك شهري' },
-  { id: 22, name: 'نادية', email: 'nadia@example.com', plantype: 'اشتراك سنوي' },
-  { id: 23, name: 'حسين', email: 'hussein@example.com', plantype: 'اشتراك شهري' },
-  { id: 24, name: 'زينب', email: 'zeinab@example.com', plantype: 'اشتراك سنوي' },
-  { id: 25, name: 'خالد', email: 'khaled@example.com', plantype: 'اشتراك شهري' },
-
-];

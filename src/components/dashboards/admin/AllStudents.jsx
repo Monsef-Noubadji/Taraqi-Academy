@@ -23,11 +23,11 @@ const AllStudents = ({windowSize}) => {
         
     ]
     
-    const programs = [
-        {id:0, name:"برنامح الهمم"},
-        {id:1, name:"برنامج التميز"},
-        {id:2, name:"برنامح الأساس"},
-    ]
+    // const programs = [
+    //     {id:0, name:"برنامح الهمم"},
+    //     {id:1, name:"برنامج التميز"},
+    //     {id:2, name:"برنامح الأساس"},
+    // ]
     
     const navigate = useNavigate()
     
@@ -40,6 +40,8 @@ const AllStudents = ({windowSize}) => {
             const response = await axiosInstance.post('/adminApi/getStudents');
             console.log(response.data)
             if(response.data.response === 'done'){
+                setGroups(response.data.groups)
+                setPrograms(response.data.programs)
                 setStudents(response.data.students)
                 setDisplayedStudents(response.data.students)
                 setLoading(false)
@@ -69,6 +71,60 @@ const AllStudents = ({windowSize}) => {
           setOpenFilterPopup(false);
       }
 
+      const [programs, setPrograms] = useState([]);
+      const [groups, setGroups] = useState([]);
+
+      const [selectedProgram, setSelectedProgram] = useState('');
+      const [selectedGender, setSelectedGender] = useState('');
+      const [selectedGroup, setSelectedGroup] = useState('');
+      const [filterParams, setFilterParams] = useState({program: '', gender: '', group: ''});
+
+      const [loadingFilter, setLoadingFilter] = useState(false);
+      
+      function filterStudents(){
+        setLoadingFilter(true)
+        var data = students
+        var dataAfetProgram = []
+        var dataAfterGeneder = []
+        var dataAfterGroup = []
+        // program filter
+        for (let i = 0; i < data.length; i++) {
+            const student = data[i];
+            if(selectedProgram === ''){
+                dataAfetProgram.push(student)
+            }else{
+                if(student && student.studyPrograms &&  student.studyPrograms[0] && student.studyPrograms[0].id === selectedProgram){
+                    dataAfetProgram.push(student)
+                }
+            }
+        }
+
+        for (let i = 0; i < dataAfetProgram.length; i++) {
+            const student = dataAfetProgram[i];
+            if(selectedGender === ''){
+                dataAfterGeneder.push(student)
+            }else{
+                if(student && student.gender === selectedGender){
+                    dataAfterGeneder.push(student)
+                }
+            }
+        }
+
+        for (let i = 0; i < dataAfterGeneder.length; i++) {
+            const student = dataAfterGeneder[i];
+            if(selectedGroup === ''){
+                dataAfterGroup.push(student)
+            }else{
+                if(student && student.groups && student.groups[0] && student.groups[0].id === selectedGroup){
+                    dataAfterGroup.push(student)
+                }
+            }
+        }
+
+        setDisplayedStudents(dataAfterGroup)
+        setOpenFilterPopup(false)
+        setLoadingFilter(false)
+      }
 
       if(loading){
         return(
@@ -86,7 +142,7 @@ const AllStudents = ({windowSize}) => {
                     <section className='flex flex-col items-start justify-center mt-20 gap-8' style={{marginTop: '25px'}}>
                         {/* filter section */}
                         <Typography variant='h7' style={{display: 'none'}}  fontWeight={700}>حدد طلاب الحلقة المراد عرضها</Typography>
-                        <section className='flex items-center justify-start gap-2 w-full' style={{display: 'none'}} >
+                        {/* <section className='flex items-center justify-start gap-2 w-full' style={{display: 'none'}} >
                         <FormControl dir="rtl" style={{width: "33%"}}>
                         <InputLabel id="program" > البرنامج </InputLabel>
                             <Select
@@ -101,7 +157,6 @@ const AllStudents = ({windowSize}) => {
                             >
                                 <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
                                 {programs.map((program,index)=>(
-        
                                     <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
                                 ))}
                             </Select>
@@ -118,9 +173,9 @@ const AllStudents = ({windowSize}) => {
                                 defaultValue={0}
                                 //onChange={handleChange}
                             >
-                            <MenuItem selected value={0} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                            <MenuItem selected value={"MALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>ذكر</span> </MenuItem>
-                            <MenuItem value={"FEMALE"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> أنثى</span> </MenuItem>
+                            <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                            <MenuItem value={"ذكر"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>ذ..كر</span> </MenuItem>
+                            <MenuItem value={"أنثى"} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span> أنثى</span> </MenuItem>
                             </Select>
                         </FormControl>
                         <FormControl dir="rtl" style={{width: "33%"}}>
@@ -135,15 +190,14 @@ const AllStudents = ({windowSize}) => {
                                 defaultValue={'all'}
                                 //onChange={handleChange}
                             >
-                                <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                                <MenuItem selected value={''} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
                                 {sessions.map((session,index)=>(
-        
                                     <MenuItem key={index} value={session.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{session.name}</span> </MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
         
-                        </section>
+                        </section> */}
                         {/* CTA section */}
                         <section className='flex items-center justify-between gap-2 w-full' style={{flexDirection: windowSize.width > UISettings.devices.phone? 'row': 'column'}}>
                             <p style={{alignSelf: 'start'}}>مجموع الطلاب : {students.length} طالب</p>
@@ -200,11 +254,11 @@ const AllStudents = ({windowSize}) => {
                                 name="program"
                                 label=""
                                 sx={{'direction':'rtl','fontFamily':'Cairo'}}
-                                // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
-                                // error={countryError.length > 0 ? true : false}
-                                // helperText={countryError}
-                                // value={country}
+                                onChange={(e,)=> {setSelectedProgram(e.target.value)}}
+                                defaultValue={filterParams.program ? filterParams.program : ''}
                                 >
+                                    <MenuItem value={''} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+
                                 {programs.map((program,index)=>(
                                     <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
                                 ))}
@@ -213,39 +267,40 @@ const AllStudents = ({windowSize}) => {
                             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginTop: '10px', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>الجنس</Typography>
                             <Select
                                 fullWidth
-                                id="program"
-                                name="program"
+                                id="gender"
+                                name="gender"
                                 label=""
                                 sx={{'direction':'rtl','fontFamily':'Cairo'}}
-                                // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
-                                // error={countryError.length > 0 ? true : false}
-                                // helperText={countryError}
-                                // value={country}
+                                onChange={(e,)=> {setSelectedGender(e.target.value)}}
+                                defaultValue={filterParams.gender ? filterParams.gender : ''}
                                 >
-                                {programs.map((program,index)=>(
-                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
-                                ))}
+                                    <MenuItem value={''} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                                    <MenuItem value={'ذكر'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>ذكر</span> </MenuItem>
+                                    <MenuItem value={'أنثى'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>أنثى</span> </MenuItem>
                             </Select>
 
                             <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':400,'textWrap':'wrap','direction':'rtl', marginTop: '10px', color: UISettings.colors.secondary, textAlign: 'start', width: '100%', marginBottom: '10px'}}>الحلقة</Typography>
                             <Select
                                 fullWidth
-                                id="program"
-                                name="program"
+                                id="group"
+                                name="group"
                                 label=""
                                 sx={{'direction':'rtl','fontFamily':'Cairo'}}
                                 // onChange={(e,)=> {setCountry(e.target.value); setCountryError('')}}
                                 // error={countryError.length > 0 ? true : false}
                                 // helperText={countryError}
                                 // value={country}
+                                onChange={(e,)=> {setSelectedGroup(e.target.value)}}
+                                defaultValue={filterParams.group ? filterParams.group : ''}
                                 >
-                                {programs.map((program,index)=>(
-                                    <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                                    <MenuItem value={''} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                                {groups.map((group,index)=>(
+                                    <MenuItem key={index} value={group.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{group.name}</span> </MenuItem>
                                 ))}
                             </Select>
                             <Buttons style={{justifyContent: 'center'}}>
                                 <Button variant='secondary' style={{marginLeft: '20px'}}onClick={()=> setOpenFilterPopup(false)}>رجوع</Button>
-                                <LoadingButton loading={false} loadingPosition='center'  variant='primary' style={{backgroundColor: UISettings.colors.green}} >تصفية الطالب</LoadingButton >
+                                <LoadingButton loading={loadingFilter} loadingPosition='center'  variant='primary' onClick={()=> filterStudents()} style={{backgroundColor: UISettings.colors.green}} >تصفية الطالب</LoadingButton >
                             </Buttons>
                             </DialogContentText>
                         </DialogContent>
@@ -310,11 +365,11 @@ const columns = [
     { 
         field: 'group', 
         headerName: 'الحلقة', 
-        minWidth: 150, 
+        width: 150, 
         renderCell: (params) => { 
             return (
                 <Link to={`/admin/students/${params.row.id}`}>
-                    <span style={{color: UISettings.colors.secondary}}>{'soon'}</span>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.groups && params.row.groups[0] ? params.row.groups[0].name : '--'}</span>
                 </Link>
             );
         }, 
@@ -334,7 +389,7 @@ const columns = [
     { 
         field: 'expirationDate', 
         headerName: 'انتهاء الاشتراك', 
-        width: 150, 
+        width: 120, 
         renderCell: (params) => { 
             return (
                 <Link to={`/admin/students/${params.row.id}`}>

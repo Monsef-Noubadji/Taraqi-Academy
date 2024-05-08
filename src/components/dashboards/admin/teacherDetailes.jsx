@@ -12,16 +12,11 @@ import axiosInstance from '../student/axiosInstance'
 import { LoadingButton } from '@mui/lab'
 
 
-export default function StudentDetails({windowSize}) {
+export default function TeacherDetailes({windowSize}) {
   const navigate = useNavigate()
   const [isSubscribed,setIsSubscribed] = useState(true)
 
-  const studentDetails = {
-    name: "منصف عبد الإله",
-    teacher:'العيد عبود',
-    session:'حلقة الأستاذ عبود',
-    isSubscribed: true
-  }
+
 
   const handleActivate = () => {
     setIsSubscribed(!isSubscribed)
@@ -29,25 +24,26 @@ export default function StudentDetails({windowSize}) {
   
 
   const [loading, setLoading] = useState(true);
-  const [student, setStudent] = useState({});
+  const [teacher, setTeacher] = useState({});
+  const [program, setProgram] = useState('');
   const [subscriptions, setSubscriptions] = useState([]);
   const [exams, setExams] = useState([]);
 
   const  id  = useParams();
 
-  async function getStudent() {
+  async function getTeacher() {
     try {
-        const response = await axiosInstance.post('/adminApi/getStudent', {id});
+        const response = await axiosInstance.post('/adminApi/getTeacher', {id});
         console.log(response.data)
         if(response.data.response === 'done'){
-            setStudent(response.data.student)
+            setTeacher(response.data.teacher)
             setLoading(false)
             setStatus('done')
-            if(response.data.student.subscription){
-              setSubscriptions(response.data.student.subscription)
+            if(response.data.programName){
+              setProgram(response.data.programName)
             }
         }else if(response.data.response === 'notFound'){
-          setStudent(response.data.student)
+          setTeacher(response.data.teacher)
           setLoading(false)
           setStatus('notFound')
 
@@ -68,7 +64,7 @@ const isMounted = useRef(true);
 
   useEffect(() => {
       if (isMounted.current) {
-        getStudent()
+        getTeacher()
       }
   }, []);
 
@@ -85,13 +81,13 @@ const isMounted = useRef(true);
        <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
            <ToastContainer rtl="true"/>
            <ErrorOutlineOutlined style={{color: UISettings.colors.green, fontSize: '35px'}}/>
-           <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>لم يتم العثور على الطالب</Typography>
+           <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>لم يتم العثور على المعلم</Typography>
          </div>
        )
   }else{
     return (
       <Body>
-          <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}><span onClick={()=> navigate('/admin/students/all')} style={{cursor: 'pointer'}}>الطلاب</span> { ' > ' + student.firstName + ' ' + student.familyName}</Typography>
+          <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', color: UISettings.colors.black, textAlign: 'start',marginBottom: '10px'}}><span onClick={()=> navigate('/admin/teachers/all')} style={{cursor: 'pointer'}}>المعلمين</span> { ' > ' + teacher.firstName + ' ' + teacher.familyName}</Typography>
           <Box sx={{'display':'flex',alignItems:'stretch',justifyContent:'start',gap:'1rem'}}>
               <Button variant='primary' onClick={()=> setOpenExam(true)} endIcon={<BlockOutlined />} style={{color: UISettings.colors.red, backgroundColor: 'white', border: '1px solid ' +  UISettings.colors.red, alignSelf: 'left', width: "fit-content"}} >حظر الطالب</Button>
               {/* <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px',width: "fit-content"}} ><Print/></Button> */}
@@ -99,9 +95,9 @@ const isMounted = useRef(true);
   
           <Container>
             <ProfileHeader>
-                <img src={ student.image && student.image.length > 0 ? student.image :  '../../../../src/assets/user.png'} alt="academy_logo" width={80} style={{margin: '0px 0px'}} />
+                <img src={ teacher.image && teacher.image.length > 0 ? teacher.image :  '../../../../src/assets/user.png'} alt="academy_logo" width={80} style={{margin: '0px 0px'}} />
                 <ProfileInfos>
-                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>{student.firstName + ' ' + student.familyName}</Typography>
+                    <Typography variant="h5" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl'}}>{teacher.firstName + ' ' + teacher.familyName}</Typography>
                     <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>طالب</Typography>
                 </ProfileInfos>
             </ProfileHeader>
@@ -117,19 +113,19 @@ const isMounted = useRef(true);
             <SubContainer>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الاسم الكامل</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student.firstName === '' && student.familyName === '' ? '__' : student.firstName + ' ' + student.familyName}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher.firstName === '' && teacher.familyName === '' ? '__' : teacher.firstName + ' ' + teacher.familyName}</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الوصف</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student.description? student.description : '__'}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher.description? teacher.description : '__'}</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>البريد الالكتروني</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student.email? student.email : '__'}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher.email? teacher.email : '__'}</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>رقم الهاتف</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons,direction:'ltr'}}>{student.phoneNumber ? student.phoneNumber : '__'} </Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons,direction:'ltr'}}>{teacher.phoneNumber ? teacher.phoneNumber : '__'} </Typography>
               </ProfileDatas>
             </SubContainer>
           </Container>
@@ -144,11 +140,11 @@ const isMounted = useRef(true);
             <SubContainer>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>البلد</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student.country ? student.country : '__'}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher.country ? teacher.country : '__'}</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الولاية</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student.wilaya? student.wilaya : '__'}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher.wilaya? teacher.wilaya : '__'}</Typography>
               </ProfileDatas>
             </SubContainer>
           </Container>
@@ -163,21 +159,17 @@ const isMounted = useRef(true);
             <SubContainer >
               <ProfileDatas  width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>اسم البرنامج</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student && student.studyPrograms && student.studyPrograms[0] && student.studyPrograms[0].name ? student.studyPrograms[0].name : '--' }</Typography>
-              </ProfileDatas>
-              <ProfileDatas  width={windowSize.width}>
-                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>المستوى</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student && student.studyPrograms && student.studyPrograms[0]  && student.studyPrograms[0].studentStudyProgram ? student.studyPrograms[0].studentStudyProgram.level : '--' }</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{program ? program : "--" }</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width} >
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>الحلقة</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student && student.groups && student.groups[0] ? student.groups[0].name : '--'}</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher && teacher.groups && teacher.groups[0] ? teacher.groups[0].name : '--'}</Typography>
               </ProfileDatas>
               <ProfileDatas  width={windowSize.width} ></ProfileDatas>
             </SubContainer>
           </Container>
   
-          <Container>
+          {/* <Container>
             <ProfileHeader  style={{marginBottom: '15px'}}>
               <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
               <ProfileInfos>
@@ -188,7 +180,7 @@ const isMounted = useRef(true);
   
               <ProfileDatas width={windowSize.width}>
                 <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl', marginBottom: "5px"}}>تاريخ انتهاء الاشتراك</Typography>
-                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{student && student.studyPrograms && student.studyPrograms[0] && student.studyPrograms[0].studentStudyProgram && student.studyPrograms[0].studentStudyProgram.experationDate ? student.studyPrograms[0].studentStudyProgram.experationDate.split('T')[0] : '--' }</Typography>
+                <Typography variant="p" sx={{'whiteSpace':'normal', color: UISettings.colors.darkIcons}}>{teacher && teacher.studyPrograms && teacher.studyPrograms[0] && teacher.studyPrograms[0].studentStudyProgram && teacher.studyPrograms[0].studentStudyProgram.experationDate ? teacher.studyPrograms[0].studentStudyProgram.experationDate.split('T')[0] : '--' }</Typography>
               </ProfileDatas>
              
             
@@ -215,8 +207,9 @@ const isMounted = useRef(true);
                 }}
                 />
               </div>
-          </Container>
-          <Container>
+          </Container> */}
+          
+          {/* <Container>
               <ProfileHeader  style={{marginBottom: '15px'}}>
               <img src={'../../../../src/assets/titleStar.svg'} alt="academy_logo" width={40} style={{margin: '0px 0px'}} />
               <ProfileInfos>
@@ -240,7 +233,7 @@ const isMounted = useRef(true);
                 }},
               }}
             />
-          </Container>
+          </Container> */}
   
             
       </Body>
