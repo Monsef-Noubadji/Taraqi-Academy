@@ -27,6 +27,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
+import Exam from './Exam';
 
 
 export default function Main() {
@@ -285,6 +286,7 @@ export default function Main() {
                       <Route exact path="/subscribe" element={<Subscribe  windowSize={windowSize} />}></Route>
                       <Route exact path="/subscribe/payment" element={<Payement  windowSize={windowSize} />}></Route>
                       <Route exact path="/exams" element={<Exams  windowSize={windowSize} />}></Route>
+                      <Route exact path="/exams/:id" element={<Exam  windowSize={windowSize} />}></Route>
                       <Route exact path="/profile" element={<Profile  windowSize={windowSize} />}></Route>
                       <Route exact path="/profile/edit" element={<EditProfile  windowSize={windowSize} />}></Route>
                       <Route exact path="/settings" element={<Settings  windowSize={windowSize} mainToast={toast} />}></Route>

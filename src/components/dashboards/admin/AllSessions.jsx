@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, ListItemIcon, Menu, MenuItem, Select, Typography } from '@mui/material';
+import { Button, CircularProgress, FormControl, InputLabel, ListItemIcon, Menu, MenuItem, Select, Typography } from '@mui/material';
 import UISettings from '../../../theme/UISettings';
 import { Delete, MoreVert, PrintOutlined } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
@@ -6,7 +6,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Link, useNavigate } from 'react-router-dom';
 import BadgeIcon from '@mui/icons-material/Badge';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import errorHandler from '../student/errorHandler';
+import axiosInstance from '../student/axiosInstance';
+import { ToastContainer,toast } from "react-toastify";
+
 
 export const TeacherMenu = ({ id }) => {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -27,8 +31,8 @@ export const TeacherMenu = ({ id }) => {
   
     const handleCloseSecondMenu = () => {
       setSecondMenuAnchorEl(null);
-    };
-  
+    };    
+ 
     return (
         <div>
             <MoreVert onClick={handleClick} style={{ cursor: 'pointer' }} />
@@ -63,74 +67,132 @@ export const TeacherMenu = ({ id }) => {
             </Menu>
         </div>
         
-    );
+    );  
   };
 
 
-const AllSessions = () => {
+const AllSessions = ({windowSize}) => {
 
     const navigate = useNavigate()
 
-    const programs = [
-        {id:0, name:"برنامح الهمم"},
-        {id:1, name:"برنامج التميز"},
-        {id:2, name:"برنامح الأساس"},
-    ]
+    
+    const [groups, setGroups] = useState([]);
+    const [displayedGroups, setDisplayedGroups] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    return (
-        <main style={{'direction':'rtl',padding:'1rem'}}>
-            <Typography variant='h5' fontWeight={800}>{'إدارة الحلقات > جميع الحلقات'}</Typography>
-            <section className='flex flex-col items-start justify-center mt-20 gap-8'>
-                {/* CTA section */}
-                <section className='flex-col md:flex-row lg:flex-row justify-between gap-10 w-full'>
-                    <p className='mb-8 md:mb-0 lg:mb-0'>مجموع الحلقات : {rows.length} حلقة</p>
-                    <div className='flex items-center justify-start md:justify-end lg:justify-end gap-3'>
-                        <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><PrintOutlined/></Button>
-                        <FormControl dir="rtl" style={{'width':'7rem'}} >
-                <InputLabel id="program" > البرنامج </InputLabel>
-                    <Select
-                        dir="rtl"
-                        style={{paddingTop: "0px", paddingBottom: '0px'}}
-                        labelId="program"
-                        id="program"
-                        //value={age}
-                        label="البرنامج"
-                        defaultValue={'all'}
-                        //onChange={handleChange}
-                    >
-                        <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
-                        {programs.map((program,index)=>(
+    async function getGroups() {
+        try {
+            const response = await axiosInstance.post('/adminApi/getGroups');
+            console.log(response.data)
+            if(response.data.response === 'done'){
+                setGroups(response.data.groups)
+                setDisplayedGroups(response.data.groups)
+                setPrograms(response.data.programs)
+                setDisplayedPrograms(response.data.programs)
+                setLoading(false)
+            }
+        } catch (error) {
+            errorHandler(error, toast, navigate)
+        }
+    }
 
-                            <MenuItem key={index} value={program.id} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
-                        ))}
-                    </Select>
-                        </FormControl>
-                        <Button variant='primary' onClick={()=> navigate('/admin/sessions/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة حلقة</Button>
+    const isMounted = useRef(true);
+    
+      useEffect(() => {
+        return () => {
+        // Cleanup function to set isMounted to false when component unmounts
+        isMounted.current = false;
+        };
+      }, []);
+    
+      useEffect(() => {
+          if (isMounted.current) {
+            getGroups()
+          }
+      }, []);
+
+      const [programs, setPrograms] = useState([]);
+      const [program, setprogram] = useState("all");
+      const [displayedPrograms, setDisplayedPrograms] = useState([]);
+
+      useEffect(() => {
+        if(program === "all"){
+            setDisplayedGroups(groups)
+        }else{
+            var data = []
+            for (let i = 0; i < groups.length; i++) {
+                const item = groups[i];
+                if(item.program === program){
+                    data.push(item)
+                }
+            }
+            setDisplayedGroups(data)
+        }
+      }, [program]);
+
+    if(loading){
+        return(
+            <div style={{height: "calc(100vh - 150px)", width: "100%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <ToastContainer rtl="true"/>
+                <CircularProgress style={{color: UISettings.colors.green}}/>
+                <Typography variant="p" sx={{'fontFamily':'Cairo','fontWeight':'bold','direction':'rtl', marginBottom: '-25px', marginTop: '25px', color: UISettings.colors.secondary}}>تحميل البيانات ....</Typography>
+            </div>
+        )
+    }else{
+        return (
+            <main style={{'direction':'rtl',padding:'1rem',  paddingTop: '0px', marginTop: '0px'}}>
+                <Typography variant='h5' fontWeight={800}>{'إدارة الحلقات > جميع الحلقات'}</Typography>
+                <section className='flex flex-col items-start justify-center mt-20 gap-8' style={{marginTop: '25px'}}>
+                    {/* CTA section */}
+                    <section className='flex-col md:flex-row lg:flex-row justify-between gap-10 w-full'>
+                        <p className='mb-8 md:mb-0 lg:mb-0'>مجموع الحلقات : {groups.length} حلقة</p>
+                        <div className='flex items-center justify-start md:justify-end lg:justify-end gap-3'>
+                            {/* <Button variant='primary' style={{backgroundColor: 'white', border: '1px solid ' + UISettings.colors.green, color: UISettings.colors.green, marginRight: '10px'}} ><PrintOutlined/></Button> */}
+                            <FormControl dir="rtl" style={{'width':'7rem'}} >
+                    <InputLabel id="program" > البرنامج </InputLabel>
+                        <Select
+                            dir="rtl"
+                            style={{paddingTop: "0px", paddingBottom: '0px'}}
+                            labelId="program"
+                            id="program"
+                            value={program}
+                            label="البرنامج"
+                            onChange={(e)=> setprogram(e.target.value)}
+                        >
+                            <MenuItem selected value={'all'} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>الكل</span> </MenuItem>
+                            {programs.map((program,index)=>(
+                                <MenuItem key={index} value={program.name} style={{display: 'flex', flexDirection: 'row', justifyContent: 'end'}}> <span>{program.name}</span> </MenuItem>
+                            ))}
+                        </Select>
+                            </FormControl>
+                            <Button variant='primary' onClick={()=> navigate('/admin/sessions/new')} startIcon={<AddIcon sx={{'marginLeft':'10px'}}/>} >إضافة حلقة</Button>
+                        </div>
+                    </section>
+    
+                    <div dir="rtl" style={{  height: windowSize.width > UISettings.devices.phone? 'calc(100vh - 270px)' : 'calc(100vh - 300px)', width: '100%' }}>
+                        <DataGrid
+                            rows={displayedGroups}
+                            columns={columns}
+                            initialState={{
+                            pagination: {
+                                paginationModel: { page: 0, pageSize: 5 },
+                            },
+                            }}
+                            pageSize={5}
+                            rowsPerPageOptions={[5, 10, 20]}
+                            checkboxSelection={false}
+                            rowSelection={false}
+                            componentsProps={{
+                            pagination: { style: {
+                                direction: 'ltr'
+                            }},
+                            }}
+                        />
                     </div>
                 </section>
-
-                <div dir="rtl" style={{ height: 370, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
-            checkboxSelection
-            componentsProps={{
-              pagination: { style: {
-                direction: 'ltr'
-              }},
-            }}
-          />
-                </div>
-            </section>
-        </main>
-    );
+            </main>
+        );
+    }
 };
 
 export default AllSessions;
@@ -144,7 +206,7 @@ const columns = [
         flex: 1, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
+                <Link to={`/admin/sessions/${params.row.id}/edit`}>
                     <span style={{color: UISettings.colors.secondary}}>{params.row.name}</span>
                 </Link>
             );
@@ -153,11 +215,11 @@ const columns = [
     { 
         field: 'number', 
         headerName: 'عدد الطلاب', 
-        width: 200, 
+        width: 150, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
-                    <span style={{color: UISettings.colors.secondary}}>{params.row.number}</span>
+                <Link to={`/admin/sessions/${params.row.id}/edit`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.students}</span>
                 </Link>
             );
         }, 
@@ -165,10 +227,10 @@ const columns = [
     { 
         field: 'program', 
         headerName: 'البرنامج', 
-        width: 200, 
+        width: 150, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
+                <Link to={`/admin/sessions/${params.row.id}/edit`}>
                     <span style={{color: UISettings.colors.secondary}}>{params.row.program}</span>
                 </Link>
             );
@@ -177,20 +239,31 @@ const columns = [
     { 
         field: 'teacher', 
         headerName: 'الأستاذ المسؤول', 
-        minWidth: 200, 
-        flex: 1, 
+        width: 150, 
         renderCell: (params) => { 
             return (
-                <Link to={`/students/${params.row.id}`}>
+                <Link to={`/admin/sessions/${params.row.id}/edit`}>
                     <span style={{color: UISettings.colors.secondary}}>{params.row.teacher}</span>
                 </Link>
             );
         }, 
     },
     { 
+        field: 'createdAt', 
+        headerName: 'تاريخ الإنشاء', 
+        width: 150, 
+        renderCell: (params) => { 
+            return (
+                <Link to={`/admin/sessions/${params.row.id}/edit`}>
+                    <span style={{color: UISettings.colors.secondary}}>{params.row.createdAt ? params.row.createdAt.split('T')[0] : '__'}</span>
+                </Link>
+            );
+        }, 
+    },
+    { 
         field: 'details', 
-        headerName: <span><MoreVertIcon/></span>, 
-        width: 300, 
+        headerName: '', 
+        width: 50, 
         renderCell: (params) => { 
             return (
                 <TeacherMenu id={params.row.id} />
