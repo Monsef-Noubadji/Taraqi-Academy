@@ -26,9 +26,8 @@ const router = createBrowserRouter(
             <Route path="login" element={<Login/>}/>
             <Route path='register' element={<Register/>} />
             <Route path='programs' element={<Programs/>}>
-              <Route index element={<ProgramGoals/>}/>
-              <Route path='list' element={<ProgramsList/>}/>
-              <Route path=':id' element={<ProgramDetails/>}/>
+              <Route index element={<ProgramsList/>}/>
+              <Route path="goals" element={<ProgramGoals/>}/>
             </Route>
             <Route path='dashboard' element={<DashboardLayout/>}>
                 <Route index element={<Profile/>}/>
