@@ -41,9 +41,9 @@ const Home = () => {
                     <Typography variant="h3" sx={{'fontFamily':'Cairo','fontWeight':600,'textWrap':'wrap','direction':'rtl','width':'80%'}}>أكاديمية الترقي لتعليم القرآن الكريم و علومه</Typography>
                     <Typography variant="p" sx={{'whiteSpace':'normal'}}>في أكاديميتنا  نستخدم عدة برامج نافعة بمناهج دراسية مرنة لتناسب مختلف الطلاب من جميع المستويات التعليمية.</Typography>
                     <Box sx={{'display':'flex','gap':4}}>
-                    <NavLink to="register" className="btn-primary">سجل في الأكاديمية</NavLink>
+                    <NavLink to="/student/register" className="btn-primary">سجل في الأكاديمية</NavLink>
                     <button className="btn-outline px-3 inline-flex gap-1">
-                        <p>تعرف علينا أكثر</p>
+                        <NavLink to="/#aboutUs">تعرف علينا أكثر</NavLink>
                         <SouthIcon sx={{'width':'20px'}}/>
                     </button>
                     </Box>
@@ -112,7 +112,9 @@ const Home = () => {
                             </span>
                         <button className="btn-outline px-3 inline-flex gap-1">
                             <WestIcon sx={{'width':'20px'}}/>
-                            <p>إقرأ المزيد</p>
+                            <NavLink to="/student/login">
+                                إقرأ المزيد                           
+                            </NavLink>
                         </button>
                         </div>
                     )) }
@@ -120,7 +122,9 @@ const Home = () => {
 
                 <button className="btn-primary self-center inline-flex gap-1">
                     <WestIcon sx={{'width':'20px'}}/>
-                    <p>إكتشف برامج أخرى</p>
+                    <NavLink to="/programs">
+                        إكتشف برامج أخرى
+                    </NavLink>                
                 </button>
             </Container>
 
@@ -129,7 +133,7 @@ const Home = () => {
                 <Typography variant="h4" sx={{'fontFamily':'Cairo','fontWeight':800,'fontSize':'2.5rem','direction':'rtl','color':'white'}}>
                 إنضم إلينا و كن من حفاظ كتاب الله تعالى 
                 </Typography>
-                <NavLink to="register" className="btn-outline bg-white border-white">سجل الآن</NavLink>
+                <NavLink to="/student/register" className="btn-outline bg-white border-white">سجل الآن</NavLink>
             </section>
 
             {/* How To Register Section */}
@@ -142,7 +146,7 @@ const Home = () => {
                     عملية التسجيل في المنصة سهلة و بسيطة جدا و لن تستغرق وقتا طويلا.
                 </p>
 
-                <section className="w-full flex flex-col-reverse lg:flex-row items-start justify-evenly gap-12 mt-10">
+                <section className="w-full flex flex-col-reverse md:grid lg:grid grid-cols-4 place-items-center  gap-12 md:gap-0 lg:gap-0 mt-10">
                     <span className=" flex flex-col items-center justify-center gap-2">
                         <div className="relative inline-block">
                             <img src={star} alt="star_icon" width={55} />
